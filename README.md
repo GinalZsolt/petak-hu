@@ -1,2 +1,2 @@
 # Peták.hu - Webes érmekatalógus
-- [Jira](https://ginalzsolt.atlassian.net/jira/software/projects/KPH)
+- [Jira](https://ginalzsolt.atlassian.net/browse/KPH)
