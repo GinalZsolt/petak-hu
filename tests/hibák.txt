@@ -1,8 +1,8 @@
-Kötelező adatok előbbi leírása
-Kötelező adatstruktúra konkretizálása
-Nem létező elérhetőségeknél aukció hibaellenőrzésének leírása
-Módosítás konkretizálása
-Jogosultságok látótere
+-Kötelező adatok előbbi leírása
+-Kötelező adatstruktúra konkretizálása
+-Nem létező elérhetőségeknél aukció hibaellenőrzésének leírása
+-Módosítás konkretizálása
+-Jogosultságok látótere
 -fórumtémák
 -aloldal -> oldal
 -profilmódosítás helye (navbár javítása)
