@@ -1,12 +1,12 @@
-fórumtémák
-aloldal -> oldal
-profilmódosítás helye (navbár javítása)
-Kötelező adatstruktúra konkretizálása
-Érmékhez érték mező hozzáírása
 Kötelező adatok előbbi leírása
+Kötelező adatstruktúra konkretizálása
 Nem létező elérhetőségeknél aukció hibaellenőrzésének leírása
 Módosítás konkretizálása
-Licitálás liciterei látásának leírása
 Jogosultságok látótere
-Aukciók kategóriának leírása
-Aktuális helyett trending aukciók
+-fórumtémák
+-aloldal -> oldal
+-profilmódosítás helye (navbár javítása)
+-Licitálás liciterei látásának leírása
+-Érmékhez érték mező hozzáírása
+-Aukciók kategóriának leírása
+-Aktuális helyett trending aukciók
