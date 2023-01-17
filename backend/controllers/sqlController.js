@@ -22,6 +22,20 @@ Router.get('/:table/:field/:value', (req, res)=>{
     })
 })
 
+//insert sql
+Router.post('/:table', (req, res)=>{
+    let table_name=req.params.table;
+    let records=req.body;
+    let fields=Object.keys(records);
+    let values=Object.values(records);
+    str2 = Object.keys(records).join(', ');
+    str = Object.values(records).map(e=> "'"+e+"'").join(', ');
+    pool.query(`INSERT INTO ? (${str2}) VALUES(${str})`, [table_name], (err,result)=>{
+        if(err) res.status(500).send(err);
+        else res.status(200).send(result);
+    })
+})
+
 //delete one sql
 Router.delete('/:table/:field/:value', (req, res)=>{
     let table_name=req.params.table;
