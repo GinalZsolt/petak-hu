@@ -28,6 +28,8 @@ Router.post('/:table', (req, res)=>{
     let records=req.body;
     let fields=Object.keys(records);
     let values=Object.values(records);
+    let str= null;
+    let str2= "id";
     str2 = Object.keys(records).join(', ');
     str = Object.values(records).map(e=> "'"+e+"'").join(', ');
     pool.query(`INSERT INTO ? (${str2}) VALUES(${str})`, [table_name], (err,result)=>{
