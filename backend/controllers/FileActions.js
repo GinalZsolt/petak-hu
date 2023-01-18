@@ -6,18 +6,22 @@ const multer = require('multer')({storage:require('multer').diskStorage({
     }
 })});
 
+var mysql = require('mysql')
+var pool =require("../config.js").pool
+
 const path = require('path')
 const router=require('express').Router()
 
 router.post('/single', multer.single('image'), function (req, res, next) {
-   
+  res.json(req.file)
 })
 
 router.post('/multiple', multer.fields([
     {name:"head"},
     {name:"tail"}
 ]), function (req, res, next) {
-   
+  res.json(req.files)
 })
+
 
 module.exports={multer,router};
