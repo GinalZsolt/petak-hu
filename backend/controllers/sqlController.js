@@ -1,13 +1,14 @@
 const Router = require('express').Router();
 const pool = require('../config').pool;
-
+let log = require('../logging').log;
 Router.patch('/:tablename/:id', (req,res)=>{
     let update = "";
-    let keys = Object.values(req.body);
+    let keys = Object.keys(req.body);
     let values = Object.values(req.body);
     for (let i = 0; i < keys.length; i++) {
         update +=`${keys[i]}='${values[i]}'`;
     }
+    console.log(`update ${req.params.tablename} set ${update} where ID=${req.params.id}`)
     pool.query(`update ${req.params.tablename} set ${update} where ID=${req.params.id}`, (err,data)=>{
         if (err) res.status(500).send(err.message);
         else res.status(200).send(data);
@@ -17,10 +18,21 @@ Router.patch('/:tablename/:id', (req,res)=>{
 //select all sql
 Router.get('/:table', (req, res)=>{
     let table_name=req.params.table;
-    pool.query(`SELECT * FROM ${table_name}`, (err, result)=>{
-        if(err) res.status(500).send(err);
-        else res.status(200).send(result);
-    })
+    if (req.query.p==undefined || req.query.p==null){
+        pool.query(`SELECT * FROM ${table_name}`, (err, result)=>{
+            if(err) res.status(500).send(err);
+            else res.status(200).send(result);
+        })
+    }
+    //filtering
+    else{
+        pool.query(`select * from ${table_name} limit 25 offset ${req.query.p*25}`, (err,result)=>{
+            if (err) res.status(500).send(err.message);
+            else res.status(200).send(result);
+        });
+    }
+    
+
 })
 
 //select one sql
@@ -28,7 +40,7 @@ Router.get('/:table/:field/:value', (req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
-    pool.query(`SELECT * FROM ${table_name} WHERE ${field}=${value}`, (err, result)=>{
+    pool.query(`SELECT * FROM ${table_name} WHERE ${table_field}=${field_value}`, (err, result)=>{
         if(err) res.status(500).send(err);
         else res.status(200).send(result);
     })
@@ -38,8 +50,6 @@ Router.get('/:table/:field/:value', (req, res)=>{
 Router.post('/:table', (req, res)=>{
     let table_name=req.params.table;
     let records=req.body;
-    let fields=Object.keys(records);
-    let values=Object.values(records);
     let str= null;
     let str2= "id";
     str2 = Object.keys(records).join(', ');
@@ -55,7 +65,7 @@ Router.delete('/:table/:field/:value', (req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
-    pool.query(`DELETE FROM ${table_name} WHERE ${field}=${value}`, (err, result)=>{
+    pool.query(`DELETE FROM ${table_name} WHERE ${table_field}=${field_value}`, (err, result)=>{
         if(err) res.status(500).send(err);
         else res.status(200).send(result);
     })
@@ -64,7 +74,7 @@ Router.delete('/:table/:field/:value', (req, res)=>{
 //delete all sql
 Router.delete('/:table', (req, res)=>{
     let table_name=req.params.table;
-    config.pool.query(`DELETE FROM ${table_name}`, (err, result)=>{
+    pool.query(`DELETE FROM ${table_name}`, (err, result)=>{
         if(err) res.status(500).send(err);
         else res.status(200).send(result);
     })
