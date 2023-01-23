@@ -1,26 +1,44 @@
-const multer = require('multer')({storage:require('multer').diskStorage({
-    destination:"./uploads",
-    filename:(req,file,cb)=>{
+const multer = require('multer')({
+    storage:require('multer').diskStorage({
+      destination:"./uploads",
+      filename:(req,file,cb)=>{
         let filename=file.originalname.split('.')[0]+Date.now()+path.extname(file.originalname)
         cb(null,filename)
+      }
+    }),
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) cb(null, true);
+      else cb({
+        'message': 'File is not accepted!',
+        'name': 'FileAccept Error',
+        'code': 'FILE_NOT_ACCEPTED'
+      }, false);
+    },
+    limits:{
+      fileSize: 5242880
     }
-})});
-
+  });
 var mysql = require('mysql')
 var pool =require("../config.js").pool
 
 const path = require('path')
 const router=require('express').Router()
 
-router.post('/single', multer.single('image'), function (req, res, next) {
-  res.json(req.file)
+router.post('/single', function (req, res) {
+  multer.single('image')(req,res,(err)=>{
+    if (err) res.status(500).send(err);
+    else res.status(200).json(req.file);
+  });
 })
 
-router.post('/multiple', multer.fields([
+router.post('/multiple', function (req, res) {
+  multer.fields([
     {name:"head"},
     {name:"tail"}
-]), function (req, res, next) {
-  res.json(req.files)
+  ])(req,res,(err)=>{
+    if (err) res.status(500).send(err);
+    else res.status(200).json(req.files);
+  })
 })
 
 
