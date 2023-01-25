@@ -1,10 +1,10 @@
 export class User {
-    ID:Number;
-    image:String;
-    fullname:String;
-    email:String;
+    ID:number;
+    image:string;
+    fullname:string;
+    email:string;
     contacts: any | null;
-    permission:Number;
+    private permission:number;
     constructor(data:any){
         this.ID = data.ID;
         this.image = data.imagefile;

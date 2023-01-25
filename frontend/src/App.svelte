@@ -2,6 +2,6 @@
 
 </style>
 <script lang="ts">
-    import Registration from './components/Registration.svelte';
+    import Auctions from './components/Auctions.svelte';
 </script>
-<Registration/>
+<Auctions/>
