@@ -1,5 +1,9 @@
 @import 'bootstrap';
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 @font-face {
   font-family: 'Nunito';
   src: url('./assets/fonts/Nunito/Nunito-VariableFont_wght.ttf');
+}
+body{
+  font-family: 'Nunito';
 }
