@@ -1,12 +1,14 @@
 <script lang="ts">
   import type { Auction } from "../../classes/Auction";
   export let Auction: Auction;
+  function ShowModal(){
+    console.log('asd')
+  }
 </script>
-
-<div id="card">
+<a href="/"><div id="card">
   <div class="auctimg d-flex justify-content-center">
     <img
-      class="mx-auto img-fluid"
+      class="m-auto img-fluid"
       src={"/" + Auction.coin.images.head}
       alt={Auction.title}
     />
@@ -21,11 +23,10 @@
     </p>
     <p class="my-0 py-0">{Auction.price} Ft</p>
   </div>
-</div>
+</div></a>
 
 <style lang="sass">
 #card
-  width:18rem
   height: 100%
   position: relative
 .auctimg

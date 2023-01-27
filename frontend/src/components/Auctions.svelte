@@ -14,7 +14,7 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
   testAuction.coin = new Coin({
     ID:0,
     worth:11,
-    name:"Zsetonergopaeriofgjoi3jgoi5trjgoe4rjiogt",
+    name:"Zseton",
     description:"Zseton leírás",
     headfile:"test.png",
     tailfile:"test.png"
@@ -38,7 +38,7 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
       />
     </div>
     <h3>Aktuális aukciók</h3>
-    <div class="carousel slide" data-bs-ride="carousel" id="top">
+    <div class="d-flex flex-row w-100">
       <button
         class="carousel-control-prev"
         type="button"
@@ -48,6 +48,19 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
         <span class="carousel-control-prev-icon" aria-hidden="true" />
         <span class="visually-hidden">Previous</span>
       </button>
+      <div class="carousel slide w-100" data-bs-ride="carousel" id="top">
+        <div class="carousel-item active d-flex flex-row h-100">
+          <div class="w-100 h-100">
+            <AuctionCard Auction={testAuction} />
+          </div>  
+          <div class="w-100 h-100">
+            <AuctionCard Auction={testAuction} />
+          </div>  
+          <div class="w-100 h-100">
+            <AuctionCard Auction={testAuction} />
+          </div>  
+        </div>
+      </div>
       <button
         class="carousel-control-next"
         type="button"
@@ -80,7 +93,7 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
       </button>
     </div>
   </div>
-  <AuctionCard Auction={testAuction} />
+  
 </main>
 
 <style lang="sass">
@@ -88,6 +101,5 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
     .input-group-text
         background-color: $searchbarColor
     .carousel
-        height: 25vh
         background-color: #000
 </style>
