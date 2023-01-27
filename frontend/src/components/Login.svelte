@@ -1,25 +1,24 @@
 <script lang="ts">
     import axios from "axios"
+    import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
     let data:any = {}
+    let err1
+    let err2
     function login(){
-        if(data.email.value==""||data.password.value=="")
+
+        if(data.email==undefined||data.password==undefined)
         {
-            document.querySelector('#emptyfields').classList.add("d-flex")
-            document.querySelector('#emptyfields').classList.remove("d-none")
+            err2.showError()
         }
         else
         {
             if(true)
             {
-                document.querySelector('#badlogin').classList.add("d-flex")
-                document.querySelector('#badlogin').classList.remove("d-none")
+                err1.showError()
             }
         }
     }
-    function hideThis(mit:string){
-        document.querySelector('#'+mit).classList.remove("d-flex")
-        document.querySelector('#'+mit).classList.add("d-none")
-    }
+   
 </script>
 
 <style lang="sass">
@@ -28,23 +27,14 @@
     border: 1px solid black
     border-radius:0.25rem
     background-color: #ffcc95
-#badlogin, #emptyfields
-    display: none
 </style>
 
 <!-- Content -->
 <main>
     <div id="loginform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Bejelentkezés</h2>
-        <div class="alert alert-danger flex-row justify-content-between" role="alert" id="badlogin">
-            <div><i class="bi bi-exclamation-triangle-fill"></i> Hibás felhasználónév vagy jelszó! <i class="bi bi-exclamation-triangle-fill"></i></div>
-            <button type="button" class="btn-close" on:click={()=>{hideThis("badlogin")}}></button>
-        </div>    
-        <div class="alert alert-danger flex-row justify-content-between" role="alert" id="emptyfields">
-            <div><i class="bi bi-exclamation-triangle-fill"></i> Nincs minden mező kitöltve! <i class="bi bi-exclamation-triangle-fill"></i></div>
-        <div class="alert alert-danger flex-row justify-content-between" role="alert" id="emptyfields">
-            <button type="button" class="btn-close" on:click={()=>{hideThis("")}}></button>
-        </div>        
+             <ErrorAlert bind:this={err1} Error={{id:"#badlogin",text:"Hibás bejeletkezési adatok!"}}/>
+             <ErrorAlert bind:this={err2} Error={{id:"#emptyfields",text:"Nem töltöttél ki minden mezőt"}}/>
         <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email cím</label>
@@ -52,9 +42,9 @@
             </div>
             <div class="mb-3">
               <label for="password" class="form-label">Jelszó</label>
-              <input type="password" bind:value={data.email} class="form-control" id="password" name="email">
+              <input type="password" bind:value={data.password} class="form-control" id="password" name="password">
             </div>
-            <button type="button" class="btn btn-outline-secondary" on:click={login}>Bejelentkezés</button>
+            <button type="button" class="btn btn-outline-secondary" on:click={()=>{login()}}>Bejelentkezés</button>
           </form>
     </div>
 </main>
