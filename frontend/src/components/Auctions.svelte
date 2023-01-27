@@ -14,7 +14,7 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
   testAuction.coin = new Coin({
     ID:0,
     worth:11,
-    name:"Zseton",
+    name:"Zsetonergopaeriofgjoi3jgoi5trjgoe4rjiogt",
     description:"Zseton leírás",
     headfile:"test.png",
     tailfile:"test.png"
@@ -23,13 +23,13 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
 
 <main>
 
-  <AuctionCard Auction={testAuction} />
-
+  
   <div class="col-lg-9 col-md-10 col-11 mx-auto">
     <div class="input-group mb-3">
       <span class="input-group-text border-dark"
-        ><i class="bi bi-search" /></span
+      ><i class="bi bi-search" /></span
       >
+      
       <input
         type="text"
         class="form-control border-dark"
@@ -80,6 +80,7 @@ import AuctionCard from "./subcomponents/AuctionCard.svelte";
       </button>
     </div>
   </div>
+  <AuctionCard Auction={testAuction} />
 </main>
 
 <style lang="sass">
