@@ -27,6 +27,12 @@
     border: 1px solid black
     border-radius:0.25rem
     background-color: #ffcc95
+button
+    background: #ea9e60
+    border: 1px solid black
+button:hover
+    background: #ea9e60
+    border: 1px solid black
 </style>
 
 <!-- Content -->
@@ -44,7 +50,7 @@
               <label for="password" class="form-label">Jelszó</label>
               <input type="password" bind:value={data.password} class="form-control" id="password" name="password">
             </div>
-            <button type="button" class="btn btn-outline-secondary" on:click={()=>{login()}}>Bejelentkezés</button>
+            <button type="button" class="btn" on:click={()=>{login()}}>Bejelentkezés</button>
           </form>
     </div>
 </main>
