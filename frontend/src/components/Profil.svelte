@@ -11,11 +11,11 @@
 
 <main>
     <div id="profile">  <!-- profile -->
-        <div class="col-lg-9 mx-auto d-flex flex-row justify-content-between">  
-            <div class="rounded-circle border-dark border overflow-hidden"><img class="img-fluid mx-auto" src={profile.picture} alt=""></div> <!-- profile picture-->
-            <div>
-                <p></p> <!-- profile name -->
-                <p></p> <!-- profile email -->
+        <div class="col-lg-9 d-flex flex-row tulajdonsagok">  
+            <div class="rounded-circle border-dark border overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+            <div id="nevemail">
+                <p>{profile.name}</p> <!-- profile name -->
+                <p>{profile.email}</p> <!-- profile email -->
             </div>
         </div>
         <div id="buttons">
@@ -23,11 +23,14 @@
             <button class="btn">°°°</button> <!-- options button -->
         </div>
     </div>
-    <div> <!-- katalogus -->
+    <h2>{profile.name} katalógus</h2>
+    <div class="katalogus rounded"> <!-- katalogus -->
+
 
         <button></button> <!-- teljes katalógus megtekintése -->
     </div>
-    <div> <!-- aukciók -->
+    <h2>{profile.name} aukció</h2>
+    <div class="katalogus rounded"> <!-- aukciók -->
 
     </div>
 </main>
@@ -36,13 +39,45 @@
     #profile
         display: flex
         flex-direction: row
+
     #Profile_pic
         width: 5vw
         height: 5vw
-    #profile #buttons
 
-    #btn
+    .btn
         background-color: #ea9e60
+    
+    .katalogus
+        margin: auto
+        height: 20vh
+        background-color: white
+        border: 1px solid black
+    
+    .katalogusok
+        margin: auto
 
+    .tulajdonsagok
+        display: flex   
+        align-items: center
+        margint-left: 0px
 
+    #nevemail
+        justify-self: center
+        padding-left: 2vw
+
+    main
+        margin-left: 10vw
+        margin-right: 10vw
+    
+    .flexstart
+        justify-content: flex-start
+    
+    #profile #buttons
+        justify-items: flex-end
+        display: flex
+        flex-direction: column
+        padding-left: 15vw
+
+    #profile #buttons button
+        margin-bottom: 2vh
 </style>
