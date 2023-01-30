@@ -2,8 +2,8 @@
 
 </style>
 <script lang="ts">
-    import Auctions from './components/Auctions.svelte';
-    import Profil from './components/Profil.svelte' ;
+    import BlogPost from "./components/BlogPost.svelte";
 </script>
 
-<Profil/>
+
+<BlogPost/>
