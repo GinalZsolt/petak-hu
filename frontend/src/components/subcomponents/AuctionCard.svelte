@@ -1,11 +1,8 @@
 <script lang="ts">
   import type { Auction } from "../../classes/Auction";
   export let Auction: Auction;
-  function ShowModal(){
-    console.log('asd')
-  }
 </script>
-<a href="/"><div id="card">
+<a href="/" class="flexCard"><div class="Card">
   <div class="auctimg d-flex justify-content-center">
     <img
       class="m-auto img-fluid"
@@ -14,7 +11,7 @@
     />
   </div>
   <div
-    class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden"
+    class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
   >
     <p class="my-0 py-0">
       {Auction.coin.name.substring(0, 15) == Auction.coin.name
@@ -26,7 +23,11 @@
 </div></a>
 
 <style lang="sass">
-#card
+.flexCard
+  flex: 1 1 auto
+  border-left: 1px solid white
+  border-right: 1px solid white
+.Card
   height: 100%
   position: relative
 .auctimg
