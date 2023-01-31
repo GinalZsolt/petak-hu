@@ -6,7 +6,33 @@
         coin_list: ["test, test2", "test3"],
         auction_list: ["test", "test2"]
     }
+  import { Auction } from "../classes/Auction";
+  import { Coin } from "../classes/Coin";
+  import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
+  import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
+  import CoinModal from "./subcomponents/coinModal.svelte";
 
+  let searchText: string = "";
+    let testAuction: Auction = new Auction({
+    ID: 0,
+    price: 11,
+    title: "Lorem",
+    minBid: 50,
+    description: "Lorem ipsum dolor sit amet",
+    expiration: new Date(),
+  });
+  testAuction.coin = new Coin({
+    ID: 0,
+    worth: 11,
+    name: "Zseton",
+    description: "Zseton leírás",
+    headfile: "test.png",
+    tailfile: "test.png",
+  });
+    function mediaQuery(pixels:number):boolean{
+    const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
+    return mediaquery.matches;
+  }
 </script>
 
 <main>
@@ -24,15 +50,65 @@
         </div>
     </div>
     <h2>{profile.name} katalógus</h2>
-    <div class="katalogus rounded"> <!-- katalogus -->
-
-
-        <button></button> <!-- teljes katalógus megtekintése -->
-    </div>
+    <div        
+      class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
+    >                           <!-- katalogus -->
+      <button
+        class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
+        data-bs-target="#top"
+        data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
+      >
+      <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {#if mediaQuery(576)}
+            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            {:else if mediaQuery(768)}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            {:else}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+          {/if}
+        </div>
+      </div>
+      <button
+        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
+        data-bs-target="#top"
+        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
+      >
+    </div> 
     <h2>{profile.name} aukció</h2>
-    <div class="katalogus rounded"> <!-- aukciók -->
-
-    </div>
+    <div        
+      class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
+    >                           <!-- aukciók -->
+      <button
+        class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
+        data-bs-target="#bottom"
+        data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
+      >
+      <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {#if mediaQuery(576)}
+            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            {:else if mediaQuery(768)}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            {:else}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+          {/if}
+        </div>
+      </div>
+      <button
+        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
+        data-bs-target="#bottom"
+        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
+      >
+    </div>  
+    <button data-bs-target="#coin_0" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <CoinModal/>
 </main>
 
 <style lang="sass">
