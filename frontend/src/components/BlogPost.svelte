@@ -21,17 +21,27 @@
         border-radius:0.25rem
         background-color: #ffcc95
         padding:10px
+    #post_image
+        width:15%
+    button
+        border:1px solid black
+        background-color: #ea9e60
+        border-radius:0.25rem
+
 </style>
 <!-- Content -->
 
 <main>
     <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto ">
+        <img src="{Data.image}" id="post_image" class="float-end" alt="kép">
         <h2>{Data.title}</h2>
         <div id="authorinfo">
-            <span>{Data.author}</span>
+            <span>{Data.author}</span> <br class="d-md-none d-block">
             <span>{Data.date}</span>
         </div>
         <p>{Data.text}</p>
+        <button type="button" class="btn"><i class="bi bi-three-dots"></i></button>
+        
     </div>
     <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
         <div class="input-group ">
