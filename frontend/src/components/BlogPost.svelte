@@ -40,7 +40,16 @@
             <span>{Data.date}</span>
         </div>
         <p>{Data.text}</p>
-        <button type="button" class="btn"><i class="bi bi-three-dots"></i></button>
+        <div class="dropdown d-flex flex-row-reverse">
+            <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+            </a>
+          
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Lezárás</a></li>
+              <li><a class="dropdown-item" href="#">Törlés</a></li>
+            </ul>
+        </div>
         
     </div>
     <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
