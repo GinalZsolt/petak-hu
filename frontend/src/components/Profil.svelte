@@ -7,28 +7,12 @@
         auction_list: ["test", "test2"]
     }
   import { Auction } from "../classes/Auction";
-  import { Coin } from "../classes/Coin";
+  import { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
 
   let searchText: string = "";
-    let testAuction: Auction = new Auction({
-    ID: 0,
-    price: 11,
-    title: "Lorem",
-    minBid: 50,
-    description: "Lorem ipsum dolor sit amet",
-    expiration: new Date(),
-  });
-  testAuction.coin = new Coin({
-    ID: 0,
-    worth: 11,
-    name: "Zseton",
-    description: "Zseton leírás",
-    headfile: "test.png",
-    tailfile: "test.png",
-  });
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
@@ -60,16 +44,7 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if mediaQuery(576)}
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            {:else if mediaQuery(768)}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            {:else}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-          {/if}
+          <!-- Ide a katalógus cardjai lesznek! -->
         </div>
       </div>
       <button
@@ -89,16 +64,7 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if mediaQuery(576)}
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            {:else if mediaQuery(768)}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            {:else}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-          {/if}
+          <!-- Ide az aukciókat! -->
         </div>
       </div>
       <button
