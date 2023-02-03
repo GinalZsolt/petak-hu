@@ -8,9 +8,9 @@
         style:--color1={CardData.fromColor}
         style:--color2={CardData.toColor}
     >
-        <div class="h-100 d-flex justify-content-between py-1">
-            <h2 class="display-2 align-self-start">{CardData.title}</h2>
-            <i class="display-1 bi bi-chat-left align-self-end" />
+        <div class="h-100 d-flex justify-content-between p-2">
+            <h2 class="fs-1 align-self-start">{CardData.title}</h2>
+            <i class={`display-1 bi bi-${CardData.icon} align-self-end`} />
         </div>
     </div></a
 >
@@ -25,7 +25,6 @@
         background: gradient(var(--color1), var(--color2))
         border-radius: 0.5rem
         height: 200px
-        position: relative
         .bi
             color: #0000004f
 </style>
