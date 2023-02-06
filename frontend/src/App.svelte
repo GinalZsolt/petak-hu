@@ -1,6 +1,6 @@
 <script lang="ts">
-    //import Catalogue from "./components/Catalogue.svelte";
-    import Profil from "./components/Profil.svelte";
+    import Chat from './components/Chat.svelte';
 </script>
 
-<Profil/>
+
+<Chat/>
