@@ -1,10 +1,11 @@
 <script lang="ts">
-    import PostUpload from "./components/subcomponents/PostUpload.svelte";
+    import PostUpload from "./components/Forum/subcomponents/PostUpload.svelte";
+    import CoinUpload from "./components/subcomponents/CoinUpload.svelte";
 </script>
 
-<PostUpload/>
+<CoinUpload/>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ForumUpload">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#CoinUpload">
     Launch modal
   </button>
   
