@@ -1,6 +1,10 @@
 <script lang="ts">
-    //import Catalogue from "./components/Catalogue.svelte";
-    import Profil from "./components/Profil.svelte";
+    import PostUpload from "./components/subcomponents/PostUpload.svelte";
 </script>
 
-<Profil/>
+<PostUpload/>
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ForumUpload">
+    Launch modal
+  </button>
+  
