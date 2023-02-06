@@ -11,6 +11,7 @@
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
+  import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
 
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
@@ -73,8 +74,8 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#coin_0" data-bs-toggle="modal">SEGÍCCSÉG</button>
-    <CoinModal/>
+    <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <AuctionUploadModal/>
 </main>
 
 <style lang="sass">

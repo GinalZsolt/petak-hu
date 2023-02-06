@@ -16,11 +16,12 @@
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
+  let test_array = [testAuction, testAuction, testAuction, testAuction];
 </script>
 
 <main>
     <div class="d-flex">
-        <button class="btn border-dark me-2"><i class="bi bi-arrow-left" /></button>
+        <button class="btn border-dark me-2"><i class="bi bi-arrow-left w-auto" /></button>
         <h4>{profile.name} katalógus</h4>
     </div>
     <nav class="navbar bg-light">
@@ -31,14 +32,25 @@
           </div>
         </form>
     </nav>
-    <div class="cards">
-        
+    <!--Érme katalógus-->
+    <div class="cards row">
+      {#each test_array as coin}
+      <div class="col-lg-4 col-md-6 col-12 element">
+        <div class="card p-0">
+          <img src={"/"+coin.coin.images.tail} class="card-img-top image img-fluid mx-auto" alt="...">
+          <div class="card-body bg-grey">
+            <p class="card-text">{coin.coin.description}</p>
+          </div>
+        </div>
+      </div>
+      {/each}
     </div>
+
 </main>
 
 <style lang="sass">
     main
-        background-color: black
+        background-color: white
         width: 80vw
         height: 100vh
         margin-left: 10vw
@@ -47,5 +59,16 @@
         width: 5vw
     h4
       margin-top: 1vh
-
+    .w-auto
+      width: auto
+    .bg-grey
+      background-color: lightgrey 
+      padding: 0px
+      font-size: 14pt
+      text-align: center
+    .image 
+      height: auto
+      width: 20vw
+    .element
+      margin-bottom: 2%
 </style>
