@@ -8,8 +8,7 @@
     ]
 
     let tagdel:boolean=true;
-
-    let data:any={}
+    export let Coin:any={}
     let newtag:any={}
 
     let tags:any=
@@ -25,6 +24,9 @@
     ]
 
     function Delete(delid){
+
+    }
+    function DelCoin(ID){
 
     }
 </script>
@@ -50,11 +52,11 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="CoinUpload" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="CoinMod" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Érme feltöltése</h1>
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Érme módosítása</h1>
           <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </div>
         <div class="modal-body">
@@ -62,15 +64,15 @@
                 
                 <div class="mb-3">
                     <label for="name" class="form-label">Érme neve</label>
-                    <input type="text" bind:value={data.name} class="form-control" id="name" name="name" >
+                    <input type="text" bind:value={Coin.name} class="form-control" id="name" name="name" >
                 </div>
                 <div class="mb-3">
                     <label for="description">Leírás</label>
-                    <textarea class="form-control" bind:value={data.description} id="description" rows="5"></textarea>
+                    <textarea class="form-control" bind:value={Coin.description} id="description" rows="5"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="price" class="form-label">Érme névleges értéke</label>
-                    <input type="number" bind:value={data.price} class="form-control" id="price" name="price" >
+                    <input type="number" bind:value={Coin.price} class="form-control" id="price" name="price" >
                 </div>
                 <div class="tag-creator row mb-3 col-12 mx-auto" >
                     <div class="col-5">
@@ -95,16 +97,17 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:value={data.heads} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:value={Coin.heads} name="fej"  type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:value={data.tails} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:value={Coin.tails} name="iras"  type="file" id="iras">
                 </div>
             </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn">Feltöltés</button>
+        <div class="modal-footer d-flex justify-content-between">
+            <input type="button" class="btn btn-danger" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
+            <button type="button" class="btn">Feltöltés</button>
         </div>
       </div>
     </div>
