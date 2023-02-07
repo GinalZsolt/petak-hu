@@ -9,9 +9,23 @@
         {name:"Birodalom/Ország",ID:2},
         {name:"Kor",ID:3}
     ]
-
+    let tagdel:boolean=true;
     let data:any={}
     let newtag:any={}
+    let tags:any=
+    [
+        {ID:1,category:"Anyag",content:"bronz"},
+        {ID:2,category:"Anyag",content:"bronz"},
+        {ID:3,category:"Anyag",content:"bronz"},
+        {ID:3,category:"Anyag",content:"bronz"},
+        {ID:3,category:"Anyag",content:"bronz"},
+        {ID:3,category:"Anyag",content:"bronz"},
+        {ID:3,category:"Anyag",content:"bronz"},
+        {ID:4,category:"Anyag",content:"bronz"}
+    ]
+     function Delete(delid){
+
+    }
 </script>
 <style lang="sass">
     button
@@ -26,6 +40,11 @@
         border: 2px solid black
         border-radius:0.25rem
         padding: 7px
+    .tag
+        background: #ea9e60
+        border-radius:0.5rem
+        padding: 5px
+        border: 1px solid black
 </style>
 
 
@@ -52,8 +71,8 @@
                     <label for="price" class="form-label">Érme névleges értéke</label>
                     <input type="number" bind:value={data.price} class="form-control" id="price" name="price" >
                 </div>
-                <div class="tag-creator row mb-3">
-                    <div class="col-4">
+                <div class="tag-creator row mb-3 col-12 mx-auto" >
+                    <div class="col-5">
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
                         <select bind:value={newtag.category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
@@ -66,10 +85,12 @@
                         <label for="tagcontent" class="form-label">Címke tartalma</label>
                         <input type="text" bind:value={newtag.content} class="form-control" id="tagcontent" name="tagcontent" >
                     </div>
-                    <button type="button" class="btn col-4">Hozzáadás</button>
+                    <button type="button" class="btn col-3">Hozzáadás</button>
                 </div>  
-                <div class="tag-container">
-
+                <div class="tag-container d-flex flex-wrap mb-3">
+                    {#each tags as tag}
+                        <div class="tag m-auto mb-1"><span>{tag.category}</span>:<span>{tag.content}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
+                    {/each}
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
