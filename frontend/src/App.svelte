@@ -1,6 +1,4 @@
 <script lang="ts">
-    import Chat from './components/Chat.svelte';
+    import Routing from "./components/NavBar.svelte";
 </script>
-
-
-<Chat/>
+<Routing/>

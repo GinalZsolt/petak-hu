@@ -1,12 +1,13 @@
 <div class="user">
-    <div class="rounded-circle profilepic px-1 px-md-none">
+    <div class="rounded-circle profilepic p-1 px-md-none">
         <img src={Profile.picUrl} alt={Profile.name} class="mx-auto">
     </div>
-    <p class="d-none d-md-block">{Profile.name}</p>
+    <p class={Profile.isOpen? "d-block":"d-none d-md-block"}>{Profile.name}</p>
 </div>
 
 <style lang="sass">
     .profilepic
+        height: 100px
         img
             border-radius: 100%
             border: 1px solid var(--bs-dark)
@@ -21,9 +22,12 @@
 
 </style>
 <script lang="ts">
+
+
     export let Profile:ProfileData;
     interface ProfileData{
         name:string;
         picUrl:string;
+        isOpen:boolean;
     }
 </script>
