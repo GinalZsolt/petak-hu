@@ -30,7 +30,7 @@ function Ban(){}
               </div>
             </form>
           </div>
-          <div class="modal-footer d-flex justify-content-between">
+          <div class="modal-footer">
           <button type="button" on:click={Ban} class="btn">Felfüggesztés</button>
         </div>
       </div>
