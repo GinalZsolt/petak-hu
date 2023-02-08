@@ -3,7 +3,7 @@
     export let Tag:any={}
     export let TagDel:boolean=false
 
-    function Delete(ID){
+    function Delete(){
 
     }
 </script>
@@ -17,5 +17,5 @@
 </style>
 
 <div class="tag m-auto mb-1">
-    <span>{Tag.category}</span>:<span>{Tag.content}</span> {#if TagDel}<input type="button" class="btn-close" on:click={()=>{Delete(Tag.ID)}}>{/if} 
+    <span>{Tag.category}</span>:<span>{Tag.content}</span> {#if TagDel}<input type="button" class="btn-close" on:click={Delete}>{/if} 
 </div>
