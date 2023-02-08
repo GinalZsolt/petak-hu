@@ -7,6 +7,8 @@
         {name:"Kor",ID:3}
     ]
 
+    import Tag from "./Tag.svelte";
+
     let tagdel:boolean=true;
     export let Coin:any={}
     let newtag:any={}
@@ -23,9 +25,7 @@
         {ID:8,category:"Anyag",content:"bronz"}
     ]
 
-    function Delete(delid){
 
-    }
     function DelCoin(ID){
 
     }
@@ -43,11 +43,7 @@
         border: 2px solid black
         border-radius:0.25rem
         padding: 7px
-    .tag
-        background: #ea9e60
-        border-radius:0.5rem
-        padding: 5px
-        border: 1px solid black
+    
 </style>
 
 
@@ -92,7 +88,7 @@
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
                     {#each tags as tag}
-                        <div class="tag m-auto mb-1"><span>{tag.category}</span>:<span>{tag.content}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
+                        <Tag Tag={tag} TagDel={false}/>
                     {/each}
                 </div>
                 <div class=" mb-3">
