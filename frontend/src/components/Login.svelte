@@ -1,9 +1,11 @@
 <script lang="ts">
     import axios from "axios"
-    import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+    import ErrorAlert from "./subcomponents/ErrorAlert.svelte"
+    import {Token} from "../stores"
     let data:any = {}
     let err1
     let err2
+    let err3
     function login(){
 
         if(data.email==undefined||data.password==undefined)
@@ -12,10 +14,17 @@
         }
         else
         {
-            if(true)
+            axios.post("http://localhost:8000/api/users/login").then(res=>
             {
-                err1.showError()
-            }
+                Token.update(data=>res.data.token)   
+            }).catch(err=>{
+                if(err.status==400){
+                    err1.showError();
+                }
+                else if(err.status==403){
+                    err3.showError()
+                }
+            })
         }
     }
    
@@ -41,6 +50,7 @@ button:hover
         <h2>Bejelentkezés</h2>
              <ErrorAlert bind:this={err1} Error={{id:"#badlogin",text:"Hibás bejeletkezési adatok!",error:true}}/>
              <ErrorAlert bind:this={err2} Error={{id:"#emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
+             <ErrorAlert bind:this={err3} Error={{id:"#banneduser",text:"Ez a felhasználó ki lett tiltva",error:true}}/>
         <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email cím</label>
