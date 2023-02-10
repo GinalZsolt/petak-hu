@@ -11,28 +11,7 @@
     import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
     import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
     import CoinModal from "./subcomponents/coinModal.svelte";
-    let searchText: string = "";
-    let testAuction: Auction = new Auction({
-    ID: 0,
-    price: 11,
-    title: "Lorem",
-    minBid: 50,
-    description: "Lorem ipsum dolor sit amet",
-    expiration: new Date(),
-  });
-  testAuction.coin = new Coin({
-    ID: 0,
-    worth: 11,
-    name: "Zseton",
-    description: "Zseton leírás",
-    headfile: "test.png",
-    tailfile: "test.png",
-  });
-    function mediaQuery(pixels:number):boolean{
-    const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
-    return mediaquery.matches;
-  }
-  let test_array = [testAuction, testAuction, testAuction, testAuction];
+    export let ID:number;
 </script>
 
 <main>
@@ -50,7 +29,7 @@
     </nav>
     <!--Érme katalógus-->
     <div class="cards row">
-      {#each test_array as coin}
+      <!--{#each test_array as coin}
       <div class="col-lg-4 col-md-6 col-12 element">
         <div class="card p-0">
           <img src={"/"+coin.coin.images.tail} class="card-img-top image img-fluid mx-auto" alt="...">
@@ -59,7 +38,7 @@
           </div>
         </div>
       </div>
-      {/each}
+      {/each}-->
     </div>
 
 </main>

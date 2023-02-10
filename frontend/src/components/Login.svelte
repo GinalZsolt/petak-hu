@@ -1,7 +1,9 @@
 <script lang="ts">
     import axios from "axios"
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte"
-    import {Token} from "../stores"
+    import {Token, Permission} from "../stores"
+    import { GetPerms } from "../services/permissionGetter";
+    import { router } from "tinro";
     let data:any = {}
     let err1
     let err2
@@ -17,6 +19,9 @@
             axios.post("http://localhost:8080/api/users/login",data).then(res=>
             {
                 sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
+                Token.update(token=>token = res.data);
+                GetPerms($Token);
+                router.goto('/');
             }).catch(err=>{
                 if(err.status==400){
                     err1.showError();

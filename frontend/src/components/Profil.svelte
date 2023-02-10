@@ -12,7 +12,7 @@
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
-
+  export let ID:number;
   let searchText: string = "";
     let testAuction: Auction = new Auction({
     ID: 0,
@@ -47,7 +47,7 @@
         </div>
         <div id="buttons">
             <button class="btn">chat</button> <!-- chat button -->
-            <button class="btn">°°°</button> <!-- options button -->
+            <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
         </div>
     </div>
     <h2>{profile.name} katalógus</h2>
@@ -92,13 +92,13 @@
         <div class="carousel-inner">
           {#if mediaQuery(576)}
             <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            <AuctionSlideSm Auction={testAuction} isFirst={false} />
             {:else if mediaQuery(768)}
             <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={false} />
             {:else}
             <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={false}/>
           {/if}
         </div>
       </div>

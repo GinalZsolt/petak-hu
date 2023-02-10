@@ -1,36 +1,29 @@
-<Router url="/">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Peták.hu</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-            {#each links as route}
-                <li class="nav-item">
-                    <Link to={route.url} class={"nav-link"}>{route.name}</Link>
-                </li>
-            {/each}
-            </ul>
-          </div>
-        </div>
-    </nav>
-    {#each links as route}
-        <Route path={route.url} component={route.component} />
-    {/each}
-</Router>
-
 <script lang="ts">
+    import { active } from 'tinro';
+    import {Permission} from '../stores';
+    import type {URL} from '../interfaces/URL';
     import {Routes} from '../stores';
-    import {Router, Link, Route} from 'svelte-routing';
+    let Links:URL[] = $Routes;
+    let userPermission = $Permission.permission;
+    Permission.subscribe(data=>{
+        userPermission = data.permission;
+    })
     
-    let links = [];
-    Routes.subscribe(items=>{
-        links = items;
-    });
 </script>
-<style lang="sass">
-    main
-        flex:1 1 auto
-</style>
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a href="#" class="navbar-brand border-end border-dark border-2 pe-2">Peták.hu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#petakNavbar"><i class="bi bi-list"></i></button>
+        <div class="collapse navbar-collapse" id="petakNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {#each Links as route}
+                    {#if userPermission>=route.minPermission}
+                        <li class="nav-item">
+                            <a href={route.url} class="nav-link" use:active exact>{route.name}</a>
+                        </li>
+                    {/if}
+                {/each}
+            </ul>
+        </div>
+    </div>
+</nav>

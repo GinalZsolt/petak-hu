@@ -1,7 +1,8 @@
 <script lang="ts">
     import { dataset_dev } from "svelte/internal";
     import Comment from "./subcomponents/Comment.svelte";
-    export let Data:any={}
+    export let ID:number;
+    let Data:any={}
 </script>
 <style lang="sass">
     #newcomment

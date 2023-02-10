@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Auction } from "../classes/Auction";
-
-  export let auction: Auction;
+  let auction:Auction;
+  export let ID: number;
   let username: string = "mintajanos";
 </script>
 
