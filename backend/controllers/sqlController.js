@@ -16,7 +16,7 @@ Router.patch('/:tablename/:id', (req,res)=>{
 })
 
 //select all sql
-Router.get('/:table', (req, res)=>{
+Router.get('/:table', tokenCheck(), (req, res)=>{
     let table_name=req.params.table;
     if (req.query.p==undefined || req.query.p==null){
         pool.query(`SELECT * FROM ${table_name}`, (err, result)=>{
@@ -36,7 +36,7 @@ Router.get('/:table', (req, res)=>{
 })
 
 //select one sql
-Router.get('/:table/:field/:value', (req, res)=>{
+Router.get('/:table/:field/:value', tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
@@ -47,7 +47,7 @@ Router.get('/:table/:field/:value', (req, res)=>{
 })
 
 //insert sql
-Router.post('/:table', (req, res)=>{
+Router.post('/:table', tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let records=req.body;
     let str= null;
@@ -61,7 +61,7 @@ Router.post('/:table', (req, res)=>{
 })
 
 //delete one sql
-Router.delete('/:table/:field/:value', (req, res)=>{
+Router.delete('/:table/:field/:value', tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
@@ -72,12 +72,25 @@ Router.delete('/:table/:field/:value', (req, res)=>{
 })
 
 //delete all sql
-Router.delete('/:table', (req, res)=>{
+Router.delete('/:table', tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     pool.query(`DELETE FROM ${table_name}`, (err, result)=>{
         if(err) res.status(500).send(err);
         else res.status(200).send(result);
     })
 })
-
+function tokenCheck(){
+    return (req,res,next)=>{
+        console.log(req.session)
+        if (req.session.user){
+            if (req.headers.token == req.session.user.jwt){ next();} 
+            else res.status(401).json({
+                message:'Bad Token!'
+            });
+        }
+        else res.status(401).json({
+            message:'No Token found!'
+        });
+    }
+}
 module.exports = Router;
