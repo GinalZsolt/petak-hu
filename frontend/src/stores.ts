@@ -15,6 +15,9 @@ interface URL{
     children?:Array<URL>;
 }
 export let LoggedInUser = writable();
+
+export let Token = writable();
+
 export const Routes = readable([
     ({
         name:"Bejelentkezés",
