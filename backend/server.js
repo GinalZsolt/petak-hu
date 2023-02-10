@@ -7,22 +7,12 @@ const http = require('http');
 const cors = require('cors');
 const server = http.createServer(app);
 const multer= require('./controllers/FileActions').multer
-const session = require('express-session');
 
 app.use(express.static(path.join(__dirname,"/uploads")))
 app.use('/api/file',require('./controllers/FileActions').router)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(session({
-  secret:'bruh',
-  resave:true,
-  saveUninitialized:true,
-  cookie:{ path: '/', httpOnly: true, secure: false, maxAge: null, sameSite:"none" }
-}));
-app.use(cors({
-  origin:"http://localhost:5500",
-  credentials:true
-}));
+app.use(cors());
 
 app.use('/api', require('./controllers/sqlController'))
 app.use('/api/users', require('./controllers/usersController'))
