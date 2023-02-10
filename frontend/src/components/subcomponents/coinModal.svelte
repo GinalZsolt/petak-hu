@@ -1,5 +1,12 @@
 <script lang="ts">
     import {Coin} from "../../classes/Coin";
+    let editMode:Boolean = false;
+
+    function editModeSet(){
+      editMode=!editMode;
+      console.log(editMode);
+    }
+
     let test_coin = new Coin({
     ID: 0,
     worth: 11,
@@ -65,16 +72,29 @@
       >
     </div>  
             </div>
+            {#if editMode}
+            <div class="modal-body">
+              <h4>Becsült érték: <input type="text" id="coinValue" value={test_coin.worth}> Ft</h4>
+              <h4>Leírás</h4>
+              <p><textarea name="" id="coinDes" cols="30" rows="10">{test_coin.description}</textarea></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" on:click={editModeSet} class="btn btn-primary">Mósdosítás</button>
+              <button type="button" class="btn btn-primary">Aukció</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+            {:else}
             <div class="modal-body">
               <h4>Becsült érték: {test_coin.worth} Ft</h4>
               <h4>Leírás</h4>
               <p>{test_coin.description}</p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Mósdosítás</button>
+              <button type="button" on:click={editModeSet} class="btn btn-primary">Mósdosítás</button>
               <button type="button" class="btn btn-primary">Aukció</button>
               <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
             </div>
+            {/if}
           </div>
         </div>
       </div>
@@ -89,4 +109,8 @@
     .modal-header
         height: 32vh
         padding-bottom: 0vh
+    input 
+      width: 25vw
+    textarea
+      resize: none
 </style>
