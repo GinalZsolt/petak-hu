@@ -14,9 +14,9 @@
         }
         else
         {
-            axios.post("http://localhost:8000/api/users/login",data).then(res=>
+            axios.post("http://localhost:8080/api/users/login",data).then(res=>
             {
-                Token.update(data=>res.data.token)   
+                sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
             }).catch(err=>{
                 if(err.status==400){
                     err1.showError();
