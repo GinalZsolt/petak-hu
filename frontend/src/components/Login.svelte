@@ -8,13 +8,13 @@
     let err3
     function login(){
 
-        if(data.email==undefined||data.password==undefined)
+        if(data.email==undefined||data.passwd==undefined)
         {
             err2.showError()
         }
         else
         {
-            axios.post("http://localhost:8000/api/users/login").then(res=>
+            axios.post("http://localhost:8000/api/users/login",data).then(res=>
             {
                 Token.update(data=>res.data.token)   
             }).catch(err=>{
@@ -58,9 +58,9 @@ button:hover
             </div>
             <div class="mb-3">
               <label for="password" class="form-label">Jelszó</label>
-              <input type="password" bind:value={data.password} class="form-control" id="password" name="password">
+              <input type="password" bind:value={data.passwd} class="form-control" id="password" name="password">
             </div>
-            <button type="button" class="btn" on:click={()=>{login()}}>Bejelentkezés</button>
+            <button type="button" class="btn" on:click={login}>Bejelentkezés</button>
           </form>
     </div>
 </main>
