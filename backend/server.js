@@ -8,15 +8,12 @@ const cors = require('cors');
 const server = http.createServer(app);
 const multer= require('./controllers/FileActions').multer
 
-
 app.use(express.static(path.join(__dirname,"/uploads")))
-
-
 app.use('/api/file',require('./controllers/FileActions').router)
-
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(cors());
+
 app.use('/api', require('./controllers/sqlController'))
 app.use('/api/users', require('./controllers/usersController'))
 server.listen(process.env.PORT, () => {

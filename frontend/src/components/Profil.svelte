@@ -10,9 +10,9 @@
   import { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
-  import CoinModal from "./subcomponents/coinModal.svelte";
+  //import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
-
+  export let ID:number;
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
@@ -31,7 +31,7 @@
         </div>
         <div id="buttons">
             <button class="btn">chat</button> <!-- chat button -->
-            <button class="btn">°°°</button> <!-- options button -->
+            <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
         </div>
     </div>
     <h2>{profile.name} katalógus</h2>
@@ -65,7 +65,16 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- Ide az aukciókat! -->
+          <!--{#if mediaQuery(576)}
+            <AuctionSlideSm Auction={testAuction} isFirst={true} />
+            <AuctionSlideSm Auction={testAuction} isFirst={false} />
+            {:else if mediaQuery(768)}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={false} />
+            {:else}
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={false}/>
+          {/if}-->
         </div>
       </div>
       <button

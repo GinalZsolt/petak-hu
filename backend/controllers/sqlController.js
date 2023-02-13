@@ -1,6 +1,8 @@
 const Router = require('express').Router();
 const pool = require('../config').pool;
+const jwt = require('jsonwebtoken');
 let log = require('../logging').log;
+let token = require('../modules/tokenCheck');
 Router.patch('/:tablename/:id', (req,res)=>{
     let update = "";
     let keys = Object.keys(req.body);
@@ -16,7 +18,7 @@ Router.patch('/:tablename/:id', (req,res)=>{
 })
 
 //select all sql
-Router.get('/:table', (req, res)=>{
+Router.get('/:table', token.tokenCheck(), (req, res)=>{
     let table_name=req.params.table;
     if (req.query.p==undefined || req.query.p==null){
         pool.query(`SELECT * FROM ${table_name}`, (err, result)=>{
@@ -36,7 +38,7 @@ Router.get('/:table', (req, res)=>{
 })
 
 //select one sql
-Router.get('/:table/:field/:value', (req, res)=>{
+Router.get('/:table/:field/:value', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
@@ -47,7 +49,7 @@ Router.get('/:table/:field/:value', (req, res)=>{
 })
 
 //insert sql
-Router.post('/:table', (req, res)=>{
+Router.post('/:table', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let records=req.body;
     let str= null;
@@ -61,7 +63,7 @@ Router.post('/:table', (req, res)=>{
 })
 
 //delete one sql
-Router.delete('/:table/:field/:value', (req, res)=>{
+Router.delete('/:table/:field/:value', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
@@ -72,12 +74,11 @@ Router.delete('/:table/:field/:value', (req, res)=>{
 })
 
 //delete all sql
-Router.delete('/:table', (req, res)=>{
+Router.delete('/:table', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     pool.query(`DELETE FROM ${table_name}`, (err, result)=>{
         if(err) res.status(500).send(err);
         else res.status(200).send(result);
     })
 })
-
 module.exports = Router;
