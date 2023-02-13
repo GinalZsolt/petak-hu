@@ -7,5 +7,5 @@
   import type { Auction } from "../../classes/Auction";
   import AuctionCard from "./AuctionCard.svelte";
   export let Auction:Auction;
-  export let isFirst:boolean;
+  export let isFirst:boolean|undefined;
 </script>

@@ -7,7 +7,7 @@
         auction_list: ["test", "test2"]
     }
     import { Auction } from "../classes/Auction";
-    import { Coin } from "../classes/Coin";
+    import { Coin } from "../classes/Coin/Coin";
     import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
     import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
     import CoinModal from "./subcomponents/coinModal.svelte";

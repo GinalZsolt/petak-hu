@@ -9,5 +9,5 @@
 <script lang="ts">
   import type { Auction } from "../../classes/Auction";
   import AuctionCard from './AuctionCard.svelte';
-  export let Auctions:Array<Auction>, isFirst:boolean;
+  export let Auctions:Array<Auction>, isFirst:boolean|undefined;
 </script>
