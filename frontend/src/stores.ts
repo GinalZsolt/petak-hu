@@ -1,6 +1,5 @@
-import type { ComponentType } from "svelte";
-import { writable, readable, type Readable } from "svelte/store";
-import { User } from "./classes/User";
+import { writable, readable, type Readable, type Writable } from "svelte/store";
+import type { Permission } from "./services/permissionGetter";
 import type { URL } from "./interfaces/URL";
 import Chat from './components/Chat.svelte';
 import Login from "./components/Login.svelte";
@@ -8,9 +7,8 @@ import Dashboard from "./components/Dashboard.svelte";
 import Auctions from "./components/Auctions.svelte";
 import Registration from "./components/Registration.svelte";
 import Forum from "./components/Forum/Forum.svelte";
-import axios from "axios";
 
-export let Permission = writable({});
+export let userPerms:Writable<Permission> = writable();
 export let Token = writable(sessionStorage.getItem('petakhu')?JSON.parse(sessionStorage.getItem('petakhu')):"");
 export let BackendURL = readable("http://localhost:8080");
 export const Routes:Readable<URL[]> =  readable([

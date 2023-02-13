@@ -1,18 +1,17 @@
 <script lang="ts">
     import axios from "axios"
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte"
-    import {Token, Permission} from "../stores"
+    import {Token, userPerms} from "../stores"
     import { GetPerms } from "../services/permissionGetter";
     import { router } from "tinro";
     let data:any = {}
     let err1
     let err2
     let err3
-    function login(){
-
+    async function login(){
         if(data.email==undefined||data.passwd==undefined)
         {
-            err2.showError()
+            err2.showError();
         }
         else
         {
@@ -20,14 +19,15 @@
             {
                 sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
                 Token.update(token=>token = res.data);
-                GetPerms($Token);
-                router.goto('/');
+                GetPerms($Token.token).then(data=>{
+                    userPerms.update(perms=>data);
+                })
             }).catch(err=>{
-                if(err.status==400){
+                if(err.response.status==400){
                     err1.showError();
                 }
-                else if(err.status==403){
-                    err3.showError()
+                else if(err.response.status==403){
+                    err3.showError();
                 }
             })
         }
