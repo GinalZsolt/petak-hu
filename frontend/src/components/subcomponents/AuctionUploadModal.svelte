@@ -1,6 +1,10 @@
 <script lang="ts">
 import axios from "axios";
-
+    import { onMount } from "svelte";
+import {userPerms} from '../../stores';
+onMount(()=>{
+  console.log($userPerms);
+})
 function AUCTION_UPLOAD(){
   let isCorrectInput: boolean=true;
   let data={

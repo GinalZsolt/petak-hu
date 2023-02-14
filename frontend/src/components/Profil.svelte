@@ -21,15 +21,15 @@
 </script>
 
 <main>
-    <div id="profile">  <!-- profile -->
-        <div class="col-lg-9 d-flex flex-row tulajdonsagok">  
-            <div class="rounded-circle border-dark border overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+    <div id="profile" class="row">  <!-- profile -->
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
             <div id="nevemail">
                 <p>{profile.name}</p> <!-- profile name -->
                 <p>{profile.email}</p> <!-- profile email -->
             </div>
         </div>
-        <div id="buttons">
+        <div id="buttons" class="col-lg col-md col-sm col-xs">
             <button class="btn">chat</button> <!-- chat button -->
             <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
         </div>
@@ -88,10 +88,6 @@
 </main>
 
 <style lang="sass">
-    #profile
-        display: flex
-        flex-direction: row
-
     #Profile_pic
         width: 5vw
         height: 5vw
@@ -128,7 +124,7 @@
         justify-items: flex-end
         display: flex
         flex-direction: column
-        padding-left: 15vw
+        padding-top: 4vh
 
     #profile #buttons button
         margin-bottom: 2vh

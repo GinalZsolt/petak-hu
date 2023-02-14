@@ -1,5 +1,5 @@
 <script lang="ts">
-    //import {Coin} from "../../classes/Coin";
+    import type {Coin} from "../../classes/Coin/Coin";
     let editMode:Boolean = false;
 
     function editModeSet(){
@@ -7,14 +7,7 @@
       console.log(editMode);
     }
 
-    let test_coin = new Coin({
-    ID: 0,
-    worth: 11,
-    name: "Zseton",
-    description: "Zseton leírás",
-    headfile: "test.png",
-    tailfile: "test.png",
-  });
+    
   import { Auction } from "../../classes/Auction";
   import AuctionSlideSm from "../subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "../subcomponents/AuctionSlide-md-lg.svelte";
