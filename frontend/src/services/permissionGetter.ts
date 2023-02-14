@@ -1,6 +1,7 @@
 import axios from "axios";
 export interface Permission {
     permission: number;
+    username?:string;
     id?:number;
     iat?:number;
     exp?:number;

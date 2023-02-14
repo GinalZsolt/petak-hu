@@ -19,18 +19,6 @@ export const Routes:Readable<URL[]> =  readable([
     component:Dashboard
  },
  {
-    url:"/login",
-    name:"Bejelentkezés",
-    minPermission:0,
-    component:Login
- },
- {
-    url:"/register",
-    name:"Regisztráció",
-    minPermission:0,
-    component:Registration
- },
- {
     url:'/auctions',
     name:'Aukciók',
     minPermission:0,
