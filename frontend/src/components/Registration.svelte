@@ -35,7 +35,7 @@
                     axios.post("http://localhost:8000/api/users/register",User).then((res)=>{
                         err4.showError()
                     }).catch((err)=>{
-                        if(err.status==400){
+                        if(err.response.status==400){
                             err5.showError();
                         }
                     })

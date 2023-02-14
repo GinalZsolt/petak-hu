@@ -23,10 +23,11 @@
                 GetPerms($Token);
                 router.goto('/');
             }).catch(err=>{
-                if(err.status==400){
+                if(err.response.status==400){
+                    console.log(err)
                     err1.showError();
                 }
-                else if(err.status==403){
+                else if(err.response.status==403){
                     err3.showError()
                 }
             })
