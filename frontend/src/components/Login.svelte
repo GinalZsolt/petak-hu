@@ -4,6 +4,7 @@
     import {Token, userPerms} from "../stores"
     import { GetPerms } from "../services/permissionGetter";
     import { router } from "tinro";
+    import sha256 from 'crypto-js/sha256';
     let data:any = {}
     let err1
     let err2
@@ -15,7 +16,9 @@
         }
         else
         {
-            axios.post("http://localhost:8080/api/users/login",data).then(res=>
+            let logindata={"email":data.email,"passwd":sha256(data.passwd).toString() }
+            console.log(logindata)
+            axios.post("http://localhost:8080/api/users/login",logindata).then(res=>
             {
                 sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
                 Token.update(token=>token = res.data);

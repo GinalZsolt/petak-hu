@@ -31,7 +31,7 @@
                 }
                 else
                 {
-                    User.passwd=sha256(pass1)
+                    User.passwd=sha256(pass1).toString()
                     axios.post("http://localhost:8000/api/users/register",User).then((res)=>{
                         err4.showError()
                     }).catch((err)=>{
