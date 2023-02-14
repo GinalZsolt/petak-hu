@@ -9,6 +9,7 @@
     let err1
     let err2
     let err3
+    let err4
     async function login(){
         if(data.email==undefined||data.passwd==undefined)
         {
@@ -20,6 +21,7 @@
             console.log(logindata)
             axios.post("http://localhost:8080/api/users/login",logindata).then(res=>
             {
+                err4.showError()
                 sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
                 Token.update(token=>token = res.data);
                 GetPerms($Token.token).then(data=>{
@@ -59,6 +61,7 @@ button:hover
              <ErrorAlert bind:this={err1} Error={{id:"#badlogin",text:"Hibás bejeletkezési adatok!",error:true}}/>
              <ErrorAlert bind:this={err2} Error={{id:"#emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
              <ErrorAlert bind:this={err3} Error={{id:"#banneduser",text:"Ez a felhasználó ki lett tiltva",error:true}}/>
+             <ErrorAlert bind:this={err4} Error={{id:"#success",text:"Sikeres regisztráció",error:false}}/>
         <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email cím</label>

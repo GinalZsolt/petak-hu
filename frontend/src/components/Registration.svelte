@@ -31,8 +31,9 @@
                 }
                 else
                 {
+                    console.log(User)
                     User.passwd=sha256(pass1).toString()
-                    axios.post("http://localhost:8000/api/users/register",User).then((res)=>{
+                    axios.post("http://localhost:8080/api/users/register",User).then((res)=>{
                         err4.showError()
                     }).catch((err)=>{
                         if(err.response.status==400){
