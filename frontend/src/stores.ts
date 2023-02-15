@@ -7,10 +7,9 @@ import Dashboard from "./components/Dashboard.svelte";
 import Auctions from "./components/Auctions.svelte";
 import Registration from "./components/Registration.svelte";
 import Forum from "./components/Forum/Forum.svelte";
-
 export let userPerms:Writable<Permission> = writable();
 export let Token = writable(sessionStorage.getItem('petakhu')?JSON.parse(sessionStorage.getItem('petakhu')):"");
-export let BackendURL = readable("http://localhost:8080");
+export let BackendURL = "http://localhost:8080";
 export const Routes:Readable<URL[]> =  readable([
  {
     url:"/",
