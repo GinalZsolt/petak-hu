@@ -1,28 +1,16 @@
 <script lang="ts">
-    //majd adatbázisból kell lekérni
-    let tagtypes:any=[
-        {name:"Anyag",ID:0},
-        {name:"Dinasztia",ID:1},
-        {name:"Birodalom/Ország",ID:2},
-        {name:"Kor",ID:3}
-    ]
-
+    import {onMount} from "svelte"
+    import type { TagType } from "../../interfaces/Tags";
+    import { GetTagTypes } from "../../services/dbCoin";
+    import { Token } from "../../stores";
+    let tagtypes:TagType[];
+    onMount(async()=>{
+        tagtypes=await GetTagTypes($Token.token)
+    })
     let tagdel:boolean=true;
-
     let data:any={}
     let newtag:any={}
 
-    let tags:any=
-    [
-        {ID:1,category:"Anyag",content:"bronz"},
-        {ID:2,category:"Anyag",content:"bronz"},
-        {ID:3,category:"Anyag",content:"bronz"},
-        {ID:4,category:"Anyag",content:"bronz"},
-        {ID:5,category:"Anyag",content:"bronz"},
-        {ID:6,category:"Anyag",content:"bronz"},
-        {ID:7,category:"Anyag",content:"bronz"},
-        {ID:8,category:"Anyag",content:"bronz"}
-    ]
 
     function Delete(delid){
 
@@ -77,9 +65,11 @@
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
                         <select bind:value={newtag.category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
-                            {#each tagtypes as tagtype}
-                                <option value={tagtype.ID}>{tagtype.name}</option>
-                            {/each}
+                            {#if tagtypes}
+                                {#each tagtypes as tagtype}
+                                    <option value={tagtype.ID}>{tagtype.name}</option>
+                                {/each}
+                            {/if}
                         </select>
                     </div>
                     <div class="col-4">
@@ -89,9 +79,9 @@
                     <button type="button" class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                    {#each tags as tag}
+                    <!--{#each tags as tag}
                         <div class="tag m-auto mb-1"><span>{tag.category}</span>:<span>{tag.content}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
-                    {/each}
+                    {/each}-->
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>

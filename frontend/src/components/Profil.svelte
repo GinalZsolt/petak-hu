@@ -7,11 +7,13 @@
         auction_list: ["test", "test2"]
     }
   import { Auction } from "../classes/Auction";
-  import { Coin } from "../classes/Coin/Coin";
+  import type { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
-  //import CoinModal from "./subcomponents/coinModal.svelte";
+  import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
+  import { userPerms } from "../stores";
+  import CoinUpload from "./subcomponents/CoinUpload.svelte";
   export let ID:number;
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
@@ -19,7 +21,7 @@
     return mediaquery.matches;
   }
 </script>
-
+<CoinUpload/>
 <main>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
@@ -34,7 +36,12 @@
             <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
         </div>
     </div>
-    <h2>{profile.name} katalógus</h2>
+    <div class="d-flex justify-content-between mb-2">
+      <h2>{profile.name} katalógus</h2>
+      {#if ID==$userPerms.id}
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+      {/if}
+    </div>
     <div        
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
     >                           <!-- katalogus -->
