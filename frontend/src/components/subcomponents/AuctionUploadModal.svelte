@@ -38,7 +38,7 @@ function AUCTION_UPLOAD(){
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form class="modal-form">
+            <form class="modal-form ">
                 <div class="form-group">
                   <label for="coin">Aukcióra bocsátandó érme</label>
                   <input type="text" class="form-control" id="coin" aria-describedby="emailHelp" placeholder="" required>
@@ -80,8 +80,8 @@ function AUCTION_UPLOAD(){
   <style lang="sass">
         .bg-orange
             background-color: #ea9e60
-        .modal-form
-            width: 20vw
         .mx-w
             width: 100%
+        #des
+            resize: none
   </style>
