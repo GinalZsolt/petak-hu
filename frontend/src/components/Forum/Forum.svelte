@@ -3,6 +3,7 @@
     import type { Forum, ForumPost } from "../../interfaces/Forum";
     import { db } from "../../services/dbForum";
     import { Token} from "../../stores";
+    import PostUpload from './subcomponents/PostUpload.svelte';
     interface Topic {
         ID: number;
         name: string;
@@ -20,6 +21,7 @@
     async function ChangeTopic() {
         if (topicID) {
             Data = await db.GetForums($Token.token, topicID);
+            TopicName = Topics.find(e=>e.ID==topicID).name;
             console.log(Data);
         }
     }
@@ -33,7 +35,11 @@
         {/each}
     </select>
     {#if topicID && Data}
-    <h1 class="text-center">{TopicName}</h1>
+    <div class="d-flex justify-content-between mx-auto col-lg-8 col-md-8 col-11 mb-3">
+        <div></div>
+        <h1>{TopicName}</h1>
+        <button class="btn" data-bs-toggle="modal" data-bs-target="#ForumUpload"><i class="bi bi-plus-lg"></i></button>
+    </div>
     <div id="contentholder" class="col-lg-8 col-md-8 col-11 mx-auto mb-3 p-3">
         {#each Data as post}
             <div class="post d-flex justify-content-between align-items-center">
@@ -54,6 +60,7 @@
         </div>
     </div>
     {/if}
+    <PostUpload Topics={Topics} data={{topicID:topicID}}/>
 </main>
 
 <style lang="sass">

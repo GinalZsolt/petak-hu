@@ -1,12 +1,20 @@
 <script lang="ts">
-    //majd adatbázisból kell lekérni
-    let forums:any=[
-        {value:"azonositas",Text:"Érmeazonosítás"},
-        {value:"becsles",Text:"Értékbecslés"},
-        {value:"egyeb",Text:"Egyéb"}
-    ]
-
-    let data:any={}
+    import type { Topic } from "../../../interfaces/Forum";
+    import { UploadImage } from "../../../services/fileService";
+    import { Token } from "../../../stores";
+    interface uploadData{
+        title?:string;
+        description?:string;
+        topicID?:number;
+        file?:File;
+    }
+    export let data:uploadData;
+    export let Topics:Topic[];
+    async function Upload(){
+        let upload = new FormData();
+        upload.append('image', data.file);
+        console.log((await UploadImage($Token.token, upload)));
+    }
 </script>
 <style lang="sass">
     button
@@ -36,14 +44,14 @@
                 </div>
                 <div class="mb-3">
                     <label for="text">Tartalom</label>
-                    <textarea class="form-control" bind:value={data.text} id="text" rows="5"></textarea>
+                    <textarea class="form-control" bind:value={data.description} id="text" rows="5"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="forum">Fórum kiválasztása</label>
-                    <select bind:value={data.selectedforum} class="form-select" id="forum" >
+                    <select bind:value={data.topicID} class="form-select" id="forum" >
                         <option selected value={null}>Válasszon fórumot!</option>
-                        {#each forums as forum}
-                            <option value={forum.value}>{forum.Text}</option>
+                        {#each Topics as topic}
+                            <option value={topic.ID}>{topic.name}</option>
                         {/each}
                     </select>
                 </div>
@@ -51,7 +59,7 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn">Közzététel</button>
+          <button type="button" class="btn" on:click={Upload}>Közzététel</button>
         </div>
       </div>
     </div>
