@@ -1,3 +1,4 @@
+let tCheck = require('../modules/tokenCheck');
 const multer = require('multer')({
     storage:require('multer').diskStorage({
       destination:"./uploads",
@@ -24,14 +25,14 @@ var pool =require("../config.js").pool
 const path = require('path')
 const router=require('express').Router()
 
-router.post('/single', function (req, res) {
+router.post('/single', tCheck.tokenCheck(), function (req, res) {
   multer.single('image')(req,res,(err)=>{
     if (err) res.status(500).send(err);
     else res.status(200).json(req.file);
   });
 })
 
-router.post('/multiple', function (req, res) {
+router.post('/multiple', tCheck.tokenCheck() ,function (req, res) {
   multer.fields([
     {name:"head"},
     {name:"tail"}
