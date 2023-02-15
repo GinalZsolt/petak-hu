@@ -13,7 +13,6 @@ function AUCTION_UPLOAD(){
     'auction_licit': document.querySelector('#auction_licit').value != "" ? document.querySelector('#auction_licit').value : isCorrectInput = false,
     'description': document.querySelector('#des').value != "" ? document.querySelector('#des').value : isCorrectInput = false
   }
-
   if(isCorrectInput) {
     /*axios.post('/auctions', {data}).then(function (response) {
     console.log(response);
@@ -23,7 +22,7 @@ function AUCTION_UPLOAD(){
   });*/
   }
   else alert('A bemeneti adatok hiányosak vagy nem megfelelőek!');
-  
+
   console.log(data);
   console.log(isCorrectInput);
 }
@@ -68,6 +67,13 @@ function AUCTION_UPLOAD(){
                     <label for="auction_start_value">Aukció leírása</label>
                     <textarea name="" id="des" cols="30" class="mx-w" rows="10"></textarea>
                 </div>
+
+                <div class="col-md-4 mb-3 mx-w">
+                  <label for="end_date">Aukció vég dátuma: </label>
+                  <div class="input-group mx-w">
+                      <input type="datetime-local" class="form-control" min={Date.now()} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div>
               </form>
         </div>
         <div class="modal-footer">
@@ -84,4 +90,6 @@ function AUCTION_UPLOAD(){
             width: 100%
         #des
             resize: none
+        textarea
+          height: 15vh
   </style>
