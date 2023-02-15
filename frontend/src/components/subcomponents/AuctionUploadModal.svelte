@@ -13,7 +13,6 @@ function AUCTION_UPLOAD(){
     'auction_licit': document.querySelector('#auction_licit').value != "" ? document.querySelector('#auction_licit').value : isCorrectInput = false,
     'description': document.querySelector('#des').value != "" ? document.querySelector('#des').value : isCorrectInput = false
   }
-
   if(isCorrectInput) {
     /*axios.post('/auctions', {data}).then(function (response) {
     console.log(response);
@@ -23,7 +22,7 @@ function AUCTION_UPLOAD(){
   });*/
   }
   else alert('A bemeneti adatok hiányosak vagy nem megfelelőek!');
-  
+
   console.log(data);
   console.log(isCorrectInput);
 }
@@ -38,7 +37,7 @@ function AUCTION_UPLOAD(){
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form class="modal-form">
+            <form class="modal-form ">
                 <div class="form-group">
                   <label for="coin">Aukcióra bocsátandó érme</label>
                   <input type="text" class="form-control" id="coin" aria-describedby="emailHelp" placeholder="" required>
@@ -68,6 +67,13 @@ function AUCTION_UPLOAD(){
                     <label for="auction_start_value">Aukció leírása</label>
                     <textarea name="" id="des" cols="30" class="mx-w" rows="10"></textarea>
                 </div>
+
+                <div class="col-md-4 mb-3 mx-w">
+                  <label for="end_date">Aukció vég dátuma: </label>
+                  <div class="input-group mx-w">
+                      <input type="datetime-local" class="form-control" min={Date.now()} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div>
               </form>
         </div>
         <div class="modal-footer">
@@ -80,8 +86,10 @@ function AUCTION_UPLOAD(){
   <style lang="sass">
         .bg-orange
             background-color: #ea9e60
-        .modal-form
-            width: 20vw
         .mx-w
             width: 100%
+        #des
+            resize: none
+        textarea
+          height: 15vh
   </style>

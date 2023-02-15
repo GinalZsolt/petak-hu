@@ -1,14 +1,8 @@
-export class CoinTag {
-    public ID:number;
-    public name:string;
-    public color:string;
-    public description:string;
-    constructor(data:TagData){
-        this.ID=data.ID;
-        this.name=data.name;
-        this.color=data.color;
-        this.description=data.description;
-    }
+export interface CoinTag {
+    ID:number;
+    name:string;
+    color:string;
+    description:string;
 }
 interface TagData{
     ID:number,
