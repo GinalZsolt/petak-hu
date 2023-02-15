@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Tag, TagType } from "../interfaces/Tags";
+import type { TagInterface, TagType } from "../interfaces/Tags";
 import { BackendURL } from "../stores";
 
 async function GetTagTypes(token:string):Promise<TagType[]>{
@@ -13,4 +13,5 @@ async function GetTagTypes(token:string):Promise<TagType[]>{
         return err.response;
     })
 }
+
 export {GetTagTypes}

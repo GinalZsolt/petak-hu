@@ -1,4 +1,4 @@
-export interface Tag{
+export interface TagInterface{
     ID:number;
     CoinID:number;
     description:string;

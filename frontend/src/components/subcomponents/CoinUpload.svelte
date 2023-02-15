@@ -1,8 +1,10 @@
 <script lang="ts">
+    import { NULL } from "sass";
     import {onMount} from "svelte"
-    import type { TagType } from "../../interfaces/Tags";
+    import type { TagInterface, TagType } from "../../interfaces/Tags";
     import { GetTagTypes } from "../../services/dbCoin";
     import { Token } from "../../stores";
+    import Tag from "./Tag.svelte";
     let tagtypes:TagType[];
     onMount(async()=>{
         tagtypes=await GetTagTypes($Token.token)
@@ -10,11 +12,39 @@
     let tagdel:boolean=true;
     let data:any={}
     let newtag:any={}
-
+    let tags:TagInterface[]
 
     function Delete(delid){
 
     }
+
+    function getname(id){
+        let name =""
+        tags.forEach(element => {
+            if(element.ID==id) name = element.name
+        });
+        return name
+    }
+    function getcolor(id){
+        let color=''
+        tags.forEach(element => {
+            if(element.ID==id) color= element.color
+        });
+        return color
+    }
+
+    function addTag(){
+        tags.push(
+            ({
+                ID:null,
+                CoinID:null,
+                description:newtag.content,
+                name:getname(newtag.category),
+                color:getcolor(newtag.category)
+            } as TagInterface)
+        )
+    }
+    
 </script>
 <style lang="sass">
     button
@@ -76,12 +106,12 @@
                         <label for="tagcontent" class="form-label">Címke tartalma</label>
                         <input type="text" bind:value={newtag.content} class="form-control" id="tagcontent" name="tagcontent" >
                     </div>
-                    <button type="button" class="btn col-3">Hozzáadás</button>
+                    <button type="button" class="btn col-3" on:click={addTag}>Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                    <!--{#each tags as tag}
-                        <div class="tag m-auto mb-1"><span>{tag.category}</span>:<span>{tag.content}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
-                    {/each}-->
+                    {#each tags as tag}
+                        <div class="tag m-auto mb-1"><span>{tag.name}</span>:<span>{tag.description}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
+                    {/each}
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
