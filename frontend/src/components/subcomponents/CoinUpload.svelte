@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { NULL } from "sass";
     import {onMount} from "svelte"
     import type { TagInterface, TagType } from "../../interfaces/Tags";
     import { GetTagTypes } from "../../services/dbCoin";
