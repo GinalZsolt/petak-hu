@@ -1,19 +1,32 @@
 <script lang="ts">
+    import type {uploadData} from '../../../interfaces/Forum';
     import type { Topic } from "../../../interfaces/Forum";
+    import {db} from '../../../services/dbForum';
     import { UploadImage } from "../../../services/fileService";
-    import { Token } from "../../../stores";
-    interface uploadData{
-        title?:string;
-        description?:string;
-        topicID?:number;
-        file?:File;
-    }
+    import { Token, userPerms } from "../../../stores";
     export let data:uploadData;
     export let Topics:Topic[];
     async function Upload(){
         let upload = new FormData();
         upload.append('image', data.file);
-        console.log((await UploadImage($Token.token, upload)));
+        console.log(filledForm());
+        if (filledForm()){
+            if (data.file){
+                console.error('file cannot be uploaded yet!');
+            }
+            else{
+                console.log(await db.UploadPost($Token.token, {
+                    description:data.description,
+                    title:data.title,
+                    topicID:data.topicID,
+                    userID:$userPerms.id
+                }));
+            }
+        }
+        //console.log((await UploadImage($Token.token, upload)));
+    }
+    function filledForm(){
+        return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
     }
 </script>
 <style lang="sass">

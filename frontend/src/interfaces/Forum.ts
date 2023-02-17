@@ -16,3 +16,9 @@ export interface Topic{
     ID:number;
     name:string;
 }
+export interface uploadData{
+    title?:string;
+    description?:string;
+    topicID?:number;
+    file?:File;
+}
