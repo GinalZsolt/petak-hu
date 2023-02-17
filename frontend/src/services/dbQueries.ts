@@ -1,21 +1,48 @@
 import axios from 'axios';
 let backendUrl = 'http://localhost:8080/api';
 
-async function Get(token:string, table:string, field?:string, value?:string){
-    let querystring = `/${table}${field ? `/${field}`:''}${value ? `/${value}` : ''}'}`;
-    return await axios.get(querystring, {
+interface ExecAnswer{
+    "fieldCount": number;
+    "affectedRows": number;
+    "insertId": number;
+    "warningCount": number;
+    "message": string;
+}
+
+function QueryStringGenerator(table:string, field?:string, value?:string|number){
+    let querystring = `/${table}`;
+    if (field!= undefined && field!= null && field!="") querystring+=`/${field}`;
+    if (value!= undefined && value!= null && value!="") querystring+=`/${value}`;
+    return querystring;
+}
+
+async function Get(token:string, table:string, field?:string, value?:string|number){
+    return await axios.get(backendUrl+QueryStringGenerator(table,field,value), {
         headers:{
             'Authorization': 'JWT '+token
         }
     }).then(res=>res.data).catch(err=>err.response);
 }
-function Post(token:string){
+async function Post(token:string, table:string, data:any):Promise<ExecAnswer>{
+    return await axios.post(backendUrl+'/'+table, data, {
+        headers:{
+            'Authorization':'JWT '+token
+        }
+    }).then(res=>res.data).catch(err=>err.response);
 }
-function Patch(token:string){
-
+async function Patch(token:string, table:string, field:string, value:string, data:any):Promise<ExecAnswer>{
+    return await axios.post(backendUrl + QueryStringGenerator(table, field, value), data, {
+        headers:{
+            'Authorization':'JWT '+token
+        }
+    }).then(res=>res.data).catch(err=>err.response);
 }
-function Delete(token:string){
-
+async function Delete(token:string, table:string, field:string, value:string):Promise<ExecAnswer>{
+    return await axios.post(backendUrl+QueryStringGenerator(table, field, value), {
+        headers:{
+            'Authorization':'JWT '+token
+        }
+    }).then(res=>res.data).catch(err=>err.response);
 }
 
 
