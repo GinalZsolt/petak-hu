@@ -19,5 +19,5 @@ export interface uploadData{
     title?:string;
     description?:string;
     topicID?:number;
-    file?:File;
+    file?:FileList;
 }

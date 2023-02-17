@@ -9,13 +9,20 @@
     export let Topics:Topic[];
     let dispatch = createEventDispatcher();
     async function Upload(){
-        let upload = new FormData();
-        console.log(data.file[0]);
-        upload.append('image', data.file[0]);
-        console.log(filledForm());
         if (filledForm()){
             if (data.file){
-                console.error('file cannot be uploaded yet!');
+                let upload = new FormData();
+                console.log(data.file[0]);
+                upload.append('image', data.file[0]);
+                await (UploadImage($Token.token, upload)).then(dt=>{
+                    db.UploadPost($Token.token, {
+                        description:data.description,
+                        title:data.title,
+                        topicID:data.topicID,
+                        userID:$userPerms.id,
+                        imagefile:dt.filename
+                    }).then(rs=>{ if (rs.insertId>0){dispatch('upload')}});
+                });
             }
             else{
                 if ((await db.UploadPost($Token.token, {
@@ -28,7 +35,7 @@
                 }
             }
         }
-        console.log((await UploadImage($Token.token, upload)));
+        //console.log((await UploadImage($Token.token, upload)));
     }
     function filledForm(){
         return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));

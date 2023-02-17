@@ -1,7 +1,7 @@
 import type { Forum, Topic, ForumPost } from "../interfaces/Forum";
 import { Get, Post, Delete } from "./dbQueries";
 
-interface dbPost{
+export interface dbPost{
     topicID:number;
     userID:number;
     imagefile?:string;
