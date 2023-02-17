@@ -1,9 +1,10 @@
 <script lang="ts">
     import {onMount} from "svelte"
     import type { TagInterface, TagType } from "../../interfaces/Tags";
-    import { GetTagTypes } from "../../services/dbCoin";
+    import { GetTagTypes, UploadCoin } from "../../services/dbCoin";
     import { Token } from "../../stores";
     import Tag from "./Tag.svelte";
+    import { userPerms } from "../../stores";
     let tagtypes:TagType[];
     onMount(async()=>{
         tagtypes=await GetTagTypes($Token.token)
@@ -21,6 +22,7 @@
     function getname(id){
         return tagtypes.find(e=>e.ID==id).name
     }
+
     function getcolor(id){
        return tagtypes.find(e=>e.ID==id).color
     }
@@ -36,6 +38,26 @@
         console.log(tags)
     }
     
+    function CoinUp(){
+        let Coin ={
+            name:data.name,
+            worth:data.price,
+            description:data.description,
+            userID:$userPerms.id,
+            headfile:data.heads.name,
+            tailfile:data.tails.name
+        }
+        let coinID = UploadCoin(Coin,$Token.token)
+        tags.forEach(element => {
+            let uploadableTag={
+                coinID:coinID,
+                nameID:tagtypes.find(e=>e.name==element.name).ID,
+                descriptionID:element.description
+            }
+
+        });
+    }
+
 </script>
 <style lang="sass">
     button
@@ -115,7 +137,7 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn">Feltöltés</button>
+          <button type="button" class="btn" on:change={CoinUp}>Feltöltés</button>
         </div>
       </div>
     </div>

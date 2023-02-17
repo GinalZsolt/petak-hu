@@ -14,4 +14,32 @@ async function GetTagTypes(token:string):Promise<TagType[]>{
     })
 }
 
-export {GetTagTypes}
+async function UploadCoin(Coin,token:string){
+    return await axios.post(BackendURL+"/api/coins",{
+        headers:{
+            'Authorization': 'JWT '+token
+        },
+        data:Coin
+    }).then(results=>results.data.insertId)
+}
+
+async function UploadTag(tag,token:string) {
+    await axios.post(BackendURL+"/api/tagdescriptions",{
+        headers:{
+            'Authorization': 'JWT '+token
+        },
+        data:{description:tag.descriptionID}}
+        ).then(
+            async (res)=>{
+                tag.descriptionID=res.data.insertId
+                await axios.post(BackendURL+"/api/cointags",{
+                    headers:{
+                        'Authorization': 'JWT '+token
+                    },
+                    data:tag}
+                    )
+            }
+        )
+}
+
+export {GetTagTypes,UploadCoin,UploadTag}
