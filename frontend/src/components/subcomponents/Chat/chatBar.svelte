@@ -19,11 +19,10 @@
         align-items: center
         p
             margin: 0
-
+    .active
+        background-color: blue
 </style>
 <script lang="ts">
-
-
     export let Profile:ProfileData;
     interface ProfileData{
         name:string;
