@@ -11,37 +11,29 @@
     let tagdel:boolean=true;
     let data:any={}
     let newtag:any={}
-    let tags:TagInterface[]
+    let tags:TagInterface[]=[]
 
-    function Delete(delid){
-
+    function Delete(del){
+        tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
+        tags=tags
     }
 
     function getname(id){
-        let name =""
-        tags.forEach(element => {
-            if(element.ID==id) name = element.name
-        });
-        return name
+        return tagtypes.find(e=>e.ID==id).name
     }
     function getcolor(id){
-        let color=''
-        tags.forEach(element => {
-            if(element.ID==id) color= element.color
-        });
-        return color
+       return tagtypes.find(e=>e.ID==id).color
     }
 
     function addTag(){
-        tags.push(
-            ({
+        tags = [...tags,{
                 ID:null,
                 CoinID:null,
                 description:newtag.content,
                 name:getname(newtag.category),
                 color:getcolor(newtag.category)
-            } as TagInterface)
-        )
+            } as TagInterface]
+        console.log(tags)
     }
     
 </script>
@@ -59,7 +51,7 @@
         border-radius:0.25rem
         padding: 7px
     .tag
-        background: #ea9e60
+        background: var(--color)
         border-radius:0.5rem
         padding: 5px
         border: 1px solid black
@@ -109,7 +101,7 @@
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
                     {#each tags as tag}
-                        <div class="tag m-auto mb-1"><span>{tag.name}</span>:<span>{tag.description}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag.ID)}}>{/if} </div>
+                        <div style={"--color:"+tag.color} class="tag m-auto mb-1"><span>{tag.name}</span>:<span>{tag.description}</span> {#if tagdel}<input type="button" class="btn-close" on:click={()=>{Delete(tag)}}>{/if} </div>
                     {/each}
                 </div>
                 <div class=" mb-3">
