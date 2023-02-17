@@ -1,30 +1,25 @@
 <script lang="ts">
-import axios from "axios";
-    import { onMount } from "svelte";
-import {userPerms} from '../../stores';
+  import axios from "axios";
+  import { onMount } from "svelte";
+  import {userPerms, Token} from '../../stores';
+  import {Get, Post, Patch, Delete} from '../../services/dbQueries';
+    import { User } from "../../classes/User";
 onMount(()=>{
   console.log($userPerms);
 })
 function AUCTION_UPLOAD(){
   let isCorrectInput: boolean=true;
   let data={
+    'coinID': 1,  //selected coin ID set
+    'userID': $userPerms.id,
     'title': document.querySelector('#coin').value != "" ? document.querySelector('#coin').value : isCorrectInput = false,
-    'minBid': document.querySelector('#auction_start_value').value !="" ? document.querySelector('#auction_start_value').value : isCorrectInput = false,
-    'auction_licit': document.querySelector('#auction_licit').value != "" ? document.querySelector('#auction_licit').value : isCorrectInput = false,
-    'description': document.querySelector('#des').value != "" ? document.querySelector('#des').value : isCorrectInput = false
+    'price': document.querySelector('#auction_start_value').value !="" ? document.querySelector('#auction_start_value').value : isCorrectInput = false,
+    'minBid': document.querySelector('#auction_licit').value != "" ? document.querySelector('#auction_licit').value : isCorrectInput = false,
+    'description': document.querySelector('#des').value != "" ? document.querySelector('#des').value : isCorrectInput = false,
+    'expiration' : document.querySelector('#end_date').value != "" ? document.querySelector('#end_date').value : isCorrectInput = false
   }
-  if(isCorrectInput) {
-    /*axios.post('/auctions', {data}).then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });*/
-  }
+  if(isCorrectInput) Post($Token.token, "auctions", data);
   else alert('A bemeneti adatok hiányosak vagy nem megfelelőek!');
-
-  console.log(data);
-  console.log(isCorrectInput);
 }
 
 </script>
@@ -71,7 +66,7 @@ function AUCTION_UPLOAD(){
                 <div class="col-md-4 mb-3 mx-w">
                   <label for="end_date">Aukció vég dátuma: </label>
                   <div class="input-group mx-w">
-                      <input type="datetime-local" class="form-control" min={Date.now()} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
+                      <input type="date" class="form-control" min={Date.now()} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
                   </div>
                 </div>
               </form>
