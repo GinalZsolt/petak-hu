@@ -10,7 +10,6 @@ export interface ForumPost{
     username:string;
     startingdate:string;
     isClosed:boolean;
-    commentsAmount: number;
 }
 export interface Topic{
     ID:number;

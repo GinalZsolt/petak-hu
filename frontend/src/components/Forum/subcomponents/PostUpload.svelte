@@ -1,4 +1,5 @@
 <script lang="ts">
+    import {createEventDispatcher} from 'svelte';
     import type {uploadData} from '../../../interfaces/Forum';
     import type { Topic } from "../../../interfaces/Forum";
     import {db} from '../../../services/dbForum';
@@ -6,24 +7,28 @@
     import { Token, userPerms } from "../../../stores";
     export let data:uploadData;
     export let Topics:Topic[];
+    let dispatch = createEventDispatcher();
     async function Upload(){
         let upload = new FormData();
-        upload.append('image', data.file);
+        console.log(data.file[0]);
+        upload.append('image', data.file[0]);
         console.log(filledForm());
         if (filledForm()){
             if (data.file){
                 console.error('file cannot be uploaded yet!');
             }
             else{
-                console.log(await db.UploadPost($Token.token, {
+                if ((await db.UploadPost($Token.token, {
                     description:data.description,
                     title:data.title,
                     topicID:data.topicID,
                     userID:$userPerms.id
-                }));
+                })).insertId>0){
+                    dispatch('upload');
+                }
             }
         }
-        //console.log((await UploadImage($Token.token, upload)));
+        console.log((await UploadImage($Token.token, upload)));
     }
     function filledForm(){
         return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
@@ -68,7 +73,7 @@
                         {/each}
                     </select>
                 </div>
-                <input class="form-control mb-3" bind:value={data.file} name="file"  type="file" id="file">
+                <input class="form-control mb-3" bind:files={data.file} name="file"  type="file" id="file">
             </form>
         </div>
         <div class="modal-footer">
