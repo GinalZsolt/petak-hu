@@ -58,11 +58,11 @@
         <h3 class="card-header card-title">Regisztráció</h3>
         <div class="card-body">
             <h4>Fiókadatok</h4>
-            <ErrorAlert bind:this={err1} Error={{id:"#emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
-            <ErrorAlert bind:this={err2} Error={{id:"#nomatch",text:"A két jelszó nem egyezik",error:true}}/>
-            <ErrorAlert bind:this={err3} Error={{id:"#badpass",text:"Nem elég erős a jelszó",error:true}}/>
-            <ErrorAlert bind:this={err4} Error={{id:"#success",text:"Sikeres regisztráció",error:false}}/>
-            <ErrorAlert bind:this={err5} Error={{id:"#emailtaken",text:"Ez az email már foglalt",error:true}}/>
+            <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
+            <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik",error:true}}/>
+            <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó",error:true}}/>
+            <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres regisztráció",error:false}}/>
+            <ErrorAlert bind:this={err5} Error={{id:"emailtaken",text:"Ez az email már foglalt",error:true}}/>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév<span class="text-danger">*</span></label>
                 <input type="text" name="username" bind:value={User.name} class="form-control">

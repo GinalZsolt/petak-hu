@@ -56,9 +56,9 @@ button:hover
 <main>
     <div id="loginform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Bejelentkezés</h2>
-             <ErrorAlert bind:this={err1} Error={{id:"#badlogin",text:"Hibás bejeletkezési adatok!",error:true}}/>
-             <ErrorAlert bind:this={err2} Error={{id:"#emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
-             <ErrorAlert bind:this={err3} Error={{id:"#banneduser",text:"Ez a felhasználó ki lett tiltva",error:true}}/>
+             <ErrorAlert bind:this={err1} Error={{id:"badlogin",text:"Hibás bejeletkezési adatok!",error:true}}/>
+             <ErrorAlert bind:this={err2} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
+             <ErrorAlert bind:this={err3} Error={{id:"banneduser",text:"Ez a felhasználó ki lett tiltva",error:true}}/>
         <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email cím</label>
