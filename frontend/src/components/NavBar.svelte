@@ -38,11 +38,21 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{$userPerms.username}</a>
                   <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a href={"/catalogue/"+$userPerms.id} class="dropdown-item">Érmekatalógusom</a></li>
+                    <li>
+                      <a href={"/profile/"+$userPerms.id} class="dropdown-item">Profilom</a>
+                    </li> 
+                    <li>
+                      <a href={"/profilemod/"} class="dropdown-item">Profil módosítása</a>
+                    </li>
+                    <li>
+                      <a href={"/catalogue/"+$userPerms.id} class="dropdown-item">Érmekatalógusom</a>
+                    </li> 
                     <li>
                       <hr class="dropdown-divider">
                     </li>
-                    <li><button class="dropdown-item" on:click={LogOut}>Kijelentkezés</button></li>
+                    <li>
+                      <button class="dropdown-item" on:click={LogOut}>Kijelentkezés</button>
+                    </li>
                   </ul>
                 </li>
               </ul>
