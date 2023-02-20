@@ -3,15 +3,15 @@ const pool = require('../config').pool;
 const jwt = require('jsonwebtoken');
 let log = require('../logging').log;
 let token = require('../modules/tokenCheck');
-Router.patch('/:tablename/:id', (req,res)=>{
+Router.patch('/:tablename/:field/:value', (req,res)=>{
     let update = "";
     let keys = Object.keys(req.body);
     let values = Object.values(req.body);
     for (let i = 0; i < keys.length; i++) {
         update +=`${keys[i]}='${values[i]}'`;
     }
-    console.log(`update ${req.params.tablename} set ${update} where ID=${req.params.id}`)
-    pool.query(`update ${req.params.tablename} set ${update} where ID=${req.params.id}`, (err,data)=>{
+    console.log(`update ${req.params.tablename} set ${update} where ${req.params.field}=${req.params.value}`)
+    pool.query(`update ${req.params.tablename} set ${update} where ${req.params.field}=${req.params.value}`, (err,data)=>{
         if (err) res.status(500).send(err.message);
         else res.status(200).send(data);
     });

@@ -30,8 +30,8 @@ async function Post(token:string, table:string, data:any):Promise<ExecAnswer>{
         }
     }).then(res=>res.data).catch(err=>err.response);
 }
-async function Patch(token:string, table:string, field:string, value:string, data:any):Promise<ExecAnswer>{
-    return await axios.post(backendUrl + QueryStringGenerator(table, field, value), data, {
+async function Patch(token:string, table:string, field:string, value:string|number, data:any):Promise<ExecAnswer>{
+    return await axios.patch(backendUrl + QueryStringGenerator(table, field, value), data, {
         headers:{
             'Authorization':'JWT '+token
         }

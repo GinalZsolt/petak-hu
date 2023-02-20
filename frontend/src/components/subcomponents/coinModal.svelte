@@ -8,7 +8,6 @@
     }
 
     
-  import { Auction } from "../../classes/Auction";
   import AuctionSlideSm from "../subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "../subcomponents/AuctionSlide-md-lg.svelte";
   let searchText: string = "";
@@ -18,11 +17,11 @@
   }
 </script>
   <div>
-    <div class="modal" tabindex="-1" role="dialog" id={"coin_"+test_coin.ID}>
+    <div class="modal" tabindex="-1" role="dialog" id={"coin_"}>
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header modalpic">
-              <h2 class="modal-title">{test_coin.name}</h2>
+              <h2 class="modal-title"></h2>
               <div        
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5">
       <button
@@ -31,7 +30,7 @@
         data-bs-slide="prev"><i class="bi bi-arrow-left" /></button>
       <div id="modalslider" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if mediaQuery(576)}
+          <!--{#if mediaQuery(576)}
             <AuctionSlideSm Auction={testAuction} isFirst={true} />
             <AuctionSlideSm Auction={testAuction} isFirst={true} />
             {:else if mediaQuery(768)}
@@ -40,7 +39,7 @@
             {:else}
             <AuctionSlideMdLg Auctions={[testAuction]} isFirst={true}/>
             <AuctionSlideMdLg Auctions={[testAuction]} isFirst={true}/>
-          {/if}
+          {/if}-->
         </div>
       </div>
       <button
@@ -52,9 +51,9 @@
             </div>
             {#if editMode}
             <div class="modal-body">
-              <h4>Becsült érték: <input type="text" id="coinValue" value={test_coin.worth}> Ft</h4>
+              <h4>Becsült érték: <input type="text" id="coinValue"> Ft</h4>
               <h4>Leírás</h4>
-              <p><textarea name="" id="coinDes" cols="30" rows="10">{test_coin.description}</textarea></p>
+              <p><textarea name="" id="coinDes" cols="30" rows="10"></textarea></p>
             </div>
             <div class="modal-footer">
               <button type="button" on:click={editModeSet} class="btn btn-primary">Mósdosítás</button>
@@ -63,9 +62,9 @@
             </div>
             {:else}
             <div class="modal-body">
-              <h4>Becsült érték: {test_coin.worth} Ft</h4>
+              <h4>Becsült érték:  Ft</h4>
               <h4>Leírás</h4>
-              <p>{test_coin.description}</p>
+              <p></p>
             </div>
             <div class="modal-footer">
               <button type="button" on:click={editModeSet} class="btn btn-primary">Mósdosítás</button>

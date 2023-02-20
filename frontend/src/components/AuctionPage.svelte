@@ -1,31 +1,61 @@
 <script lang="ts">
-  import type { Auction } from "../classes/Auction";
+  import type { Auction } from "../interfaces/Auction";
+  import {GetAuctionData, PostNewAuctionPrice, PostNewBidder} from '../services/dbAuction';
+  import {Token, userPerms} from '../stores';
+  import {onMount} from 'svelte';
   let auction:Auction;
+  let originalPrice: number;
   export let ID: number;
   let username: string = "mintajanos";
+  import {io} from 'socket.io-client';
+  onMount(async()=>{
+    auction = await GetAuctionData($Token.token, ID);
+    originalPrice = await (await GetAuctionData($Token.token, ID)).price;
+  })
+  const socket = io('ws://localhost:8080');
+  socket.emit('roomJoin', "auction-"+ID);
+  socket.on('newPrice', (data)=>{
+    auction.price = data;
+    originalPrice = data;
+  })
+  function Bid(){
+    console.log(auction.price);
+    if (auction.price >= originalPrice+auction.minBid){
+      PostNewBidder($Token.token, $userPerms.id, {
+        amount: auction.price,
+        auctionID: ID,
+        userID: $userPerms.id,
+        date: new Date().toISOString()
+      }).then(()=>{
+        PostNewAuctionPrice($Token.token, $userPerms.id, auction.price);
+        socket.emit('bid', auction.price, 'auction-'+ID);
+      })
+    }
+  }
 </script>
 
 <main>
+  {#if auction}
   <div class="col-11 mx-auto mt-5">
     <aside class="d-block mb-4 d-flex flex-row align-items-center">
       <button class="btn border-dark me-2"><i class="bi bi-arrow-left" /></button>
-      <h2 class="mb-0">{username} - {auction.title}</h2>
+      <h2 class="mb-0">{auction.userID} - {auction.title}</h2>
     </aside>
     <div class="row mx-auto">
       <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3">
         <div class="w-100 h-100" id="AuctionCoin">
-          <img class="img-fluid h-100" src={auction.coin.images.head} alt="" />
-          <p class="w-100 px-2" id="title">{auction.coin.name}</p>
+          <!--<img class="img-fluid h-100" src={auction} alt="" />
+          <p class="w-100 px-2" id="title">{auction.coin.name}</p>-->
         </div>
       </div>
       <div class="col-md-6 col-12 pe-md-0">
         <h3>Licitálás</h3>
         <div class="d-flex flex-row mb-3">
           <div class="input-group me-lg-3">
-            <input type="number" min={auction.price +auction.minBid} value={auction.price + auction.minBid} name="bidAmount" class="form-control border-dark" />
+            <input type="number" min={auction.price +auction.minBid} bind:value={auction.price} name="bidAmount" class="form-control border-dark" />
             <label for="bidAmount" class="input-group-text border-dark">Ft</label>
           </div>
-          <button class="btn border-dark">Licitálás</button>
+          <button class="btn border-dark" on:click={Bid}>Licitálás</button>
         </div>
         <p class="border-bottom border-dark pb-3">Licitlépcső: {auction.minBid} Ft</p>
         <h3>Legutóbbi licitek</h3>
@@ -46,6 +76,7 @@
       {/each}
     </div>
   </div>
+  {/if}
 </main>
 
 <style lang="sass">
