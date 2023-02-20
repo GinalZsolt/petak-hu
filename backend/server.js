@@ -29,12 +29,15 @@ server.listen(process.env.PORT, () => {
 
 
 io.on('connection', (socket)=>{
-  console.log(`${socket.handshake.address} connected to the auction system`);
   socket.on('roomJoin', (roomDetails)=>{
-    socket.rooms.add(roomDetails);
+    socket.join(roomDetails);
+    console.log(`${socket.handshake.address} connected to the auction system`);
   })
   socket.on('bid', (price, room)=>{
-    socket.to(room).emit('newPrice', price);
-    socket.emit('newPrice', price);
+    io.sockets.in(room).emit('newPrice', price);
+  })
+  socket.on('disconnect', ()=>{
+    socket.rooms.clear();
+    console.log(`${socket.handshake.address} disconnected`);
   })
 })

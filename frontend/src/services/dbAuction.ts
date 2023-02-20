@@ -1,7 +1,8 @@
-import type { Auction } from '../interfaces/Auction';
+import type { Auction, Bidder } from '../interfaces/Auction';
 import {Get, Patch, Post} from './dbQueries';
 
-interface BidderInfo{
+
+interface BidderPost{
     userID:number;
     auctionID:number;
     amount:number;
@@ -9,10 +10,14 @@ interface BidderInfo{
 }
 
 
+async function GetBidders(token:string, auctionID:number):Promise<Bidder[]>{
+    return await Get(token, 'auctionbidders', 'auctionID', auctionID);
+
+}
 async function GetAuctionData(token:string, id:number):Promise<Auction>{
     return await Get(token, 'auctions', 'ID', id).then(res=>res[0]).catch(err=>err.response);
 }
-async function PostNewBidder(token:string, id:number, data:BidderInfo){
+async function PostNewBidder(token:string, data:BidderPost){
     return await Post(token, 'bidders', data);
 }
 async function PostNewAuctionPrice(token:string, id:number, data:number){
@@ -22,4 +27,4 @@ async function PostNewAuctionPrice(token:string, id:number, data:number){
 }
 
 
-export { GetAuctionData, PostNewBidder, PostNewAuctionPrice }
+export { GetBidders, GetAuctionData, PostNewBidder, PostNewAuctionPrice }

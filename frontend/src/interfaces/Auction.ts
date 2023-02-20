@@ -8,3 +8,8 @@ export interface Auction{
     description:string;
     expiration:string;
 }
+export interface Bidder{
+    username:string,
+    price:number;
+    date:string;
+}
