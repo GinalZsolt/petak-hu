@@ -51,8 +51,13 @@
             </div>
         </div>
         <div id="buttons" class="col-lg col-md col-sm col-xs">
-            <button class="btn">chat</button> <!-- chat button -->
-            <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
+          <div class="dropdown">
+            <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item">asd</button></li>
+              <li><button class="dropdown-item">asd</button></li>
+            </ul>
+          </div>
         </div>
     </div>
     <div class="d-flex justify-content-between mb-2">
