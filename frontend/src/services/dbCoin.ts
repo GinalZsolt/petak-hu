@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { TagInterface, TagType } from "../interfaces/Tags";
+import type { Coin } from "../interfaces/Coin";
 import { BackendURL } from "../stores";
 
 async function GetTagTypes(token: string): Promise<TagType[]> {
@@ -13,6 +14,15 @@ async function GetTagTypes(token: string): Promise<TagType[]> {
         return err.response;
     })
 }
+
+async function GetCoin(id:number, token:string){
+    return await axios.get(BackendURL+'/api/coins/ID/'+id, {
+        headers:{
+            'Authorization': 'JWT '+token
+        }
+    }).then(res=>res.data[0]).catch(err=>err.response);
+}
+
 
 async function UploadCoin(Coin, token: string) {
     return await axios.post(BackendURL + "/api/coins", Coin, {
@@ -42,4 +52,4 @@ async function UploadTag(tag, token: string) {
     )
 }
 
-export { GetTagTypes, UploadCoin, UploadTag }
+export { GetTagTypes, UploadCoin, UploadTag, GetCoin }
