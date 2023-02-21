@@ -7,8 +7,9 @@ Router.patch('/:tablename/:field/:value', (req,res)=>{
     let keys = Object.keys(req.body);
     let values = Object.values(req.body);
     for (let i = 0; i < keys.length; i++) {
-        update +=`${keys[i]}='${values[i]}'`;
+        update +=`${keys[i]}='${values[i]}',`;
     }
+    update.slice(0, update.length-2);
     pool.query(`update ${req.params.tablename} set ${update} where ${req.params.field}=${req.params.value}`, (err,data)=>{
         if (err) res.status(500).send(err.message);
         else {res.status(200).send(data); log(req.socket.remoteAddress, `Updated ${data.affectedRows} rows in ${req.params.tablename}`)}
