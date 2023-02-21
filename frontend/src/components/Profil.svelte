@@ -3,8 +3,8 @@
         picture: "/test.png",
         name: "test",
         email: "test@test.com",
-        coin_list: ["test, test2", "test3"],
-        auction_list: ["test", "test2"]
+        coin_list: [],
+        auction_list: []
     }
   import type { Auction } from "../interfaces/Auction";
   import type { Coin } from "../classes/Coin/Coin";
@@ -12,14 +12,26 @@
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
-  import { userPerms } from "../stores";
+  import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import { onMount } from "svelte";
+  import {Get} from "../services/dbQueries";
   export let ID:number;
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
+  let auction: Auction[] = []
+
+  async function getCoinList() {
+      profile.coin_list = await await Get($Token.token, "coins", "userID", $userPerms.id);
+  }
+  onMount(async()=>{
+    await getCoinList();
+    console.log(profile.coin_list);
+  })
+
 </script>
 <CoinUpload/>
 <main>
@@ -77,7 +89,7 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!--{#if mediaQuery(576)}
+          {#if mediaQuery(576)}
             <AuctionSlideSm Auction={testAuction} isFirst={true} />
             <AuctionSlideSm Auction={testAuction} isFirst={false} />
             {:else if mediaQuery(768)}
@@ -86,7 +98,7 @@
             {:else}
             <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
             <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={false}/>
-          {/if}-->
+          {/if}
         </div>
       </div>
       <button

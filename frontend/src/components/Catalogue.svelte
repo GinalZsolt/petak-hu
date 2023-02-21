@@ -3,15 +3,25 @@
         picture: "/test.png",
         name: "test",
         email: "test@test.com",
-        coin_list: ["test, test2", "test3"],
+        coin_list: [],
         auction_list: ["test", "test2"]
     }
     import type { Coin } from "../classes/Coin/Coin";
     import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
     import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
     import CoinModal from "./subcomponents/coinModal.svelte";
-    import { userPerms } from "../stores";
+    import {userPerms, Token} from './../stores';
+    import {Get, Post, Patch, Delete} from '../services/dbQueries';
+    import { onMount } from "svelte";
     export let ID:number;
+
+    async function getCoinList() {
+      profile.coin_list = await await Get($Token.token, "coins", "userID", $userPerms.id);
+    }
+    onMount(async()=>{
+      await getCoinList();
+      console.log(profile.coin_list);
+    })
 </script>
 
 <main>
@@ -29,16 +39,18 @@
     </nav>
     <!--Érme katalógus-->
     <div class="cards row">
-      <!--{#each test_array as coin}
+      {#if profile.coin_list}
+      {#each profile.coin_list as coin}
       <div class="col-lg-4 col-md-6 col-12 element">
         <div class="card p-0">
-          <img src={"/"+coin.coin.images.tail} class="card-img-top image img-fluid mx-auto" alt="...">
+          <img src={"http://localhost:8080/img/"+coin.headfile} class="card-img-top image img-fluid mx-auto" alt="...">
           <div class="card-body bg-grey">
-            <p class="card-text">{coin.coin.description}</p>
+            <p class="card-text">{coin.description}</p>
           </div>
-        </div>
+        </div> 
       </div>
-      {/each}-->
+      {/each}
+      {/if}
     </div>
 
 </main>
