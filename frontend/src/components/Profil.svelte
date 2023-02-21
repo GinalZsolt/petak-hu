@@ -4,7 +4,7 @@
         name: "test",
         email: "test@test.com",
         coin_list: [],
-        auction_list: []
+        auction_list: [] as Auction[]
     }
   import type { Auction } from "../interfaces/Auction";
   import type { Coin } from "../classes/Coin/Coin";
@@ -16,20 +16,27 @@
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
   import { onMount } from "svelte";
   import {Get} from "../services/dbQueries";
+  import {GetAuctions} from "../services/dbAuction";
   export let ID:number;
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
-  let auction: Auction[] = []
+  let auction: Auction[] = [];
+
+  async function getAuctions() {
+    return await await GetAuctions($Token.token, $userPerms.id);
+  }
 
   async function getCoinList() {
       profile.coin_list = await await Get($Token.token, "coins", "userID", $userPerms.id);
   }
   onMount(async()=>{
     await getCoinList();
+    profile.auction_list = await getAuctions();
     console.log(profile.coin_list);
+    console.log(profile.auction_list);
   })
 
 </script>
@@ -84,7 +91,7 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if mediaQuery(576)}
+          <!--{#if mediaQuery(576)}
             <AuctionSlideSm Auction={testAuction} isFirst={true} />
             <AuctionSlideSm Auction={testAuction} isFirst={false} />
             {:else if mediaQuery(768)}
@@ -93,7 +100,7 @@
             {:else}
             <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
             <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={false}/>
-          {/if}
+          {/if}-->
         </div>
       </div>
       <button
