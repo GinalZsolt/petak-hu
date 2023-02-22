@@ -42,7 +42,7 @@
 
   function Bid() {
     console.log(auction.price);
-    if (auction.price >= originalPrice + auction.minBid) {
+    if (auction.price >= originalPrice + auction.minBid && $userPerms.id!=auction.userID) {
       PostNewAuctionPrice($Token.token, ID, auction.price).then(
         () => {
           PostNewBidder($Token.token, {
@@ -63,14 +63,14 @@
   {#if auction}
     <div class="col-11 mx-auto mt-5">
       <aside class="d-block mb-4 d-flex flex-row align-items-center">
-        <button class="btn border-dark me-2"><i class="bi bi-arrow-left" /></button>
+        <a href="/auctions" class="btn border-dark me-2"><i class="bi bi-arrow-left" /></a>
         <h2 class="mb-0">{auction.userID} - {auction.title}</h2>
       </aside>
       <div class="row mx-auto">
         {#if coin}
         <CoinModal coin={coin} />
         <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3" data-bs-target='#coin_' data-bs-toggle="modal">
-          <div class="w-100 h-100" id="AuctionCoin">
+          <div class="container-fluid h-100" id="AuctionCoin">
             <img class="img-fluid h-100" src={'http://localhost:8080/img/'+coin.headfile} alt="" />
           <p class="w-100 px-2" id="title">{auction.title}</p>
           </div>
@@ -88,15 +88,14 @@
                 type="number"
                 min={originalPrice}
                 step={auction.minBid}
-                
+                disabled={auction.userID==$userPerms.id}
                 bind:value={auction.price}
-
                 name="bidAmount"
                 class="form-control border-dark"
               />
-              <label for="bidAmount" class="input-group-text border-dark">Ft</label>
+              <label for="bidAmount" class={"input-group-text border-dark"+($userPerms.id==auction.userID ? 'disabled' : '')}>Ft</label>
             </div>
-            <button class="btn border-dark ms-2" on:click={Bid}>Licitálás</button>
+            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id} on:click={Bid}>Licitálás</button>
           </div>
           <p class="border-bottom border-dark pb-3">
             Licitlépcső: {auction.minBid} Ft
@@ -105,7 +104,10 @@
           <div id="Bidders">
             {#if bidders}
               {#each bidders as bidder}
-                <p transition:fade>{bidder.username} - {bidder.price} Ft | {new Intl.DateTimeFormat('hu-HU', {
+                <p transition:fade><a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
+                  currency:'HUF',
+                  style:'currency'
+                }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
                   dateStyle:'long',
                 }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}</p>
               {/each}
@@ -167,4 +169,6 @@ hr
   background: #ffffff54
 .btn
   background-color: #e99d60
+.disabled
+  opacity: 0.65 !important
 </style>

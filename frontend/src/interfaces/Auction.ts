@@ -1,3 +1,5 @@
+import type { Coin } from "../classes/Coin/Coin";
+
 export interface Auction{
     ID:number;
     coinID:number;
@@ -9,6 +11,7 @@ export interface Auction{
     expiration:string;
 }
 export interface Bidder{
+    userID:number;
     username:string,
     price:number;
     date:string;

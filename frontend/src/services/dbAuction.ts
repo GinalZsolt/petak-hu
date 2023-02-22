@@ -12,7 +12,6 @@ interface BidderPost{
 
 async function GetBidders(token:string, auctionID:number):Promise<Bidder[]>{
     return await Get(token, 'auctionbidders', 'auctionID', auctionID);
-
 }
 async function GetAuctions(token:string, userID:number):Promise<Auction[]>{
     return await Get(token, 'auctions', 'userID', userID).then(res=>res.data).catch(err=>err.response);

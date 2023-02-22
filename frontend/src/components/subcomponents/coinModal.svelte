@@ -10,7 +10,7 @@
 <div class="modal fade" tabindex="-1" role="dialog" id={"coin_"}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header modalpic">
+      <div class="modal-header">
         <h2 class="modal-title">{coin.name}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -56,19 +56,24 @@
           <p>{text}</p>
         {/each}
       </div>
-      <div class="modal-footer">
+      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
+        
         {#if coin.userID == $userPerms.id}
-        <button type="button" class="btn btn-primary">Módosítás</button>
-        <button type="button" class="btn btn-primary">Aukció</button>
+        <div>
+          <button type="button" class="btn btn-primary">Módosítás</button>
+          <button type="button" class="btn btn-primary">Aukció</button>
+        </div>
         {/if}
-        <button 
-          type="button"
-          class="btn btn-primary" 
-          data-bs-dismiss="modal"
-        >
-          OK
-        </button>
-        <button on:click={CopyLink}>asdasdasd</button>
+        <div>
+          <button 
+            type="button"
+            class="btn btn-primary" 
+            data-bs-dismiss="modal"
+          >
+            OK
+          </button>
+          <button><i class="bi btn bi-share"></i></button>
+        </div>
       </div>
     </div>
   </div>
