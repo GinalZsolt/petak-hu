@@ -1,11 +1,4 @@
 <script lang="ts">
-    let profile={
-        picture: "/test.png",
-        name: "test",
-        email: "test@test.com",
-        coin_list: [],
-        auction_list: [] as Auction[]
-    }
   import type { Auction } from "../interfaces/Auction";
   import type { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
@@ -17,7 +10,14 @@
   import { onMount } from "svelte";
   import {Get} from "../services/dbQueries";
   import {GetAuctions} from "../services/dbAuction";
+  import BanModal from "./subcomponents/BanModal.svelte";
+    import { GetUserData } from "../services/dbUser";
   export let ID:number;
+  let profile:any={}
+  function Promote(){
+
+  }
+
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
@@ -37,31 +37,46 @@
     profile.auction_list = await getAuctions();
     console.log(profile.coin_list);
     console.log(profile.auction_list);
+
+    await GetUserData(ID,$Token.token).then((res)=>{
+      profile=res[0]
+    })
+    console.log(profile )
   })
 
 </script>
 <CoinUpload/>
+<BanModal User={profile} />
+{#if profile}
 <main>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
+          {#if profile.picture==undefined||profile.picture==null||profile.picture==""}
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src="../../public/test.png" alt=""></div> <!-- profile picture-->
+            
+          {:else}
             <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+            
+          {/if}
             <div id="nevemail">
                 <p>{profile.name}</p> <!-- profile name -->
                 <p>{profile.email}</p> <!-- profile email -->
             </div>
         </div>
         <div id="buttons" class="col-lg col-md col-sm col-xs">
+          {#if ID!=$userPerms.id&&$userPerms.permission==2}
           <div class="dropdown">
             <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
             <ul class="dropdown-menu">
-              <li><button class="dropdown-item">asd</button></li>
-              <li><button class="dropdown-item">asd</button></li>
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
+              <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
             </ul>
           </div>
+          {/if}
         </div>
     </div>
     <div class="d-flex justify-content-between mb-2">
-      <h2>{profile.name} katalógus</h2>
+      <h2>{profile.name} katalógusa</h2>
       {#if ID==$userPerms.id}
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
       {/if}
@@ -85,7 +100,7 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div> 
-    <h2>{profile.name} aukció</h2>
+    <h2>{profile.name} aukciói</h2>
     <div        
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
     >                           <!-- aukciók -->
@@ -116,47 +131,44 @@
     </div>  
     <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-</main>
-
+  </main>
+{/if}
 <style lang="sass">
-    #Profile_pic
-        width: 5vw
-        height: 5vw
+  #Profile_pic
+      width: 5vw
+      height: 5vw
 
-    .btn
-        background-color: #ea9e60
-    
-    .katalogus
-        margin: auto
-        height: 20vh
-        background-color: white
-        border: 1px solid black
-    
-    .katalogusok
-        margin: auto
+  .btn
+      background-color: #ea9e60
+  
+  .katalogus
+      margin: auto
+      height: 20vh
+      background-color: white
+      border: 1px solid black
+  
+  .katalogusok
+      margin: auto
 
-    .tulajdonsagok
-        display: flex   
-        align-items: center
-        margint-left: 0px
+  .tulajdonsagok
+      display: flex   
+      align-items: center
+      margint-left: 0px
 
-    #nevemail
-        justify-self: center
-        padding-left: 2vw
+  #nevemail
+      justify-self: center
+      padding-left: 2vw
 
-    main
-        margin-left: 10vw
-        margin-right: 10vw
-    
-    .flexstart
-        justify-content: flex-start
-    
-    #profile #buttons
-        justify-items: flex-end
-        display: flex
-        flex-direction: column
-        padding-top: 4vh
-
-    #profile #buttons button
-        margin-bottom: 2vh
+  main
+      margin-left: 10vw
+      margin-right: 10vw
+  
+  .flexstart
+      justify-content: flex-start
+  
+  #profile #buttons
+      justify-items: flex-end
+      display: flex
+      flex-direction: column
+      padding-top: 4vh
 </style>
