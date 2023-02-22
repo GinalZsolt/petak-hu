@@ -1,14 +1,22 @@
 <script lang="ts">
+  import { Post } from "../../services/dbQueries";
+  import { Token } from "../../stores";
+  import ErrorAlert from "./ErrorAlert.svelte";
 
-export let User:any={}
-import ErrorAlert from "./ErrorAlert.svelte";
+  export let User:any={}
 
-let err1
-function Ban(){
-  if (User.datum==undefined){
-    err1.showError()
+  let err1
+  let err2
+  async function Ban(){
+    if (User.datum==undefined){
+      err1.showError()
+    }
+    else{
+      await Post($Token.token,"moderations",{userID:User.ID,banTime:User.datum}).then((res) => {
+        err2.showError()
+      })
+    }
   }
-}
 
 </script>
 
@@ -28,6 +36,7 @@ function Ban(){
       </div>
       <div class="modal-body">
         <ErrorAlert bind:this={err1} Error={{id:"nodate",text:"Nem adtál meg dátumot!",error:true}}/>
+        <ErrorAlert bind:this={err2} Error={{id:"success",text:"Sikeresen kitiltva!",error:false}}/>
             <form action="">
               <div class="mb-3">
                 <label for="username" class="form-label">Felhasználó név</label>
