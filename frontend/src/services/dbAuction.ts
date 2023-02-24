@@ -14,7 +14,7 @@ async function GetBidders(token:string, auctionID:number):Promise<Bidder[]>{
     return await Get(token, 'auctionbidders', 'auctionID', auctionID);
 }
 async function GetAuctions(token:string, userID:number):Promise<Auction[]>{
-    return await Get(token, 'auctions', 'userID', userID).then(res=>res.data).catch(err=>err.response);
+    return await Get(token, 'auctions', 'userID', userID).then(res=>res).catch(err=>err.response);
 }
 async function GetAuctionData(token:string, id:number):Promise<Auction>{
     return await Get(token, 'auctions', 'ID', id).then(res=>res[0]).catch(err=>err.response);
