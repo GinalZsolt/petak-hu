@@ -21,6 +21,7 @@
 </main>
 <script lang="ts">
     import DashboardCard from "./subcomponents/DashboardCard.svelte";
+    import { userPerms } from "../stores";
     let user = "János";
     let cardata1:any={
     title:"Chat",
@@ -32,7 +33,7 @@
     let cardata4:any={
     title:"Katalógus",
     icon: 'database',
-    href: '/catalogue',
+    href: '/catalogue/'+ $userPerms.id,
     fromColor: '#ff0000',
     toColor: '#8f0000'
     }
