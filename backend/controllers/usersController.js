@@ -26,10 +26,28 @@ Router.post('/login', (req, res) => {
                             token: token
                         });
                     }
-                    else res.status(403).json({
-                        message: 'Tiltott felhasználó!',
-                        type: 'danger'
-                    })
+                    else if(new Date(results[0].banTime)>new Date()){
+                        res.status(403).json({
+                            message: 'Tiltott felhasználó!',
+                            type: 'danger'
+                        })
+                    }
+                    else{
+                        pool.query('DELETE FROM `moderations` WHERE ID = '+results[0].ID,(err)=>{
+                            if(err) res.status(500).send(err.message)
+                            console.log(data[0]);
+                            let token = jwt.sign({
+                                id: data[0].ID,
+                                permission: data[0].permission,
+                                username:data[0].name
+                            }, process.env.JWTTOKEN, {expiresIn:'7d'});
+                            res.status(200).send({
+                                message: 'Sikeres login!',
+                                token: token
+                            });
+                        })
+
+                    }
                 }
             })
         }
