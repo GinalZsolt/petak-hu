@@ -26,6 +26,7 @@
     }
     async function ChangeTopic() {
         if (topicID) {
+            console.log(topicID);
             await db.GetForums($Token.token, topicID).then(rs=>{
                 Data = rs;
                 TopicName = Topics.find(e=>e.ID==topicID).name;

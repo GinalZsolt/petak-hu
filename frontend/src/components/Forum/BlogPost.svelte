@@ -1,8 +1,17 @@
 <script lang="ts">
-    import { dataset_dev } from "svelte/internal";
     import Comment from "./subcomponents/Comment.svelte";
+    import type {BlogPost, Comment} from '../../interfaces/Blogpost';
+    import {db} from '../../services/dbForum';
+    import { onMount } from "svelte";
+    import {Token, userPerms} from '../../stores';
+    import axios from "axios";
     export let ID:number;
-    let Data:any={}
+    async function GetPost():Promise<BlogPost>{
+        return (await db.GetBlogpost($Token.token, ID))[0]
+    }
+    async function GetComments():Promise<Comment>{
+        return axios.get('/');
+    }
 </script>
 <style lang="sass">
     #newcomment
@@ -24,7 +33,7 @@
         padding:10px
     #post_image
         width:15%
-    button
+    .input-group>button
         border:1px solid black
         background-color: #ea9e60
         border-radius:0.25rem
@@ -33,31 +42,40 @@
 <!-- Content -->
 
 <main>
-    <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto ">
-        <img src="{Data.image}" id="post_image" class="float-end" alt="kép">
-        <h2>{Data.title}</h2>
-        <div id="authorinfo">
-            <span>{Data.author}</span> <br class="d-md-none d-block">
-            <span>{Data.date}</span>
+    {#await GetPost()}
+        <div class="spinner-border m-auto"></div>
+    {:then Data}
+        <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto ">
+            <img src="{Data.imagefile}" id="post_image" class="float-end" alt="kép">
+            <h2>{Data.title}</h2>
+            <div id="authorinfo">
+                <span>{Data.userID} - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data.date))}</span>
+            </div>
+            <p>{Data.description}</p>
+            {#if $userPerms.id==Data.userID}
+            <div class="dropdown d-flex flex-row-reverse">
+                <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><button class="dropdown-item">Lezárás</button></li>
+                    <li><button class="dropdown-item">Törlés</button></li>
+                </ul>
+            </div>
+            {/if}
         </div>
-        <p>{Data.text}</p>
-        <div class="dropdown d-flex flex-row-reverse">
-            <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots"></i>
-            </a>
-          
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Lezárás</a></li>
-              <li><a class="dropdown-item" href="#">Törlés</a></li>
-            </ul>
-        </div>
-        
-    </div>
+    {/await}
     <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
         <div class="input-group ">
             <input type="text" name="message" id="message" class="form-control">
             <button type="button" class="btn bi bi-send input-group-text"></button>
         </div>
     </div> 
-    <Comment Data={{username:"Béla",date:"2023-01-30",text:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem vel sint sequi sit voluptate culpa id, similique natus minus odit, minima doloremque tenetur nostrum at eos! Necessitatibus explicabo aperiam illum."}}/>
+    {#await GetComments()}
+        <div class="spinner-border"></div>
+    {:then Comments} 
+        {#each Comments as comment}
+            <Comment Data={{username:comment,date:"2023-01-30",text:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem vel sint sequi sit voluptate culpa id, similique natus minus odit, minima doloremque tenetur nostrum at eos! Necessitatibus explicabo aperiam illum."}}/>
+        {/each}
+    {/await}
 </main>

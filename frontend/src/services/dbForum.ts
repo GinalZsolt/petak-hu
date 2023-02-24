@@ -1,3 +1,4 @@
+import type { BlogPost } from "../interfaces/Blogpost";
 import type { Forum, Topic, ForumPost } from "../interfaces/Forum";
 import { Get, Post, Delete } from "./dbQueries";
 
@@ -14,6 +15,9 @@ let url = "http://localhost:8080/api";
 async function GetForums(token:string, topicid:number):Promise<ForumPost[]>{
     return await Get(token, 'forums', 'ID', topicid) as Promise<ForumPost[]>;
 }
+async function GetBlogpost(token:string, postid:number):Promise<BlogPost>{
+    return await Get(token, 'posts', 'ID', postid) as Promise<BlogPost>;
+}
 async function GetTopics(token:string):Promise<Topic[]>{
     return await Get(token, 'topics');
 }
@@ -24,6 +28,6 @@ async function UploadPost(token:string, data:dbPost){
     return await Post(token, 'posts', data);
 }
 const db = {
-    GetForums, GetTopics, GetTopic, UploadPost
+    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost
 }
 export {db};
