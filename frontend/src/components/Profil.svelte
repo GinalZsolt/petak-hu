@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Auction } from "../interfaces/Auction";
-  import type { Coin } from "../classes/Coin/Coin";
+  import type { Coin } from "../interfaces/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
@@ -11,9 +11,16 @@
   import {Get} from "../services/dbQueries";
   import {GetAuctions} from "../services/dbAuction";
   import BanModal from "./subcomponents/BanModal.svelte";
-    import { GetUserData } from "../services/dbUser";
+  import { GetUserData } from "../services/dbUser";
+  interface Profile{
+    name:string;
+    email:string;
+    picture?:string;
+    coins:Coin[];
+    auctions:Auction[];
+  }  
   export let ID:number;
-  let profile:any={}
+  let profile:Profile={} as Profile;
   function Promote(){
 
   }
@@ -27,21 +34,19 @@
 
   async function getAuctions() {
     return await await GetAuctions($Token.token, $userPerms.id);
+
   }
 
   async function getCoinList() {
-      profile.coin_list = await await Get($Token.token, "coins", "userID", $userPerms.id);
+      profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
   }
   onMount(async()=>{
-    await getCoinList();
-    profile.auction_list = await getAuctions();
-    console.log(profile.coin_list);
-    console.log(profile.auction_list);
-
     await GetUserData(ID,$Token.token).then((res)=>{
       profile=res[0]
     })
-    console.log(profile )
+    await getCoinList();
+    profile.auctions = await getAuctions();
+    console.log(await profile);    
   })
 
 </script>
