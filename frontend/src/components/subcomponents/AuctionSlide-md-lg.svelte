@@ -1,7 +1,7 @@
 <div class={isFirst?"carousel-item active":"carousel-item"}>
   <div class="d-flex">
-      {#each Auctions as auction}
-          <AuctionCard Auction={auction} Coin={Coins.find(e=>e.ID==auction.coinID)}/>
+      {#each Auctions as auction, i}
+          <AuctionCard Auction={auction} Coin={Coins[i]}/>
       {/each}
   </div>
 </div>
@@ -12,4 +12,5 @@
   import AuctionCard from './AuctionCard.svelte';
   export let Coins:Coin[];
   export let Auctions:Array<Auction>, isFirst:boolean|undefined;
+  console.log(Coins, Auctions);
 </script>
