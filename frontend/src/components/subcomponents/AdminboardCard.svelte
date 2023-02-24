@@ -15,13 +15,15 @@
 <style lang="sass">
     @function gradient($fromColor, $toColor)
         @return linear-gradient(172deg, $fromColor, $toColor)
-    a
+    .dashboard-card
         color: white
         text-decoration: none
-    .dashboard-card
+        cursor: pointer !important
         background: gradient(var(--color1), var(--color2))
         border-radius: 0.5rem
         height: 200px
         .bi
             color: #0000004f
+        h2
+            max-width: 123px
 </style>
