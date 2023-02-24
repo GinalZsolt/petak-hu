@@ -10,10 +10,12 @@
   import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
   import { onMount } from "svelte";
-  import {Get} from "../services/dbQueries";
+  import {Get,Patch} from "../services/dbQueries";
   import {GetAuctions} from "../services/dbAuction";
   import BanModal from "./subcomponents/BanModal.svelte";
   import { GetUserData } from "../services/dbUser";
+  import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+  let err1
   interface Profile{
     name:string;
     email:string;
@@ -24,7 +26,9 @@
   export let ID:number;
   let profile:Profile={} as Profile;
   function Promote(){
-
+    Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+      err1.showError()
+    })
   }
 
   let searchText: string = "";
@@ -56,6 +60,7 @@
 <BanModal User={profile} />
 {#if profile}
 <main>
+  <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
           {#if profile.picture==undefined||profile.picture==null||profile.picture==""}
