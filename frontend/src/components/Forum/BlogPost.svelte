@@ -6,11 +6,13 @@
     import {Token, userPerms} from '../../stores';
     import axios from "axios";
     export let ID:number;
+    let Comments;
     async function GetPost():Promise<BlogPost>{
+        console.log(await db.GetBlogpost($Token.token, ID)[0])
         return (await db.GetBlogpost($Token.token, ID))[0]
     }
-    async function GetComments():Promise<Comment>{
-        return axios.get('/');
+    function RefreshComments(){
+        Comments ;
     }
 </script>
 <style lang="sass">
@@ -46,7 +48,7 @@
         <div class="spinner-border m-auto"></div>
     {:then Data}
         <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto ">
-            <img src="{Data.imagefile}" id="post_image" class="float-end" alt="kép">
+            <img src="http://localhost:8080/img/{Data.imagefile}" id="post_image" class="float-end" alt="kép">
             <h2>{Data.title}</h2>
             <div id="authorinfo">
                 <span>{Data.userID} - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data.date))}</span>
@@ -68,14 +70,14 @@
     <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
         <div class="input-group ">
             <input type="text" name="message" id="message" class="form-control">
-            <button type="button" class="btn bi bi-send input-group-text"></button>
+            <button type="button" class="btn input-group-text" on:click={RefreshComments}><i class="bi bi-send"></i></button>
         </div>
     </div> 
-    {#await GetComments()}
-        <div class="spinner-border"></div>
-    {:then Comments} 
-        {#each Comments as comment}
-            <Comment Data={{username:comment,date:"2023-01-30",text:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem vel sint sequi sit voluptate culpa id, similique natus minus odit, minima doloremque tenetur nostrum at eos! Necessitatibus explicabo aperiam illum."}}/>
-        {/each}
+    {#await Comments}
+    <div class="spinner-border"></div>
+        {:then CommentsData} 
+            {#each CommentsData as comment}
+                <Comment Data={{username:comment,date:"2023-01-30",text:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem vel sint sequi sit voluptate culpa id, similique natus minus odit, minima doloremque tenetur nostrum at eos! Necessitatibus explicabo aperiam illum."}}/>
+            {/each}
     {/await}
 </main>

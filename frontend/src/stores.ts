@@ -1,7 +1,6 @@
 import { writable, readable, type Readable, type Writable } from "svelte/store";
 import type { Permission } from "./services/permissionGetter";
 import type { URL } from "./interfaces/URL";
-import Chat from './components/Chat.svelte';
 import Login from "./components/Login.svelte";
 import Dashboard from "./components/Dashboard.svelte";
 import Auctions from "./components/Auctions.svelte";
@@ -23,12 +22,6 @@ export const Routes:Readable<URL[]> =  readable([
     name:'Aukciók',
     minPermission:0,
     component:Auctions
- },
- {
-    url:'/chat',
-    name:'Chat',
-    minPermission:1,
-    component:Chat
  },
  {
     url:'/admin',
