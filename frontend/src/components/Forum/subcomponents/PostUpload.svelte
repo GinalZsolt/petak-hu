@@ -5,8 +5,14 @@
     import {db} from '../../../services/dbForum';
     import { UploadImage } from "../../../services/fileService";
     import { Token, userPerms } from "../../../stores";
+    interface ErrorMessage{
+        text:string;
+        type:string;
+    }
     export let data:uploadData;
     export let Topics:Topic[];
+    let gotError = false;
+    let error:ErrorMessage = {} as ErrorMessage;
     let dispatch = createEventDispatcher();
     async function Upload(){
         if (filledForm()){
@@ -15,13 +21,22 @@
                 console.log(data.file[0]);
                 upload.append('image', data.file[0]);
                 await (UploadImage($Token.token, upload)).then(dt=>{
-                    db.UploadPost($Token.token, {
-                        description:data.description,
-                        title:data.title,
-                        topicID:data.topicID,
-                        userID:$userPerms.id,
-                        imagefile:dt.filename
-                    }).then(rs=>{ if (rs.insertId>0){dispatch('upload')}});
+                    if (dt.status==500){
+                        ShowError("A Fájl rossz!", "danger");
+                    }
+                    else{
+                        db.UploadPost($Token.token, {
+                            description:data.description,
+                            title:data.title,
+                            topicID:data.topicID,
+                            userID:$userPerms.id,
+                            imagefile:dt.filename
+                        }).then(rs=>{ if (rs.insertId>0){
+                            data = {} as uploadData;
+                            ShowError('Sikeres feltöltés!', 'success');
+                            dispatch('upload')
+                        }});
+                    }
                 });
             }
             else{
@@ -31,11 +46,20 @@
                     topicID:data.topicID,
                     userID:$userPerms.id
                 })).insertId>0){
+                    data = {} as uploadData;
+                    ShowError('Sikeres feltöltés!', 'success');
                     dispatch('upload');
                 }
             }
         }
-        //console.log((await UploadImage($Token.token, upload)));
+    }
+    function ShowError(text:string, type:string){
+        error.text = text;
+        error.type = type;
+        gotError = true;
+    }
+    function DismissError(){
+        gotError = false;
     }
     function filledForm(){
         return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
@@ -62,19 +86,22 @@
           <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </div>
         <div class="modal-body">
-            <form action="">
+            {#if gotError}
+                <div class={`d-flex alert alert-${error.type} fade show`}>{error.text}<button type="button" class="bg-none" on:click={DismissError} data-bs-dismiss="alert" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
+            {/if}
+            <form>
                 <div class="mb-3">
                     <label for="title" class="form-label">Bejegyzés címe</label>
                     <input type="text" bind:value={data.title} class="form-control" id="title" name="title" >
                 </div>
                 <div class="mb-3">
                     <label for="text">Tartalom</label>
-                    <textarea class="form-control" bind:value={data.description} id="text" rows="5"></textarea>
+                    <textarea class="form-control" bind:value={data.description} id="text"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="forum">Fórum kiválasztása</label>
                     <select bind:value={data.topicID} class="form-select" id="forum" >
-                        <option selected value={null}>Válasszon fórumot!</option>
+                        <option selected value="-1">Válasszon fórumot!</option>
                         {#each Topics as topic}
                             <option value={topic.ID}>{topic.name}</option>
                         {/each}

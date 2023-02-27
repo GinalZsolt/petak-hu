@@ -24,9 +24,9 @@
     import { userPerms } from "../stores";
     let user = "János";
     let cardata1:any={
-    title:"Chat",
-    icon: 'chat',
-    href: '/chat',
+    title:"Profilom",
+    icon: 'person-circle',
+    href: '/profile/'+$userPerms.id,
     fromColor: '#0040ff',
     toColor: '#00248f'
     }
