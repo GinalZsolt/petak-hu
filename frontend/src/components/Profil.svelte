@@ -1,40 +1,98 @@
 <script lang="ts">
-    let profile={
-        picture: "/test.png",
-        name: "test",
-        email: "test@test.com",
-        coin_list: ["test, test2", "test3"],
-        auction_list: ["test", "test2"]
-    }
-  import { Auction } from "../classes/Auction";
-  import { Coin } from "../classes/Coin/Coin";
+  import type { Auction } from "../interfaces/Auction";
+  import type { Coin } from "../interfaces/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
-  //import CoinModal from "./subcomponents/coinModal.svelte";
+  import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
+  import CoinSlideSm from "./subcomponents/CoinSlide-md-lg.svelte";
+  import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
+  import {userPerms, Token} from './../stores';
+  import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import { onMount } from "svelte";
+  import {Get,Patch} from "../services/dbQueries";
+  import {GetAuctions} from "../services/dbAuction";
+  import BanModal from "./subcomponents/BanModal.svelte";
+  import { GetUserData } from "../services/dbUser";
+  import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+  let err1
+  interface Profile{
+    name:string;
+    email:string;
+    picture?:string;
+    coins:Coin[];
+    auctions:Auction[];
+  }  
   export let ID:number;
+  let profile:Profile={} as Profile;
+  function Promote(){
+    Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+      err1.showError()
+    })
+  }
+
   let searchText: string = "";
     function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
-</script>
+  let auction: Auction[] = [];
 
+  async function getAuctions() {
+    return await await GetAuctions($Token.token, $userPerms.id);
+
+  }
+
+  async function getCoinList() {
+      profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
+  }
+  onMount(async()=>{
+    await GetUserData(ID,$Token.token).then((res)=>{
+      profile=res[0]
+    })
+    await getCoinList();
+    profile.auctions = await getAuctions();
+    console.log(await profile);    
+  })
+
+</script>
+<CoinUpload/>
+<BanModal User={profile} />
+{#if profile}
 <main>
-    <div id="profile">  <!-- profile -->
-        <div class="col-lg-9 d-flex flex-row tulajdonsagok">  
-            <div class="rounded-circle border-dark border overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+  <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
+    <div id="profile" class="row">  <!-- profile -->
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
+          {#if profile.picture==undefined||profile.picture==null||profile.picture==""}
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src="../../public/test.png" alt=""></div> <!-- profile picture-->
+            
+          {:else}
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+            
+          {/if}
             <div id="nevemail">
                 <p>{profile.name}</p> <!-- profile name -->
                 <p>{profile.email}</p> <!-- profile email -->
             </div>
         </div>
-        <div id="buttons">
-            <button class="btn">chat</button> <!-- chat button -->
-            <button class="btn"><i class="bi-three-dots"></i></button> <!-- options button -->
+        <div id="buttons" class="col-lg col-md col-sm col-xs">
+          {#if ID!=$userPerms.id&&$userPerms.permission==2}
+          <div class="dropdown">
+            <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
+              <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
+            </ul>
+          </div>
+          {/if}
         </div>
     </div>
-    <h2>{profile.name} katalógus</h2>
+    <div class="d-flex justify-content-between mb-2">
+      <h2>{profile.name} katalógusa</h2>
+      {#if ID==$userPerms.id}
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+      {/if}
+    </div>
     <div        
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
     >                           <!-- katalogus -->
@@ -45,7 +103,25 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- Ide a katalógus cardjai lesznek! -->
+          <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {#if profile.coins}
+                {#if mediaQuery(576)}
+                  {#each profile.coins as coin, i}
+                    <CoinSlideSm Coin={coin} isFirst={i==0 ? true : false} />            
+                  {/each}
+                {:else if mediaQuery(768)}
+                  {#each Array(profile.coins.length/2)  as index, i}
+                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
+                  {/each}
+                  {:else}
+                  {#each Array(profile.coins.length/3)  as index, i}
+                  <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
+                  {/each}
+                  {/if}
+              {/if}
+            </div>
+          </div>
         </div>
       </div>
       <button
@@ -54,7 +130,7 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div> 
-    <h2>{profile.name} aukció</h2>
+    <h2>{profile.name} aukciói</h2>
     <div        
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
     >                           <!-- aukciók -->
@@ -65,16 +141,21 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!--{#if mediaQuery(576)}
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={false} />
+          {#if profile.auctions}
+            {#if mediaQuery(576)}
+              {#each profile.auctions as auction, i}
+                <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
+              {/each}
             {:else if mediaQuery(768)}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={false} />
-            {:else}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={false}/>
-          {/if}-->
+              {#each Array(profile.auctions.length/2)  as index, i}
+                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
+              {/each}
+              {:else}
+              {#each Array(profile.auctions.length/3)  as index, i}
+                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
+              {/each}
+              {/if}
+          {/if}
         </div>
       </div>
       <button
@@ -85,51 +166,44 @@
     </div>  
     <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-</main>
-
+  </main>
+{/if}
 <style lang="sass">
-    #profile
-        display: flex
-        flex-direction: row
+  #Profile_pic
+      width: 5vw
+      height: 5vw
 
-    #Profile_pic
-        width: 5vw
-        height: 5vw
+  .btn
+      background-color: #ea9e60
+  
+  .katalogus
+      margin: auto
+      height: 20vh
+      background-color: white
+      border: 1px solid black
+  
+  .katalogusok
+      margin: auto
 
-    .btn
-        background-color: #ea9e60
-    
-    .katalogus
-        margin: auto
-        height: 20vh
-        background-color: white
-        border: 1px solid black
-    
-    .katalogusok
-        margin: auto
+  .tulajdonsagok
+      display: flex   
+      align-items: center
+      margint-left: 0px
 
-    .tulajdonsagok
-        display: flex   
-        align-items: center
-        margint-left: 0px
+  #nevemail
+      justify-self: center
+      padding-left: 2vw
 
-    #nevemail
-        justify-self: center
-        padding-left: 2vw
-
-    main
-        margin-left: 10vw
-        margin-right: 10vw
-    
-    .flexstart
-        justify-content: flex-start
-    
-    #profile #buttons
-        justify-items: flex-end
-        display: flex
-        flex-direction: column
-        padding-left: 15vw
-
-    #profile #buttons button
-        margin-bottom: 2vh
+  main
+      margin-left: 10vw
+      margin-right: 10vw
+  
+  .flexstart
+      justify-content: flex-start
+  
+  #profile #buttons
+      justify-items: flex-end
+      display: flex
+      flex-direction: column
+      padding-top: 4vh
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Auction } from "../classes/Auction";
-  import { Coin } from "../classes/Coin/Coin";
+  import type { Auction } from "../interfaces/Auction";
+  import type { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   let searchText: string = "";

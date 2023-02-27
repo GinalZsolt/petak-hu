@@ -10,9 +10,14 @@ export interface ForumPost{
     username:string;
     startingdate:string;
     isClosed:boolean;
-    commentsAmount: number;
 }
 export interface Topic{
     ID:number;
     name:string;
+}
+export interface uploadData{
+    title?:string;
+    description?:string;
+    topicID?:number;
+    file?:FileList;
 }

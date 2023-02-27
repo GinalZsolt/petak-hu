@@ -1,12 +1,45 @@
 <script lang="ts">
-    //majd adatbázisból kell lekérni
-    let forums:any=[
-        {value:"azonositas",Text:"Érmeazonosítás"},
-        {value:"becsles",Text:"Értékbecslés"},
-        {value:"egyeb",Text:"Egyéb"}
-    ]
-
-    let data:any={}
+    import {createEventDispatcher} from 'svelte';
+    import type {uploadData} from '../../../interfaces/Forum';
+    import type { Topic } from "../../../interfaces/Forum";
+    import {db} from '../../../services/dbForum';
+    import { UploadImage } from "../../../services/fileService";
+    import { Token, userPerms } from "../../../stores";
+    export let data:uploadData;
+    export let Topics:Topic[];
+    let dispatch = createEventDispatcher();
+    async function Upload(){
+        if (filledForm()){
+            if (data.file){
+                let upload = new FormData();
+                console.log(data.file[0]);
+                upload.append('image', data.file[0]);
+                await (UploadImage($Token.token, upload)).then(dt=>{
+                    db.UploadPost($Token.token, {
+                        description:data.description,
+                        title:data.title,
+                        topicID:data.topicID,
+                        userID:$userPerms.id,
+                        imagefile:dt.filename
+                    }).then(rs=>{ if (rs.insertId>0){dispatch('upload')}});
+                });
+            }
+            else{
+                if ((await db.UploadPost($Token.token, {
+                    description:data.description,
+                    title:data.title,
+                    topicID:data.topicID,
+                    userID:$userPerms.id
+                })).insertId>0){
+                    dispatch('upload');
+                }
+            }
+        }
+        //console.log((await UploadImage($Token.token, upload)));
+    }
+    function filledForm(){
+        return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
+    }
 </script>
 <style lang="sass">
     button
@@ -36,22 +69,22 @@
                 </div>
                 <div class="mb-3">
                     <label for="text">Tartalom</label>
-                    <textarea class="form-control" bind:value={data.text} id="text" rows="5"></textarea>
+                    <textarea class="form-control" bind:value={data.description} id="text" rows="5"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="forum">Fórum kiválasztása</label>
-                    <select bind:value={data.selectedforum} class="form-select" id="forum" >
+                    <select bind:value={data.topicID} class="form-select" id="forum" >
                         <option selected value={null}>Válasszon fórumot!</option>
-                        {#each forums as forum}
-                            <option value={forum.value}>{forum.Text}</option>
+                        {#each Topics as topic}
+                            <option value={topic.ID}>{topic.name}</option>
                         {/each}
                     </select>
                 </div>
-                <input class="form-control mb-3" bind:value={data.file} name="file"  type="file" id="file">
+                <input class="form-control mb-3" bind:files={data.file} name="file"  type="file" id="file">
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn">Közzététel</button>
+          <button type="button" class="btn" on:click={Upload}>Közzététel</button>
         </div>
       </div>
     </div>

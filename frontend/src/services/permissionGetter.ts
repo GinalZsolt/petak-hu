@@ -1,6 +1,10 @@
 import axios from "axios";
-interface Permission {
+export interface Permission {
     permission: number;
+    username?:string;
+    id?:number;
+    iat?:number;
+    exp?:number;
 }
 export async function GetPerms(Token?:string):Promise<Permission>{
     return await axios.get('http://localhost:8080/api/users/user-data', {
