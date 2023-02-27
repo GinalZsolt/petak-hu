@@ -21,8 +21,15 @@
 </main>
 <script lang="ts">
     import DashboardCard from "./subcomponents/DashboardCard.svelte";
-    import { userPerms } from "../stores";
-    let user = "János";
+    import { userPerms,Token} from "../stores";
+    import { GetUserData } from "../services/dbUser";
+    import { onMount } from "svelte";
+    let user = "";
+    onMount(async ()=>{
+        await GetUserData($userPerms.id,$Token.token).then((res)=>{
+            user=res[0].name
+        })
+    })
     let cardata1:any={
     title:"Chat",
     icon: 'chat',
