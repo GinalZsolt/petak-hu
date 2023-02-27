@@ -9,10 +9,10 @@ export interface BlogPost{
     ID:number;
 }
 export interface Comment{
-    ID:number;
+    ID?:number;
     postID:number;
     userID:number;
-    username:string;
+    username?:string;
     message:string;
     date:string;
 }

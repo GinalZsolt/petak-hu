@@ -1,4 +1,4 @@
-import type { BlogPost } from "../interfaces/Blogpost";
+import type { BlogPost, Comment } from "../interfaces/Blogpost";
 import type { Forum, Topic, ForumPost } from "../interfaces/Forum";
 import { Get, Post, Delete } from "./dbQueries";
 
@@ -9,7 +9,6 @@ export interface dbPost{
     title:string;
     description:string;
 }
-
 
 let url = "http://localhost:8080/api";
 async function GetForums(token:string, topicid:number):Promise<ForumPost[]>{
@@ -27,7 +26,13 @@ async function GetTopic(token:string, topicid:number):Promise<Topic>{
 async function UploadPost(token:string, data:dbPost){
     return await Post(token, 'posts', data);
 }
+async function UploadComment(token:string, data:Comment){
+    return await Post(token, 'comments', data);
+}
+async function GetPostsComments(token:string, postID:number):Promise<Comment[]>{
+    return await Get(token, 'postcomments', 'postID', postID);
+}
 const db = {
-    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost
+    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment
 }
 export {db};
