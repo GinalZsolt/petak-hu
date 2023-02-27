@@ -4,7 +4,7 @@
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
-  import CoinSlideSm from "./subcomponents/CoinSlide-md-lg.svelte";
+  import CoinSlideSm from "./subcomponents/CoinSlide-sm.svelte";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
   import {userPerms, Token} from './../stores';
@@ -105,21 +105,39 @@
         <div class="carousel-inner">
           <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
-              {#if profile.coins}
-                {#if mediaQuery(576)}
-                  {#each profile.coins as coin, i}
-                    <CoinSlideSm Coin={coin} isFirst={i==0 ? true : false} />            
-                  {/each}
-                {:else if mediaQuery(768)}
-                  {#each Array(profile.coins.length/2)  as index, i}
-                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
-                  {/each}
-                  {:else}
-                  {#each Array(profile.coins.length/3)  as index, i}
-                  <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
-                  {/each}
-                  {/if}
+
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            {#if profile.coins}
+            {#if mediaQuery(576)}
+            {#each profile.coins as coin, i}
+              <CoinSlideSm Coin={coin} isFirst={i==0 ? true : false} />            
+            {/each}
+            {:else if mediaQuery(768)}
+              {#each Array(profile.coins.length/2)  as index, i}
+                <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
+              {/each}
+              {:else}
+              {#each Array(profile.coins.length/3)  as index, i}
+              <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
+              {/each}
               {/if}
+          {/if}
             </div>
           </div>
         </div>
@@ -142,20 +160,21 @@
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
           {#if profile.auctions}
-            {#if mediaQuery(576)}
-              {#each profile.auctions as auction, i}
-                <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
-              {/each}
-            {:else if mediaQuery(768)}
-              {#each Array(profile.auctions.length/2)  as index, i}
-                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
-              {/each}
-              {:else}
-              {#each Array(profile.auctions.length/3)  as index, i}
-                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
-              {/each}
-              {/if}
-          {/if}
+          {#if mediaQuery(576)}
+            {#each profile.auctions as auction, i}
+              <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
+            {/each}
+          {:else if mediaQuery(768)}
+            {#each Array(profile.auctions.length/2)  as index, i}
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
+            {/each}
+            {:else}
+            {#each Array(profile.auctions.length/3)  as index, i}
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
+            {/each}
+            {/if}
+        {/if}
+
         </div>
       </div>
       <button

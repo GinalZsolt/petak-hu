@@ -1,14 +1,14 @@
 <div class={isFirst?"carousel-item active":"carousel-item"}>
     <div class="d-flex">
         {#each Coins as coin, i}
-            <AuctionCard Coin={coin[i]} Auction={undefined}/>
+            <CoinCard Coin={coin[i]}/>
         {/each}
     </div>
   </div>
   
   <script lang="ts">
     import type {Coin} from '../../interfaces/Coin';
-    import AuctionCard from './AuctionCard.svelte';
+    import CoinCard from "./CoinCard.svelte";
     export let Coins:Coin[];
     export let isFirst: boolean;
   </script>
