@@ -19,7 +19,7 @@
     }
     onMount(async()=>{
       await GetUserData(ID,$Token.token).then((res)=>{
-      profile.name=res[0].name
+        profile.name=res[0].name
       })
       await getCoinList();
       console.log(profile.coin_list);
@@ -28,7 +28,7 @@
 
 <main>
     <div class="d-flex">
-        <button class="btn border-dark me-2"><i class="bi bi-arrow-left w-auto" /></button>
+        <a  class="btn border-dark me-2" href="/"><i class="bi bi-arrow-left w-auto" /></a>
         <h4>{profile.name} katalógusa</h4>
     </div>
     <nav class="navbar bg-light">

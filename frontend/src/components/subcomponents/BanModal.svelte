@@ -48,7 +48,7 @@
               </div>
               <div class="mb-3">
                 <label for="datum" class="form-label">Felfüggesztés lejáratának dátuma</label>
-                <input type="date" bind:value={User.datum} class="form-control" id="datum" name="datum" >
+                <input type="date" bind:value={User.datum} min={new Date().toISOString().split('T')[0]} class="form-control" id="datum" name="datum" >
               </div>
             </form>
           </div>
