@@ -8,7 +8,7 @@
   }
 </script>
 
-<div class="modal fade" tabindex="-1" role="dialog" id={"coin_"}>
+<div class="modal fade" tabindex="-1" role="dialog" id={"cmodal_"+coin.ID}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

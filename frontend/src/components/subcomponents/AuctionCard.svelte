@@ -4,7 +4,7 @@
   export let Auction: Auction;
   export let Coin: Coin;
 </script>
-<a href="/" class="flexCard"><div class="Card">
+<a href={"/auctions/"+Auction.ID} class="flexCard"><div class="Card">
   <div class="auctimg d-flex justify-content-center">
     <img
       class="m-auto img-fluid"

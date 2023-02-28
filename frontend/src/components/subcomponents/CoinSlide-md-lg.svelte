@@ -1,10 +1,12 @@
 <div class={isFirst?"carousel-item active":"carousel-item"}>
-    <div class="d-flex">
-        {#each Coins as coin, i}
-            <CoinCard Coin={coin[i]}/>
+  {#if Coins}  
+  <div class="d-flex">
+        {#each Coins as coin}
+          <CoinCard coin={coin}/>
         {/each}
-    </div>
   </div>
+  {/if}
+</div>
   
   <script lang="ts">
     import type {Coin} from '../../interfaces/Coin';
