@@ -6,6 +6,7 @@ export interface Coin{
     description:string;
     images:Images;
     tags:Array<CoinTag>;
+    userID:number;
 }
 interface Images{
     headfile:string,

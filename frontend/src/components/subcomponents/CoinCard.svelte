@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Coin } from '../../interfaces/Coin';
+    import type { Coin } from '../../classes/Coin/Coin';
     import CoinModal from './coinModal.svelte';
     export let coin: Coin;
 </script>
@@ -8,7 +8,7 @@
   {#if coin}
   <div class="Card">
   <div class="auctimg d-flex justify-content-center">
-    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
+    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.images.headfile} alt={coin.name} />
   </div>
         <div
         class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
@@ -25,8 +25,6 @@
     </div>
   {/if}
 </a>
-<CoinModal coin={coin}></CoinModal>
-
   <style lang="sass">
       a
         color: white
