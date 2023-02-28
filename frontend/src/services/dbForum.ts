@@ -1,6 +1,6 @@
 import type { BlogPost, Comment } from "../interfaces/Blogpost";
 import type { Forum, Topic, ForumPost } from "../interfaces/Forum";
-import { Get, Post, Delete } from "./dbQueries";
+import { Get, Post, Delete, Patch } from "./dbQueries";
 
 export interface dbPost{
     topicID:number;
@@ -32,7 +32,12 @@ async function UploadComment(token:string, data:Comment){
 async function GetPostsComments(token:string, postID:number):Promise<Comment[]>{
     return await Get(token, 'postcomments', 'postID', postID);
 }
+async function DeletePost(token:string, postID:number){
+    return await Patch(token, 'posts', 'ID', postID, {
+      isDeleted: 1  
+    });
+}
 const db = {
-    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment
+    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost
 }
 export {db};

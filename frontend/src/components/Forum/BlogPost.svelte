@@ -9,6 +9,11 @@
     function RefreshComments(){
         Comments = db.GetPostsComments($Token.token, ID);
     }
+    function DeletePost(){
+        db.DeletePost($Token.token, ID).then(()=>{
+            Posts = db.GetBlogpost($Token.token, ID);
+        })
+    }
     function SendComment(){
         if (newMessage!=undefined && newMessage!=""){
             db.UploadComment($Token.token, {
@@ -52,6 +57,20 @@
     {#await Posts}
         <div class="spinner-border m-auto"></div>
     {:then Data}
+        {#if Data[0].isDeleted}
+            <div class="alert alert-dismissible alert-warning"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett!</div>
+        {/if}    
+        {#if Data[0].isClosed}
+            <div class="alert alert-dismissible alert-primary"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
+        {/if}
+        <div class="d-flex flex-row justify-content-between col-lg-8 col-md-8 col-11 mx-auto">
+            <a href="/forums" class="btn"><i class="bi bi-arrow-left"></i></a>
+            <div/>
+            <div>
+                <button class="btn btn-danger" on:click={DeletePost}><i class="bi bi-trash"></i></button>
+
+            </div>
+        </div>
         <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto d-flex flex-row justify-content-between">
             <div>
                 <h2>{Data[0].title}</h2>
@@ -77,13 +96,15 @@
             </div>
             {/if}
         </div>
+        {#if !Data[0].isClosed}
+            <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
+                <div class="input-group">
+                    <input type="text" name="message" id="message" class="form-control" bind:value={newMessage}>
+                    <button type="button" class="btn input-group-text" on:click={SendComment}><i class="bi bi-send"></i></button>
+                </div>
+            </div> 
+        {/if}
     {/await}
-    <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
-        <div class="input-group">
-            <input type="text" name="message" id="message" class="form-control" bind:value={newMessage}>
-            <button type="button" class="btn input-group-text" on:click={SendComment}><i class="bi bi-send"></i></button>
-        </div>
-    </div> 
     {#await Comments}
     <div class="spinner-border"></div>
         {:then CommentsData} 

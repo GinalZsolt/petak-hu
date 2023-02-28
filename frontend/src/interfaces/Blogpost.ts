@@ -3,7 +3,7 @@ export interface BlogPost{
     description:string;
     imagefile:string;
     date:string;
-    isClosed:boolean;
+    isClosed:number;
     topicID:number;
     userID:number;
     ID:number;

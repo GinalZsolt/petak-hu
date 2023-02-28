@@ -37,24 +37,27 @@
         {#await Posts}
             <div class="spinner-border" />
         {:then PostData}
-                {#each PostData as post}
-                    <div in:fade="{{duration:100}}" out:fade="{{duration:100}}" class="post d-flex justify-content-between align-items-center">
-                        <a href={`/forums/${post.postID}`}>{post.title}</a>
-                        <div class="d-md-none d-flex flex-column ">
-                            <span>{new Date(post.startingdate).toLocaleDateString("hu-HU")}</span>
-                            <span>{post.username}</span>
-                        </div>
-                        <span class="d-none d-md-block">
-                            {new Date(post.startingdate).toLocaleDateString("hu-HU")}
-                        </span>
-                        <a href={`/profile/${post.userID}`} class="d-none d-md-block">{post.username}</a>
-                    </div>
-                    <hr class="w-100 mb-0" />
-                {/each}
-                {:catch Error}
-                <div>{Error}</div>
+            {#if PostData.filter(e=>!e.isDeleted).length>0}
+            <table>
+                <tbody>
+                    {#each PostData.sort((a,b)=>new Date(a.startingdate).getTime()+new Date(b.startingdate).getTime()) as post}
+                        {#if !post.isDeleted}
+                            <tr>
+                                <td><a href={`/forums/${post.postID}`}>{post.title}{#if post.isClosed}<i class="bi bi-check"/>{/if}</a></td>
+                                <td><span>{new Date(post.startingdate).toLocaleDateString("hu-HU")}</span></td>
+                                <td><a href={`/profile/${post.userID}`} class="d-none d-md-block">{post.username}</a></td>
+                            </tr>
+                        {/if}
+                    {/each}
+                </tbody>
+            </table>
+            {:else}
+                <h2 class="text-center">Ebben a fórumtémában még nincs bejegyzés!</h2>
+            {/if}
+        {:catch Error}
+            <div>{Error}</div>
                 {/await}
-            </div>
+        </div>
             
     {:catch Err}
         <div>{Err}</div>
@@ -73,5 +76,20 @@
         background-color: white
         text-align: center
         border-bottom: 1px solid black
-
+    table
+        width: 100%
+    tr
+        border-bottom: 1px solid gray
+        td
+            padding-bottom: 0.5rem
+            padding-top: 0.5rem
+            margin-bottom: 0.25rem
+            margin-top: 0.25rem
+            text-align: center
+        td:first-of-type
+            text-align: left
+        td:last-of-type
+            text-align: right
+    tr:last-of-type
+        border: none
 </style>

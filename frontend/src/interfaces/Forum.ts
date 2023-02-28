@@ -9,6 +9,7 @@ export interface ForumPost{
     title:string;
     username:string;
     startingdate:string;
+    isDeleted:boolean
     isClosed:boolean;
 }
 export interface Topic{
