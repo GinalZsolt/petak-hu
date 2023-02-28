@@ -1,29 +1,36 @@
 <script lang="ts">
     import type { Coin } from '../../interfaces/Coin';
-    export let Coin: Coin;
+    import CoinModal from './coinModal.svelte';
+    export let coin: Coin;
 </script>
     
-<a href="/" class="flexCard"><div class="Card">
+<a href="#" class="flexCard"  data-bs-target={"#cmodal_"+coin.ID} data-bs-toggle="modal">
+  {#if coin}
+  <div class="Card">
   <div class="auctimg d-flex justify-content-center">
-    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + Coin.headfile} alt={Coin.name} />
+    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
   </div>
-  <div
-    class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
-  >
-    <p class="my-0 py-0">
-      {
-      Coin.name.substring(0, 15) == Coin.name
-        ? Coin.name
-        : Coin.name.substring(0, 15) + "..."
-      }
-    </p>
-    <p class="my-0 py-0">{Coin.worth} Ft</p>
-  </div>
-</div></a>
+        <div
+        class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
+        >
+        <p class="my-0 py-0">
+        {
+          coin.name.substring(0, 15) == coin.name
+          ? coin.name
+          : coin.name.substring(0, 15) + "..."
+        }
+        </p>
+        <p class="my-0 py-0">{coin.worth} Ft</p>
+      </div>
+    </div>
+  {/if}
+</a>
+<CoinModal coin={coin}></CoinModal>
 
   <style lang="sass">
-      .coinname
-        background-color: #B1B2B5
+      a
+        color: white
+        text-decoration: none
       .flexCard
         flex: 1 1 auto
         border-left: 1px solid white

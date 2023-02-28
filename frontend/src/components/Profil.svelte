@@ -105,24 +105,6 @@
         <div class="carousel-inner">
           <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
-
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             {#if profile.coins}
             {#if mediaQuery(576)}
             {#each profile.coins as coin, i}
