@@ -23,6 +23,7 @@
     coins:Coin[];
     auctions:Auction[];
   }  
+  export let modalCoin: Coin;
   export let ID:number;
   let profile:Profile={} as Profile;
   function Promote(){
@@ -108,7 +109,7 @@
             {#if profile.coins}
             {#if mediaQuery(576)}
             {#each profile.coins as coin, i}
-              <CoinSlideSm Coin={coin} isFirst={i==0 ? true : false} />            
+              <CoinSlideSm coin={coin} isFirst={i==0 ? true : false} />            
             {/each}
             {:else if mediaQuery(768)}
               {#each Array(profile.coins.length/2)  as index, i}
@@ -167,6 +168,7 @@
     </div>  
     <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
+    <!--<CoinModal coin={modalCoin}></CoinModal>-->
   </main>
 {/if}
 <style lang="sass">
