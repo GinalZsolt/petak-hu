@@ -2,13 +2,13 @@
     import type { Coin } from '../../classes/Coin/Coin';
     import CoinModal from './coinModal.svelte';
     export let coin: Coin;
+    console.log(coin)
 </script>
     
-<a href="#" class="flexCard"  data-bs-target={"#cmodal_"+coin.ID} data-bs-toggle="modal">
-  {#if coin}
+<a href="#" class="flexCard"  data-bs-target={"#cmodal"} data-bs-toggle="modal">
   <div class="Card">
   <div class="auctimg d-flex justify-content-center">
-    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.images.headfile} alt={coin.name} />
+    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
   </div>
         <div
         class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
@@ -23,7 +23,6 @@
         <p class="my-0 py-0">{coin.worth} Ft</p>
       </div>
     </div>
-  {/if}
 </a>
   <style lang="sass">
       a

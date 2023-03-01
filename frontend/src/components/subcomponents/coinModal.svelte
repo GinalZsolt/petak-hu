@@ -1,18 +1,29 @@
 <script lang="ts">
   import type { Coin } from "../../classes/Coin/Coin";
-    import { userPerms } from "../../stores";
-  export let Coin: Coin;
-  console.log(Coin)
+  import { userPerms } from "../../stores";
+  let coin: Coin ={
+      ID: 0,
+      name: "",
+      description: "",
+      images: { headfile: "", tailfile: "" },
+      worth: 0,
+      tags: [],
+      userID: 0
+  };
+  console.log(coin)
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
+  export function loadmodal(loadable){
+    coin=loadable
+  }
 </script>
 
-<div class="modal fade" tabindex="-1" role="dialog" id={"cmodal_"+coin.ID}>
+<div class="modal fade" tabindex="-1" role="dialog" id={"cmodal"}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">{Coin.name}</h2>
+        <h2 class="modal-title">{coin.name}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -31,16 +42,20 @@
           >
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + Coin.images.headfile}
-                  alt=""
-                />
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
+                    src={"http://localhost:8080/img/" + coin.headfile}
+                    alt=""
+                  />
+                </div>
               </div>
               <div class="carousel-item">
-                <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + Coin.images.tailfile}
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
+                  src={"http://localhost:8080/img/" + coin.tailfile}
                   alt=""
-                />
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -50,16 +65,16 @@
             data-bs-slide="next"><i class="bi bi-arrow-right" /></button
           >
         </div>
-        <h4>Becsült érték: {Coin.worth} Ft</h4>
+        <h4>Becsült érték: {coin.worth} Ft</h4>
         <hr>
         <h4>Információk az érméről:</h4>
-        {#each Coin.description.split('\n') as text}
+        {#each coin.description.split('\n') as text}
           <p>{text}</p>
         {/each}
       </div>
-      <div class={`modal-footer ${Coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
+      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
         
-        {#if Coin.userID == $userPerms.id}
+        {#if coin.userID == $userPerms.id}
         <div>
           <button type="button" class="btn btn-primary">Módosítás</button>
           <button type="button" class="btn btn-primary">Aukció</button>
@@ -81,10 +96,12 @@
 </div>
 
 <style lang="sass">
-    .btn
-        background-color: #ea9e60
-    .modalpic
-        display: flex
-        flex-direction: column
-        align-items: flex-start
+  .btn
+    background-color: #ea9e60
+  .modalpic
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+  .imageback
+    background-color: black
 </style>
