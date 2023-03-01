@@ -1,16 +1,21 @@
 <script lang="ts">
   import type { Auction } from "../../interfaces/Auction";
   import type { Coin } from '../../interfaces/Coin';
+  import { GetCoin } from "../../services/dbCoin";
+  import {Token} from '../../stores';
   export let Auction: Auction;
-  export let Coin: Coin;
+  let _Coin: Promise<Coin> = GetCoin(Auction.coinID, $Token.token);
 </script>
 <a href={"/auctions/"+Auction.ID} class="flexCard"><div class="Card">
   <div class="auctimg d-flex justify-content-center">
-    <img
-      class="m-auto img-fluid"
-      src={"/" + Coin.headfile}
-      alt={Auction.title}
-    />
+    {#await _Coin}
+    {:then Data}
+      <img
+        class="m-auto img-fluid"
+        src={"http://localhost:8080/img/" + Data.headfile}
+        alt={Data.name}
+      />
+    {/await}
   </div>
   <div
     class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
@@ -22,7 +27,7 @@
         : Auction.title.substring(0, 15) + "..."
       }
     </p>
-    <p class="my-0 py-0">{Auction.price} Ft</p>
+    <p class="my-0 py-0">{new Intl.NumberFormat('hu-HU', {style:'currency', currency:'HUF'}).format(Auction.price)} Ft</p>
   </div>
 </div></a>
 
@@ -31,11 +36,13 @@
   flex: 1 1 auto
   border-left: 1px solid white
   border-right: 1px solid white
+  width: 33%
 .Card
   height: 100%
   position: relative
 .auctimg
   background-color: #000
+  max-width: 100%
 .bottomText
   position: absolute
   top: calc(100% - 24px)
