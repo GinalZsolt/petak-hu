@@ -7,6 +7,7 @@
     import { onMount } from "svelte";
     import { GetUserData } from "../services/dbUser";
     export let ID:number;
+    let modal
     let searchtext:string=""
     let profile={
         name:"",
@@ -23,10 +24,11 @@
         profile.name=res[0].name
       })
       await getCoinList();
+      modal.loadmodal(profile.coin_list[0])
       console.log(profile.coin_list);
     })
-    function PickCoin(pickedid){
-      selectedcoin=profile.coin_list.find(x=>x.ID==pickedid)
+    function PickCoin(picked){
+      modal.loadmodal(picked)
     }
 </script>
 
@@ -47,11 +49,11 @@
     <div class="cards row">
       {#if profile.coin_list}
         {#each profile.coin_list as coin}
-          <CoinCard Coin={coin} on:click={()=>{PickCoin(coin.ID)}}/>
+          <CoinCard coin={coin} on:click={()=>{PickCoin(coin)}}/>
         {/each}
       {/if}
     </div>
-      <CoinModal Coin={selectedcoin}/>
+      <CoinModal bind:this={modal} />
 </main>
 
 <style lang="sass">

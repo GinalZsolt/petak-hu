@@ -3,10 +3,10 @@
     import Profil from '../Profil.svelte';
     import CoinModal from './coinModal.svelte';
     export let coin: Coin;
+    console.log(coin)
 </script>
     
-<a href="#" class="flexCard"  data-bs-target="singleCModal" data-bs-toggle="modal">
-  {#if coin}
+<a href="#" class="flexCard"  data-bs-target={"#cmodal"} data-bs-toggle="modal">
   <div class="Card">
   <div class="auctimg d-flex justify-content-center">
     <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
@@ -24,7 +24,6 @@
         <p class="my-0 py-0">{coin.worth} Ft</p>
       </div>
     </div>
-  {/if}
 </a>
   <style lang="sass">
       a
