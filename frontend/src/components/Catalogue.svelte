@@ -50,7 +50,7 @@
     <div class="cards row">
       {#if profile.coin_list}
         {#each profile.coin_list as coin}
-          <div on:click={()=>{PickCoin(coin)}}>
+          <div class="col-lg-4 col-md-6 col-12" on:click={()=>{PickCoin(coin)}}>
             <CoinCard coin={coin} />
           </div>
         {/each}
