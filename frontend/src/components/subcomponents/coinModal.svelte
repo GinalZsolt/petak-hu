@@ -14,19 +14,14 @@
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
-<<<<<<< HEAD
-  let editMode=false;
-=======
   export function loadmodal(loadable){
     coin=loadable
   }
->>>>>>> b5e2e060ff59e566b1a91ce89a0629123643fb37
 </script>
 
 <div class="modal fade" tabindex="-1" role="dialog" id={"cmodal"}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      {#if !editMode}
       <div class="modal-header">
         <h2 class="modal-title">{coin.name}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -96,7 +91,6 @@
           <button><i class="bi btn bi-share"></i></button>
         </div>
       </div>
-      {/if}
     </div>
   </div>
 </div>
