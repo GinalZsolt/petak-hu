@@ -5,11 +5,13 @@
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
+  let editMode=false;
 </script>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="singleCModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+      {#if !editMode}
       <div class="modal-header">
         <h2 class="modal-title">{coin.name}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -60,7 +62,7 @@
         
         {#if coin.userID == $userPerms.id}
         <div>
-          <button type="button" class="btn btn-primary">Módosítás</button>
+          <button type="button" class="btn btn-primary" on:click={()=>editMode=!editMode}>Módosítás</button>
           <button type="button" class="btn btn-primary">Aukció</button>
         </div>
         {/if}
@@ -75,6 +77,7 @@
           <button><i class="bi btn bi-share"></i></button>
         </div>
       </div>
+      {/if}
     </div>
   </div>
 </div>
