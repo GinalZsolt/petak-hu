@@ -27,7 +27,7 @@
         : Auction.title.substring(0, 15) + "..."
       }
     </p>
-    <p class="my-0 py-0">{new Intl.NumberFormat('hu-HU', {style:'currency', currency:'HUF'}).format(Auction.price)} Ft</p>
+    <p class="my-0 py-0">{new Intl.NumberFormat('hu-HU', {style:'currency', currency:'HUF'}).format(Auction.price)}</p>
   </div>
 </div></a>
 
