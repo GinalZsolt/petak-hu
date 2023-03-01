@@ -1,14 +1,29 @@
 <script lang="ts">
-  import type { Coin } from "../../interfaces/Coin";
+  import type { Coin } from "../../classes/Coin/Coin";
   import { userPerms } from "../../stores";
-  export let coin: Coin;
+  let coin: Coin ={
+      ID: 0,
+      name: "",
+      description: "",
+      images: { headfile: "", tailfile: "" },
+      worth: 0,
+      tags: [],
+      userID: 0
+  };
+  console.log(coin)
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
+<<<<<<< HEAD
   let editMode=false;
+=======
+  export function loadmodal(loadable){
+    coin=loadable
+  }
+>>>>>>> b5e2e060ff59e566b1a91ce89a0629123643fb37
 </script>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="singleCModal">
+<div class="modal fade" tabindex="-1" role="dialog" id={"cmodal"}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       {#if !editMode}
@@ -32,16 +47,20 @@
           >
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + coin.headfile}
-                  alt=""
-                />
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
+                    src={"http://localhost:8080/img/" + coin.headfile}
+                    alt=""
+                  />
+                </div>
               </div>
               <div class="carousel-item">
-                <img class="img-fluid"
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
                   src={"http://localhost:8080/img/" + coin.tailfile}
                   alt=""
-                />
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -83,10 +102,12 @@
 </div>
 
 <style lang="sass">
-    .btn
-        background-color: #ea9e60
-    .modalpic
-        display: flex
-        flex-direction: column
-        align-items: flex-start
+  .btn
+    background-color: #ea9e60
+  .modalpic
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+  .imageback
+    background-color: black
 </style>
