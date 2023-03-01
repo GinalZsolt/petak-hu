@@ -29,6 +29,7 @@
     })
     function PickCoin(picked){
       modal.loadmodal(picked)
+      console.log(picked)
     }
 </script>
 
@@ -49,7 +50,9 @@
     <div class="cards row">
       {#if profile.coin_list}
         {#each profile.coin_list as coin}
-          <CoinCard coin={coin} on:click={()=>{PickCoin(coin)}}/>
+          <div on:click={()=>{PickCoin(coin)}}>
+            <CoinCard coin={coin} />
+          </div>
         {/each}
       {/if}
     </div>
