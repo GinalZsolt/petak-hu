@@ -14,6 +14,9 @@
             Posts = db.GetBlogpost($Token.token, ID);
         })
     }
+    function FinishPost(){
+        db.ClosePost($Token.token, ID).then(()=>{Posts = db.GetBlogpost($Token.token, ID)});
+    }
     function SendComment(){
         if (newMessage!=undefined && newMessage!=""){
             db.UploadComment($Token.token, {
@@ -47,6 +50,9 @@
     #post_image
         width:50%
         margin-left: auto
+    #backbtn
+        background: #ffcc95
+        border: 1px solid var(--bs-dark)
     .input-group>button
         border:1px solid black
         background-color: #ea9e60
@@ -58,17 +64,23 @@
         <div class="spinner-border m-auto"></div>
     {:then Data}
         {#if Data[0].isDeleted}
-            <div class="alert alert-dismissible alert-warning"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett!</div>
+            <div class="alert alert-dismissible alert-warning"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}    
         {#if Data[0].isClosed}
             <div class="alert alert-dismissible alert-primary"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}
-        <div class="d-flex flex-row justify-content-between col-lg-8 col-md-8 col-11 mx-auto">
-            <a href="/forums" class="btn"><i class="bi bi-arrow-left"></i></a>
+        <div class="d-flex flex-row justify-content-between col-lg-8 col-md-8 col-11 mx-auto my-2">
+            <a href="/forums" id="backbtn" class="btn"><i class="bi bi-arrow-left"></i></a>
             <div/>
             <div>
-                <button class="btn btn-danger" on:click={DeletePost}><i class="bi bi-trash"></i></button>
-
+                {#if Data[0].userID == $userPerms.id || $userPerms.permission == 2}
+                    {#if !Data[0].isDeleted}
+                        <button class="btn btn-danger" on:click={DeletePost}><i class="bi bi-trash"></i></button>
+                    {/if}
+                    {#if !Data[0].isClosed && !Data[0].isDeleted}
+                        <button class="btn btn-success" on:click={FinishPost}><i class="bi bi-check"></i></button>
+                    {/if}
+                {/if}
             </div>
         </div>
         <div id="post" class="col-lg-8 col-md-8 col-11 mx-auto d-flex flex-row justify-content-between">
@@ -96,7 +108,7 @@
             </div>
             {/if}
         </div>
-        {#if !Data[0].isClosed}
+        {#if !Data[0].isClosed && !Data[0].isDeleted}
             <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
                 <div class="input-group">
                     <input type="text" name="message" id="message" class="form-control" bind:value={newMessage}>
@@ -109,7 +121,7 @@
     <div class="spinner-border"></div>
         {:then CommentsData} 
             {#each CommentsData as comment}
-                <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message}}/>
+                <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
             {/each}
     {/await}
 </main>

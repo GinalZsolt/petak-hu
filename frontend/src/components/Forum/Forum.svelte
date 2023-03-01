@@ -43,7 +43,7 @@
                     {#each PostData.sort((a,b)=>new Date(a.startingdate).getTime()+new Date(b.startingdate).getTime()) as post}
                         {#if !post.isDeleted}
                             <tr>
-                                <td><a href={`/forums/${post.postID}`}>{post.title}{#if post.isClosed}<i class="bi bi-check"/>{/if}</a></td>
+                                <td><a class={post.isClosed?"text-success" : ""} href={`/forums/${post.postID}`}>{post.title}{#if post.isClosed}<i class="bi bi-check"/>{/if}</a></td>
                                 <td><span>{new Date(post.startingdate).toLocaleDateString("hu-HU")}</span></td>
                                 <td><a href={`/profile/${post.userID}`} class="d-none d-md-block">{post.username}</a></td>
                             </tr>

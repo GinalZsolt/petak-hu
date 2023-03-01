@@ -34,10 +34,15 @@ async function GetPostsComments(token:string, postID:number):Promise<Comment[]>{
 }
 async function DeletePost(token:string, postID:number){
     return await Patch(token, 'posts', 'ID', postID, {
-      isDeleted: 1  
+        isDeleted: 1  
+    });
+}
+async function ClosePost(token:string, postID:number){
+    return await Patch(token, 'posts', 'ID', postID, {
+        isClosed: 1
     });
 }
 const db = {
-    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost
+    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost, ClosePost
 }
 export {db};
