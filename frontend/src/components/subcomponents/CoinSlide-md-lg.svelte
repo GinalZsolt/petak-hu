@@ -2,15 +2,23 @@
   {#if Coins}  
   <div class="d-flex">
         {#each Coins as coin}
-          <CoinCard coin={coin}/>
+          <div on:click={()=>{PickCoin(coin)}}>
+            <CoinCard coin={coin} />
+          </div>
         {/each}
   </div>
   {/if}
 </div>
   
   <script lang="ts">
-    import type {Coin} from '../../interfaces/Coin';
+    import type {Coin} from "../../interfaces/Coin";
     import CoinCard from "./CoinCard.svelte";
     export let Coins:Coin[];
     export let isFirst: boolean;
+    import CoinModal from "./coinModal.svelte";
+    let modal
+    function PickCoin(picked){
+      modal.loadmodal(picked)
+      console.log(picked)
+    }
   </script>

@@ -5,7 +5,6 @@
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
   import CoinSlideSm from "./subcomponents/CoinSlide-sm.svelte";
-  import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
   import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
@@ -15,29 +14,20 @@
   import BanModal from "./subcomponents/BanModal.svelte";
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-  let err1
-  interface Profile{
-    name:string;
-    email:string;
-    picture?:string;
-    coins:Coin[];
-    auctions:Auction[];
-  }  
-  export let modalCoin: Coin;
+  let err1 
   export let ID:number;
-  let profile:Profile={} as Profile;
+  let profile
   function Promote(){
     Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
       err1.showError()
     })
   }
 
-  let searchText: string = "";
-    function mediaQuery(pixels:number):boolean{
+  function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
-  let auction: Auction[] = [];
+
 
   async function getAuctions() {
     return await await GetAuctions($Token.token, $userPerms.id);
@@ -47,6 +37,7 @@
   async function getCoinList() {
       profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
   }
+
   onMount(async()=>{
     await GetUserData(ID,$Token.token).then((res)=>{
       profile=res[0]
@@ -64,11 +55,11 @@
   <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
-          {#if profile.picture==undefined||profile.picture==null||profile.picture==""}
+          {#if profile.imagefile==undefined||profile.imagefile==null||profile.imagefile==""}
             <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src="../../public/test.png" alt=""></div> <!-- profile picture-->
             
           {:else}
-            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={"http://localhost:8080/img/"+profile.imagefile} alt=""></div> <!-- profile picture-->
             
           {/if}
             <div id="nevemail">
@@ -106,21 +97,21 @@
         <div class="carousel-inner">
           <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
-            {#if profile.coins}
-            {#if mediaQuery(576)}
-            {#each profile.coins as coin, i}
-              <CoinSlideSm coin={coin} isFirst={i==0 ? true : false} />            
-            {/each}
-            {:else if mediaQuery(768)}
-              {#each Array(profile.coins.length/2)  as index, i}
-                <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
-              {/each}
-              {:else}
-              {#each Array(profile.coins.length/3)  as index, i}
-              <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
-              {/each}
-              {/if}
-          {/if}
+              {#if profile.coins}
+                {#if mediaQuery(576)}
+                  {#each profile.coins as coin, i}
+                    <CoinSlideSm coin={coin} isFirst={i==0 ? true : false} />            
+                  {/each}
+                {:else if mediaQuery(768)}
+                  {#each Array(profile.coins.length/2)  as index, i}
+                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
+                  {/each}
+                {:else}
+                  {#each Array(profile.coins.length/3)  as index, i}
+                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
+                  {/each}
+                {/if}
+              {/if} 
             </div>
           </div>
         </div>
@@ -149,11 +140,11 @@
             {/each}
           {:else if mediaQuery(768)}
             {#each Array(profile.auctions.length/2)  as index, i}
-              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} isFirst={i==0 ? true : false} />
             {/each}
             {:else}
             {#each Array(profile.auctions.length/3)  as index, i}
-              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} isFirst={i==0 ? true : false} />
             {/each}
             {/if}
         {/if}
@@ -166,9 +157,9 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-    <!--<CoinModal coin={modalCoin}></CoinModal>-->
+    <!--<CoinModal Coin={profile.coins[0]}></CoinModal>-->
   </main>
 {/if}
 <style lang="sass">
