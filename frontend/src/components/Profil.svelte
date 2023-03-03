@@ -23,7 +23,7 @@
     coins:Coin[];
     auctions:Auction[];
   }  
-  export let modalCoin: Coin;
+  let modalCoin: Coin;
   export let ID:number;
   let profile:Profile={} as Profile;
   function Promote(){
@@ -47,6 +47,7 @@
   async function getCoinList() {
       profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
   }
+  
   onMount(async()=>{
     await GetUserData(ID,$Token.token).then((res)=>{
       profile=res[0]

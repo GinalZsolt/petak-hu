@@ -33,7 +33,8 @@ async function UploadCoin(Coin, token: string) {
 }
 
 async function UploadTag(tag, token: string) {
-    await axios.post(BackendURL + "/api/tagdescriptions", { description: tag.descriptionID }, {
+    console.log(tag)
+    await axios.post(BackendURL + "/api/tagdescriptions", { description: tag.descID }, {
         headers: {
             'Authorization': 'JWT ' + token
         }
