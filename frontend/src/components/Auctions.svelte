@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Auction } from "../interfaces/Auction";
-  import type { Coin } from "../classes/Coin/Coin";
-  import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
-  import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
+  import { GetAllAuctions, GetAuctions } from "../services/dbAuction";
+  import { Token } from "../stores";
+  import AuctionCard from "./subcomponents/AuctionCard.svelte";
   let searchText: string = "";
   function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
+  let Auctions = GetAllAuctions($Token.token);
 </script>
 
 <main>
@@ -35,7 +35,25 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- add meg itt a cardokat! -->
+          {#await Auctions}
+            <div class="spinner-border"></div>
+            {:then Data}
+              {#each Array(Math.ceil((Data.length/3))) as i, index}
+              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
+                <div class="d-flex">
+                  {#if Data[index]}
+                  <AuctionCard Auction={Data[index]} />
+                  {/if}
+                  {#if Data[index+1]}
+                  <AuctionCard Auction={Data[index+1]} />
+                  {/if}
+                  {#if Data[index+2]}
+                  <AuctionCard Auction={Data[index+2]} />
+                  {/if}
+                </div>
+              </div>
+              {/each}
+          {/await}
         </div>
       </div>
       <button
@@ -55,7 +73,25 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- add meg itt a cardokat! -->
+          {#await Auctions}
+            <div class="spinner-border"></div>
+            {:then Data}
+              {#each Array(Math.ceil((Data.length/3))) as i, index}
+              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
+                <div class="d-flex">
+                  {#if Data[index]}
+                  <AuctionCard Auction={Data[index]} />
+                  {/if}
+                  {#if Data[index+1]}
+                  <AuctionCard Auction={Data[index+1]} />
+                  {/if}
+                  {#if Data[index+2]}
+                  <AuctionCard Auction={Data[index+2]} />
+                  {/if}
+                </div>
+              </div>
+              {/each}
+          {/await}
         </div>
       </div>
       <button

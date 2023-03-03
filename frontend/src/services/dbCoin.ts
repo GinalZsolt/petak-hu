@@ -15,7 +15,7 @@ async function GetTagTypes(token: string): Promise<TagType[]> {
     })
 }
 
-async function GetCoin(id:number, token:string){
+async function GetCoin(id:number, token:string):Promise<Coin>{
     return await axios.get(BackendURL+'/api/coins/ID/'+id, {
         headers:{
             'Authorization': 'JWT '+token
