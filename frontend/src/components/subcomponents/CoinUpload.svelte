@@ -76,9 +76,10 @@
             tags.forEach(element => {
                 let uploadableTag={
                     coinID:coinID,
-                    nameID:tagtypes.find(e=>e.name==element.name).ID,
+                    nameID:element.name,
                     descID:element.description
                 }
+                console.log(uploadableTag)
                 UploadTag(uploadableTag,$Token.token)
             });
             data={}
