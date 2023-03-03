@@ -1,6 +1,6 @@
 <div class={isFirst?"carousel-item active":"carousel-item"}>
   <div>
-      <AuctionCard Auction={Auction} Coin={Coin}/>
+      <AuctionCard Auction={Auction}/>
   </div>
 </div>
 <script lang="ts">

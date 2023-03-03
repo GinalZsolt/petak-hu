@@ -9,7 +9,7 @@
 </div>
   
   <script lang="ts">
-    import type {Coin} from "../../classes/Coin/Coin";
+    import type {Coin} from "../../interfaces/Coin";
     import CoinCard from "./CoinCard.svelte";
     export let Coins:Coin[];
     export let isFirst: boolean;
