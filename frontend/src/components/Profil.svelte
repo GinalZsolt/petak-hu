@@ -5,7 +5,6 @@
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
   import CoinSlideSm from "./subcomponents/CoinSlide-sm.svelte";
-  import CoinModal from "./subcomponents/coinModal.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
   import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
@@ -15,15 +14,7 @@
   import BanModal from "./subcomponents/BanModal.svelte";
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-  let err1
-  interface Profile{
-    name:string;
-    email:string;
-    picture?:string;
-    coins:Coin[];
-    auctions:Auction[];
-  }  
-  let modalCoin: Coin;
+  let err1 
   export let ID:number;
   let profile
   function Promote(){
@@ -32,12 +23,11 @@
     })
   }
 
-  let searchText: string = "";
-    function mediaQuery(pixels:number):boolean{
+  function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
-  let auction: Auction[] = [];
+
 
   async function getAuctions() {
     return await await GetAuctions($Token.token, $userPerms.id);
@@ -118,7 +108,7 @@
                   {/each}
                 {:else}
                   {#each Array(profile.coins.length/3)  as index, i}
-                  <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
+                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
                   {/each}
                 {/if}
               {/if} 
