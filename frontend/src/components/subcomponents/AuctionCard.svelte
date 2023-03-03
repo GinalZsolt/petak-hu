@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Auction } from "../../interfaces/Auction";
-  import type { Coin } from '../../interfaces/Coin';
+  import type {Coin} from "../../interfaces/Coin";
   import { GetCoin } from "../../services/dbCoin";
   import {Token} from '../../stores';
   export let Auction: Auction;

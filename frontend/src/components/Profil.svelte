@@ -150,11 +150,11 @@
             {/each}
           {:else if mediaQuery(768)}
             {#each Array(profile.auctions.length/2)  as index, i}
-              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} isFirst={i==0 ? true : false} />
             {/each}
             {:else}
             {#each Array(profile.auctions.length/3)  as index, i}
-              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} isFirst={i==0 ? true : false} />
             {/each}
             {/if}
         {/if}
@@ -167,9 +167,9 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-    <!--<CoinModal coin={modalCoin}></CoinModal>-->
+    <!--<CoinModal Coin={profile.coins[0]}></CoinModal>-->
   </main>
 {/if}
 <style lang="sass">
