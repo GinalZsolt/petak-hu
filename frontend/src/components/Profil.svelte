@@ -168,7 +168,9 @@
     </div>  
     <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-    <!--<CoinModal Coin={profile.coins[0]}></CoinModal>-->
+    {#if profile.coins}
+      <CoinModal coin={profile.coins[0]}></CoinModal>
+    {/if}
   </main>
 {/if}
 <style lang="sass">

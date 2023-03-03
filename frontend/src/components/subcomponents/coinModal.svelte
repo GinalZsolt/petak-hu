@@ -1,15 +1,8 @@
 <script lang="ts">
-  import type { Coin } from "../../classes/Coin/Coin";
+  import type { Coin } from "../../interfaces/Coin";
   import { userPerms } from "../../stores";
-  let coin: Coin ={
-      ID: 0,
-      name: "",
-      description: "",
-      images: { headfile: "", tailfile: "" },
-      worth: 0,
-      tags: [],
-      userID: 0
-  };
+    import Login from "../Login.svelte";
+  export let coin: Coin;
   let editMode=false;
   console.log(coin)
   async function CopyLink(){
@@ -18,13 +11,21 @@
   export function loadmodal(loadable){
     coin=loadable
   }
+  function editmodechange(){
+    editMode=!editMode;
+    console.log(editMode);
+  }
 </script>
 
-<div class="modal fade" tabindex="-1" role="dialog" id={"cmodal"}>
+<div class="modal fade" tabindex="-1" role="dialog" id={"CoinMod"}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">{coin.name}</h2>
+        {#if editMode}
+          <input type="text" class="modal-title" bind:value={coin.name}>
+        {:else}
+          <h2 class="modal-title">{coin.name}</h2>
+        {/if}
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -45,7 +46,7 @@
               <div class="carousel-item active">
                 <div class="d-flex justify-content-center imageback">
                   <img class="img-fluid"
-                    src={"http://localhost:8080/img/" + coin.images.headfile}
+                    src={"http://localhost:8080/img/" + coin.headfile}
                     alt=""
                   />
                 </div>
@@ -53,7 +54,7 @@
               <div class="carousel-item">
                 <div class="d-flex justify-content-center imageback">
                   <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + coin.images.tailfile}
+                  src={"http://localhost:8080/img/" + coin.tailfile}
                   alt=""
                   />
                 </div>
@@ -77,8 +78,12 @@
         
         {#if coin.userID == $userPerms.id}
         <div>
-          <button type="button" class="btn btn-primary" on:click={()=>editMode=!editMode}>Módosítás</button>
-          <button type="button" class="btn btn-primary">Aukció</button>
+          {#if editMode}
+            <button type="button" class="btn btn-primary" on:click={editmodechange}>Módosítás</button>
+          {:else}
+            <button type="button" class="btn btn-success" on:click={editmodechange}>Módosítás</button>
+          {/if}
+            <button type="button" class="btn btn-primary">Aukció</button>
         </div>
         {/if}
         <div>
