@@ -4,7 +4,7 @@
     </div>
   </div>
   <script lang="ts">
-    import type {Coin} from '../../interfaces/Coin';
+    import type {Coin} from "../../classes/Coin/Coin";
     import CoinCard from "./CoinCard.svelte";
     export let coin:Coin;
     export let isFirst:boolean|undefined;

@@ -10,6 +10,7 @@
       tags: [],
       userID: 0
   };
+  let editMode=false;
   console.log(coin)
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
@@ -44,7 +45,7 @@
               <div class="carousel-item active">
                 <div class="d-flex justify-content-center imageback">
                   <img class="img-fluid"
-                    src={"http://localhost:8080/img/" + coin.headfile}
+                    src={"http://localhost:8080/img/" + coin.images.headfile}
                     alt=""
                   />
                 </div>
@@ -52,7 +53,7 @@
               <div class="carousel-item">
                 <div class="d-flex justify-content-center imageback">
                   <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + coin.tailfile}
+                  src={"http://localhost:8080/img/" + coin.images.tailfile}
                   alt=""
                   />
                 </div>

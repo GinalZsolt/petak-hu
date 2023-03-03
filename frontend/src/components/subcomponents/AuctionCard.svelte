@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Auction } from "../../interfaces/Auction";
-  import type { Coin } from '../../interfaces/Coin';
+  import type {Coin} from "../../classes/Coin/Coin";
   export let Auction: Auction;
   export let Coin: Coin;
 </script>
@@ -8,7 +8,7 @@
   <div class="auctimg d-flex justify-content-center">
     <img
       class="m-auto img-fluid"
-      src={"/" + Coin.headfile}
+      src={"/" + Coin.images.headfile}
       alt={Auction.title}
     />
   </div>

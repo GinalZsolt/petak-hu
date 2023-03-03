@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Coin } from '../../interfaces/Coin';
+    import type { Coin } from '../../classes/Coin/Coin';
     import Profil from '../Profil.svelte';
     import CoinModal from './coinModal.svelte';
     export let coin: Coin;
@@ -7,10 +7,10 @@
 </script>
     
 <a href="#" class="flexCard"  data-bs-target={"#cmodal"} data-bs-toggle="modal">
-  <div class="Card">
-  <div class="auctimg d-flex justify-content-center">
-    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
-  </div>
+    <div class="Card">
+    <div class="auctimg d-flex justify-content-center">
+    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.images.headfile} alt={coin.name} />
+</div>
         <div
         class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
         >

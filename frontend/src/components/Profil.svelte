@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Auction } from "../interfaces/Auction";
-  import type { Coin } from "../interfaces/Coin";
+  import type { Coin } from "../classes/Coin/Coin";
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
