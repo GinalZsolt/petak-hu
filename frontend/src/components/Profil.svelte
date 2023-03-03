@@ -14,6 +14,7 @@
   import BanModal from "./subcomponents/BanModal.svelte";
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+  import { GetUserCoins } from "../services/dbCoin";
   let err1 
   export let ID:number;
   let profile
@@ -34,15 +35,11 @@
 
   }
 
-  async function getCoinList() {
-      profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
-  }
-
   onMount(async()=>{
     await GetUserData(ID,$Token.token).then((res)=>{
       profile=res[0]
     })
-    await getCoinList();
+    profile.coins=GetUserCoins($Token.token,$userPerms.id)
     profile.auctions = await getAuctions();
     console.log(await profile);    
   })

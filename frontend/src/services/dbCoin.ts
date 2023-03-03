@@ -2,6 +2,7 @@ import axios from "axios";
 import type { TagInterface, TagType } from "../interfaces/Tags";
 import type { Coin } from "../interfaces/Coin";
 import { BackendURL } from "../stores";
+import { Get } from "./dbQueries";
 
 async function GetTagTypes(token: string): Promise<TagType[]> {
     return await axios.get(BackendURL + '/api/tagcategories', {
@@ -53,4 +54,8 @@ async function UploadTag(tag, token: string) {
     )
 }
 
-export { GetTagTypes, UploadCoin, UploadTag, GetCoin }
+async function GetUserCoins(token,UID):Promise<Coin[]> {
+    return await Get(token,"coins","userID",UID)
+}
+
+export { GetTagTypes, UploadCoin, UploadTag, GetCoin,GetUserCoins }
