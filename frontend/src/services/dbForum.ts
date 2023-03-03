@@ -1,6 +1,6 @@
 import type { BlogPost, Comment } from "../interfaces/Blogpost";
-import type { Forum, Topic, ForumPost } from "../interfaces/Forum";
-import { Get, Post, Delete, Patch } from "./dbQueries";
+import type { Topic, ForumPost } from "../interfaces/Forum";
+import { Get, Post, Patch } from "./dbQueries";
 
 export interface dbPost{
     topicID:number;
@@ -10,7 +10,6 @@ export interface dbPost{
     description:string;
 }
 
-let url = "http://localhost:8080/api";
 async function GetForums(token:string, topicid:number):Promise<ForumPost[]>{
     return await Get(token, 'forums', 'ID', topicid) as Promise<ForumPost[]>;
 }
