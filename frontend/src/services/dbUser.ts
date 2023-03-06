@@ -32,11 +32,11 @@ async function GetBanned(token:string):Promise<Banned[]> {
     let moderations:Promise<Moderations[]> = axios.get('http://localhost:8080/api/moderations',{headers:{"Authorization":"JWT "+token}})
     let users:Promise<DBUser[]> = axios.get('http://localhost:8080/api/users',{headers:{"Authorization":"JWT "+token}})
     return Promise.all([moderations,users]).then(res=>
-        res[0].map( e=>
+        res[0].data.map( e=>
             {
                 return {
                     ...e,
-                    ...res[1].find(x=>x.ID==e.userID)
+                    ...res[1].data.find(x=>x.ID==e.userID)
                 }
             }
             )as Banned[]
