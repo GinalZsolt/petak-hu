@@ -76,17 +76,18 @@
           {#await Auctions}
             <div class="spinner-border"></div>
             {:then Data}
-              {#each Array(Math.ceil((Data.filter(e=>e.title.includes(searchText)||e.description.includes(searchText)).length/3))) as i, index}
+            {@const FilterArray = Data.filter(e=>e.title.includes(searchText)||e.description.includes(searchText))}
+              {#each Array(Math.ceil(FilterArray.length/3)) as i, index}
               <div class={"carousel-item" + (index == 0 ? " active" : "")}>
                 <div class="d-flex">
                   {#if Data[index]}
-                  <AuctionCard Auction={Data[index]} />
+                    <AuctionCard Auction={Data[index]} />
                   {/if}
                   {#if Data[index+1]}
-                  <AuctionCard Auction={Data[index+1]} />
+                    <AuctionCard Auction={Data[index+1]} />
                   {/if}
                   {#if Data[index+2]}
-                  <AuctionCard Auction={Data[index+2]} />
+                    <AuctionCard Auction={Data[index+2]} />
                   {/if}
                 </div>
               </div>
