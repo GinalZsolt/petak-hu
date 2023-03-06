@@ -38,17 +38,18 @@
           {#await Auctions}
             <div class="spinner-border"></div>
             {:then Data}
-              {#each Array(Math.ceil((Data.length/3))) as i, index}
+            {@const FilterArrayTop = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
+              {#each Array(Math.ceil(FilterArrayTop.length/3)) as i, index}
               <div class={"carousel-item" + (index == 0 ? " active" : "")}>
                 <div class="d-flex">
-                  {#if Data[index]}
-                  <AuctionCard Auction={Data[index]} />
+                  {#if FilterArrayTop[index]}
+                  <AuctionCard Auction={FilterArrayTop[index]} />
                   {/if}
-                  {#if Data[index+1]}
-                  <AuctionCard Auction={Data[index+1]} />
+                  {#if FilterArrayTop[index+1]}
+                  <AuctionCard Auction={FilterArrayTop[index+1]} />
                   {/if}
-                  {#if Data[index+2]}
-                  <AuctionCard Auction={Data[index+2]} />
+                  {#if FilterArrayTop[index+2]}
+                  <AuctionCard Auction={FilterArrayTop[index+2]} />
                   {/if}
                 </div>
               </div>
@@ -76,17 +77,18 @@
           {#await Auctions}
             <div class="spinner-border"></div>
             {:then Data}
-              {#each Array(Math.ceil((Data.length/3))) as i, index}
+            {@const FilterArrayBottom = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
+              {#each Array(Math.ceil(FilterArrayBottom.length/3)) as i, index}
               <div class={"carousel-item" + (index == 0 ? " active" : "")}>
                 <div class="d-flex">
-                  {#if Data[index]}
-                  <AuctionCard Auction={Data[index]} />
+                  {#if FilterArrayBottom[index]}
+                    <AuctionCard Auction={FilterArrayBottom[index]} />
                   {/if}
-                  {#if Data[index+1]}
-                  <AuctionCard Auction={Data[index+1]} />
+                  {#if FilterArrayBottom[index+1]}
+                    <AuctionCard Auction={FilterArrayBottom[index+1]} />
                   {/if}
-                  {#if Data[index+2]}
-                  <AuctionCard Auction={Data[index+2]} />
+                  {#if FilterArrayBottom[index+2]}
+                    <AuctionCard Auction={FilterArrayBottom[index+2]} />
                   {/if}
                 </div>
               </div>

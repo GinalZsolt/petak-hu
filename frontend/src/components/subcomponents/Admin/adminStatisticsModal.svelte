@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { ModalData } from "../../../interfaces/Admin";
-    import type { CoinAmountStatistic, CoinWorthStatistic } from "../../../services/dbStatistics";
+    import type { Statistics } from "../../../services/dbStatistics";
+    import Chart from "./chart.svelte";
 
-    
     export let Data:ModalData
     
 </script>
@@ -19,7 +19,7 @@
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics}
-            <p>Modal body text goes here.</p>
+              <Chart Data={Statistics} />
             {/await}
           {/if}
         </div>

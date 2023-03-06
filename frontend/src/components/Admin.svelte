@@ -5,14 +5,30 @@
     import { getCoinAmountStats, getCoinWorthStats } from "../services/dbStatistics";
     import AdminboardCard from "./subcomponents/Admin/AdminboardCard.svelte";
     import AdminStatisticsModal from "./subcomponents/Admin/adminStatisticsModal.svelte";
+    import { GetBanned } from "../services/dbUser";
     let statisticsModalData:ModalData;
+
+
+    onMount(async()=>{
+        console.log(await GetBanned($Token.token))
+    })
+
     function DetermineStatistic(event){
+        console.log(event.detail);
         switch(event.detail.title){
-            case "Látogatók száma": {
+            case "Érmék": {
                 statisticsModalData = {
                     promise: getCoinAmountStats($Token.token),
-                    title:'Coinis'
+                    title:'Érmék'
                 }
+                break;
+            }
+            case "Érmék értéke":{
+                statisticsModalData = {
+                    promise: getCoinWorthStats($Token.token),
+                    title:"Érmék értéke"
+                }
+                break;
             }
         }
     }
@@ -28,18 +44,18 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Látogatók száma",icon:"person",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék",icon:"person",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
             </div>
             <div class="col-6">
-                <AdminboardCard CardData={{title:"Érmék",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék értéke",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
             </div>
         </div>
         <div class="row">
             <div class="col-6">
-                <AdminboardCard CardData={{title:"Kitiltott Felhasználók",icon:"person-exclamation",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Kitiltott Felhasználók",icon:"person-exclamation",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
             </div>
             <div class="col-6">
-                <AdminboardCard CardData={{title:"Aukciók",icon:"database",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Aukciók",icon:"database",fromColor:"#ea9e60",toColor:"#eb6a00"}} />
             </div>
         </div>
     </div>

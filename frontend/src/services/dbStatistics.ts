@@ -2,12 +2,9 @@ import type { Coin } from "../interfaces/Coin";
 import type { Auction } from "../interfaces/Auction";
 import axios from 'axios';
 
-export interface CoinWorthStatistic{
-    worth:number,
-    date:string
-}
-export interface CoinAmountStatistic{
-    count:number,
+export interface Statistics{
+    title:string,
+    value:number,
     date:string
 }
 
@@ -16,7 +13,7 @@ export interface CoinAmountStatistic{
 
 
 
-export async function getCoinWorthStats(token:string):Promise<CoinWorthStatistic[]>{
+export async function getCoinWorthStats(token:string):Promise<Statistics[]>{
     return await axios.get('http://localhost:8080/api/coins',{
         headers:{'authorization': 'JWT '+token}
     }).then(res=>{
@@ -25,12 +22,13 @@ export async function getCoinWorthStats(token:string):Promise<CoinWorthStatistic
         return dates.map(z=>{
             return {
                 date:z,
-                worth: worths.filter(g=>g.date==z).map(t=>t.worth).reduce((a,b)=>a+b)
+                value: worths.filter(g=>g.date==z).map(t=>t.worth).reduce((a,b)=>a+b),
+                title:"Zsetonok értéke"
             }
         })
     })
 }
-export async function getCoinAmountStats(token:string):Promise<CoinAmountStatistic[]>{
+export async function getCoinAmountStats(token:string):Promise<Statistics[]>{
     return await axios.get('http://localhost:8080/api/coins',{
         headers:{'authorization': 'JWT '+token}
     }).then(res=>{
@@ -38,7 +36,8 @@ export async function getCoinAmountStats(token:string):Promise<CoinAmountStatist
         return dates.map(e=>{
             return {
                 date:e,
-                count: (res.data as Coin[]).filter(z=>z.uploadDate==e).length
+                value: (res.data as Coin[]).filter(z=>z.uploadDate==e).length,
+                title:"Zsetonok száma"
             }
         })        
     });
