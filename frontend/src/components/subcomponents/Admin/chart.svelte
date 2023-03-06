@@ -17,6 +17,9 @@
                             data: Data.map(e=>e.value)
                         }
                 ]
+            },
+            options:{
+                responsive:true
             }
         })
     })

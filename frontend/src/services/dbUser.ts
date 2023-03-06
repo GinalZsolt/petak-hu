@@ -34,10 +34,14 @@ async function GetBanned(token:string):Promise<Banned[]> {
     return Promise.all([moderations,users]).then(res=>
         res[0].data.map( e=>
             {
+                let user = res[1].data.find(g=>g.ID==e.userID);
                 return {
-                    ...e,
-                    ...res[1].data.find(x=>x.ID==e.userID)
-                }
+                    ID:e.ID,
+                    userID: user.ID,
+                    date: e.date,
+                    email:user.email,
+                    name:user.name
+                } as Banned
             }
             )as Banned[]
     )
