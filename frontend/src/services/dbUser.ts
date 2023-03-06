@@ -42,4 +42,4 @@ async function GetBanned(token:string):Promise<Banned[]> {
             )as Banned[]
     )
 }
-export {GetUserData};
+export {GetUserData,GetBanned};
