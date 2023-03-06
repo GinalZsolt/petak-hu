@@ -38,7 +38,7 @@
           {#await Auctions}
             <div class="spinner-border"></div>
             {:then Data}
-              {#each Array(Math.ceil((Data.length/3))) as i, index}
+              {#each Array(Math.ceil((Data.filter(e=>e.title.includes(searchText)||e.description.includes(searchText)).length/3))) as i, index}
               <div class={"carousel-item" + (index == 0 ? " active" : "")}>
                 <div class="d-flex">
                   {#if Data[index]}
@@ -76,7 +76,7 @@
           {#await Auctions}
             <div class="spinner-border"></div>
             {:then Data}
-              {#each Array(Math.ceil((Data.length/3))) as i, index}
+              {#each Array(Math.ceil((Data.filter(e=>e.title.includes(searchText)||e.description.includes(searchText)).length/3))) as i, index}
               <div class={"carousel-item" + (index == 0 ? " active" : "")}>
                 <div class="d-flex">
                   {#if Data[index]}
