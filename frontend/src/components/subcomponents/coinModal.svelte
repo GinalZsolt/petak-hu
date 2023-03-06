@@ -1,31 +1,20 @@
 <script lang="ts">
   import type { Coin } from "../../interfaces/Coin";
   import { userPerms } from "../../stores";
-    import Login from "../Login.svelte";
   export let coin: Coin;
-  let editMode=true;
-  console.log(coin)
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
   export function loadmodal(loadable){
     coin=loadable
   }
-  function editmodechange(){
-    editMode=!editMode;
-    console.log(editMode);
-  }
 </script>
-
-<div class="modal fade" tabindex="-1" role="dialog" id={"CoinMod"}>
+{#if coin != undefined}
+<div class="modal fade" tabindex="-1" role="dialog" id="_coinmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        {#if editMode}
-          <input type="text" class="modal-title" bind:value={coin.name}>
-        {:else if !editMode}
-          <h2 class="modal-title">{coin.name}</h2>
-        {/if}
+        <h2 class="modal-title">{coin.name}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -73,18 +62,13 @@
         {#each coin.description.split('\n') as text}
           <p>{text}</p>
         {/each}
-      </div>
-      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
-        
-        {#if coin.userID == $userPerms.id}
-        <div>
-          {#if editMode}
-            <button type="button" class="btn btn-primary" on:click={()=> editMode=!editMode}>Módosítás</button>
-          {:else}
-            <button type="button" class="btn btn-success" on:click={()=> editMode=!editMode}>Módosítás</button>
-          {/if}
-            <button type="button" class="btn btn-primary">Aukció</button>
         </div>
+      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
+        {#if coin.userID == $userPerms.id}
+          <div>
+            <button type="button" class="btn btn-primary">Módosítás</button>
+            <button type="button" class="btn btn-primary">Aukció</button>
+          </div>
         {/if}
         <div>
           <button 
@@ -100,7 +84,7 @@
     </div>
   </div>
 </div>
-
+{/if}
 <style lang="sass">
   .btn
     background-color: #ea9e60

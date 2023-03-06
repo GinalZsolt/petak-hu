@@ -8,6 +8,7 @@
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
   import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import CoinModal from "./subcomponents/coinModal.svelte";
   import { onMount } from "svelte";
   import {Get,Patch} from "../services/dbQueries";
   import {GetAuctions} from "../services/dbAuction";
@@ -15,9 +16,10 @@
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
   import { GetUserCoins } from "../services/dbCoin";
+  import CoinEditModal from "./subcomponents/CoinEditModal.svelte";
   let err1 
   export let ID:number;
-  let profile
+  let profile;
   function Promote(){
     Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
       err1.showError()
@@ -32,16 +34,15 @@
 
   async function getAuctions() {
     return await await GetAuctions($Token.token, $userPerms.id);
-
   }
 
   onMount(async()=>{
     await GetUserData(ID,$Token.token).then((res)=>{
-      profile=res[0]
-    })
-    profile.coins=GetUserCoins($Token.token,$userPerms.id)
+      profile=res[0];
+    });
+    profile.coins = await GetUserCoins($Token.token,$userPerms.id)
     profile.auctions = await getAuctions();
-    console.log(await profile);    
+    console.log(profile.coins[0]);    
   })
 
 </script>
@@ -94,21 +95,23 @@
         <div class="carousel-inner">
           <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
+              <!--
               {#if profile.coins}
                 {#if mediaQuery(576)}
                   {#each profile.coins as coin, i}
                     <CoinSlideSm coin={coin} isFirst={i==0 ? true : false} />            
                   {/each}
                 {:else if mediaQuery(768)}
-                  {#each Array(profile.coins.length/2)  as index, i}
+                  {#each Array(profile.coins.length/2) as index, i}
                     <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
                   {/each}
                 {:else}
-                  {#each Array(profile.coins.length/3)  as index, i}
+                  {#each Array(profile.coins.length/3) as index, i}
                     <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
                   {/each}
                 {/if}
-              {/if} 
+              {/if}
+              --> 
             </div>
           </div>
         </div>
@@ -131,11 +134,11 @@
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
           {#if profile.auctions}
-          {#if mediaQuery(576)}
+            {#if mediaQuery(576)}
             {#each profile.auctions as auction, i}
               <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
             {/each}
-          {:else if mediaQuery(768)}
+            {:else if mediaQuery(768)}
             {#each Array(profile.auctions.length/2)  as index, i}
               <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} isFirst={i==0 ? true : false} />
             {/each}
@@ -144,8 +147,7 @@
               <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} isFirst={i==0 ? true : false} />
             {/each}
             {/if}
-        {/if}
-
+          {/if}
         </div>
       </div>
       <button
@@ -154,10 +156,10 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <button data-bs-target="#coineditmodal" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
-    {#if profile.coins}
-      <CoinModal coin={profile.coins[0]}></CoinModal>
+    {#if profile.coins != undefined}
+      <CoinEditModal coin={profile.coins[0]}></CoinEditModal>
     {/if}
   </main>
 {/if}
