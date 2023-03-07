@@ -2,7 +2,7 @@
     import type { ModalData } from "../../../interfaces/Admin";
     import type { Statistics } from "../../../services/dbStatistics";
     import Chart from "./chart.svelte";
-
+    import type { Banned } from "../../../services/dbUser";
     export let Data:ModalData
     
 </script>

@@ -13,6 +13,7 @@
   import type { Coin } from "../interfaces/Coin";
     import { GetCoin } from "../services/dbCoin";
     import CoinModal from "./subcomponents/coinModal.svelte";
+    import { db } from "../services/dbForum";
   
   export let ID: number;
   
@@ -28,9 +29,9 @@
     auction = await GetAuctionData($Token.token, ID);
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
-    if (new Date(auction.expiration) < new Date()){
-      
-    }
+    /*if (new Date(auction.expiration) < new Date()){
+      db  
+    }*/
   });
 
   const socket = io("ws://localhost:8080");
@@ -103,7 +104,7 @@
             Licitlépcső: {auction.minBid} Ft
           </p>
           {:else}
-          <div class="alert alert-primary">Ennek az aukciónak vége lett!</div>
+          <div class="alert alert-primary">Ennek az aukciónak vége lett! Az aukció nyertese </div>
           {/if}
           <h3>{#if new Date(auction.expiration)<new Date()}Az aukcióra licitáltak{:else}Legutóbbi licitek{/if}</h3>
           <div id="Bidders">
