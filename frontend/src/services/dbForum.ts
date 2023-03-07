@@ -41,7 +41,12 @@ async function ClosePost(token:string, postID:number){
         isClosed: 1
     });
 }
+async function MailPost(token:string, postID:number){
+    return await Patch(token, 'posts', 'ID', postID, {
+        notified: 1
+    });
+}
 const db = {
-    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost, ClosePost
+    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost, ClosePost, MailPost
 }
 export {db};

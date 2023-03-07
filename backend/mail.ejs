@@ -1,0 +1,28 @@
+<table cellspacing="0" cellpadding="0" border="0">
+    <thead height="200" width="350">
+        <tr>
+            <td>Gratulálunk</td>
+        </tr>
+    </thead>
+    <tbody style="margin-left: 20px; margin-right: 20px;">
+        <tr>
+            <td height="125">Jelezzük, hogy a <%= emailData.auctionID %> számű aukciót (<%= emailData.auctionTitle %>) maga nyerte meg!</td>
+        </tr>
+        <tr>
+            <td height="100">Kérjük, vegye fel a kapcsolatot <%= emailData.auctionPoster.fullname %>-val/vel az <a href="mailto:<%= emailData.auctionPoster.email %>"><%= emailData.auctionPoster.email %></a> címen!</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Üdvözlettel</td>
+        </tr>
+    </tfoot>
+</table>
+<style>
+    thead{
+        background-color: #f59445
+    }
+    thead>tr>td{
+        text-align: center;
+    }
+</style>

@@ -6,7 +6,6 @@
     import AdminboardCard from "./subcomponents/Admin/AdminboardCard.svelte";
     import AdminStatisticsModal from "./subcomponents/Admin/adminStatisticsModal.svelte";
     import { GetBanned } from "../services/dbUser";
-    import { Title } from "chart.js/dist";
     let statisticsModalData:ModalData;
     let TableModalData:ModalData;
 
