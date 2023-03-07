@@ -25,6 +25,7 @@ const io = new Server(server, {
 
 app.use('/api', require('./controllers/sqlController'))
 app.use('/api/users', require('./controllers/usersController'))
+app.use('/mailing', require('./controllers/mailingController'));
 server.listen(process.env.PORT, () => {
   log('http://localhost:'+server.address().port, 'server started');
 });

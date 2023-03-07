@@ -1,5 +1,3 @@
-import type { Coin } from "../classes/Coin/Coin";
-
 export interface Auction{
     ID:number;
     coinID:number;
@@ -9,6 +7,7 @@ export interface Auction{
     minBid:number;
     description:string;
     expiration:string;
+    notified:boolean;
 }
 export interface Bidder{
     userID:number;
