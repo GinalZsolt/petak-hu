@@ -28,8 +28,9 @@
     auction = await GetAuctionData($Token.token, ID);
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
-    console.log(await GetCoin(auction.coinID, $Token.token));
-    console.log(originalPrice+auction.minBid);
+    if (new Date(auction.expiration) < new Date()){
+      
+    }
   });
 
   const socket = io("ws://localhost:8080");
@@ -81,6 +82,7 @@
         </div>
         {/if}
         <div class="col-md-6 col-12 pe-md-0">
+          {#if new Date(auction.expiration)>new Date()}
           <h3>Licitálás</h3>
           <div class="d-flex flex-row mb-3">
             <div class="input-group me-lg-3">
@@ -100,21 +102,28 @@
           <p class="border-bottom border-dark pb-3">
             Licitlépcső: {auction.minBid} Ft
           </p>
-          <h3>Legutóbbi licitek</h3>
+          {:else}
+          <div class="alert alert-primary">Ennek az aukciónak vége lett!</div>
+          {/if}
+          <h3>{#if new Date(auction.expiration)<new Date()}Az aukcióra licitáltak{:else}Legutóbbi licitek{/if}</h3>
           <div id="Bidders">
             {#if bidders}
-              {#each bidders as bidder}
-                <p transition:fade><a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
-                  currency:'HUF',
-                  style:'currency'
-                }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
-                  dateStyle:'long',
-                }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}</p>
-              {/each}
+              {#if bidders.length>0}
+                {#each bidders as bidder}
+                  <p transition:fade><a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
+                    currency:'HUF',
+                    style:'currency'
+                  }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
+                    dateStyle:'long',
+                  }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}</p>
+                {/each}
               {:else}
-                <div class="spinner-border" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
+              <h3 class="text-danger">Jelenleg nem érkezett még licit erre az aukcióra!</h3>
+              {/if}
+              {:else}
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
             {/if}
           </div>
         </div>
