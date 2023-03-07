@@ -6,10 +6,9 @@
     import AdminboardCard from "./subcomponents/Admin/AdminboardCard.svelte";
     import AdminStatisticsModal from "./subcomponents/Admin/adminStatisticsModal.svelte";
     import { GetBanned } from "../services/dbUser";
-    import { Title } from "chart.js/dist";
+    import AdminTableModal from "./subcomponents/Admin/adminTableModal.svelte";
     let statisticsModalData:ModalData;
     let TableModalData:ModalData;
-
 
     onMount(async()=>{
         console.log(await GetBanned($Token.token))
@@ -69,4 +68,5 @@
         </div>
     </div>
     <AdminStatisticsModal Data={statisticsModalData} />
+    <AdminTableModal Data={TableModalData} />
 </main>
