@@ -1,16 +1,12 @@
 <script lang="ts">
-    //majd adatbázisból kell lekérni
-    let tagtypes:any=[
-        {name:"Anyag",ID:0},
-        {name:"Dinasztia",ID:1},
-        {name:"Birodalom/Ország",ID:2},
-        {name:"Kor",ID:3}
-    ]
-
     import Tag from "./Tag.svelte";
+    import { Delete, Patch, Get } from "../../services/dbQueries";
+    import {userPerms, Token} from './../../stores';
+    import type { Coin } from "../../interfaces/Coin";
+    import { onMount } from "svelte";
 
     let tagdel:boolean=true;
-    export let Coin:any={}
+    export let Coin:Coin;
     let newtag:any={}
 
     let tags:any=
@@ -26,9 +22,25 @@
     ]
 
 
-    function DelCoin(ID){
-
+    async function DelCoin(ID){
+        await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
     }
+
+    async function UpdateCoin(ID){
+       await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
+    }
+    
+    let category:any=[];
+
+    async function GetCategories(){
+        return await await Get($Token.token, "tagcategories");
+    }
+
+    onMount(async()=>{
+        category = await GetCategories();
+        console.log(category);
+    });
+
 </script>
 <style lang="sass">
     button
@@ -68,16 +80,18 @@
                 </div>
                 <div class="mb-3">
                     <label for="price" class="form-label">Érme névleges értéke</label>
-                    <input type="number" bind:value={Coin.price} class="form-control" id="price" name="price" >
+                    <input type="number" bind:value={Coin.worth} class="form-control" id="price" name="price" >
                 </div>
                 <div class="tag-creator row mb-3 col-12 mx-auto" >
                     <div class="col-5">
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
                         <select bind:value={newtag.category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
-                            {#each tagtypes as tagtype}
-                                <option value={tagtype.ID}>{tagtype.name}</option>
-                            {/each}
+                            {#if category!=undefined}
+                                {#each category as tagtype}
+                                    <option value={tagtype.ID}>{tagtype.name}</option>
+                                {/each}
+                            {/if}
                         </select>
                     </div>
                     <div class="col-4">
@@ -93,17 +107,17 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:value={Coin.heads} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:value={Coin.headfile} name="fej"  type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:value={Coin.tails} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:value={Coin.tailfile} name="iras"  type="file" id="iras">
                 </div>
             </form>
         </div>
         <div class="modal-footer d-flex justify-content-between">
             <input type="button" class="btn btn-danger" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
-            <button type="button" class="btn">Feltöltés</button>
+            <button type="button" class="btn" on:click={()=>{UpdateCoin(Coin.ID)}}>Feltöltés</button>
         </div>
       </div>
     </div>
