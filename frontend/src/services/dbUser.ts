@@ -16,7 +16,7 @@ interface DBUser{
     email:string
 }
 
-interface Banned{
+export interface Banned{
     ID:number,
     userID:number,
     date:string,

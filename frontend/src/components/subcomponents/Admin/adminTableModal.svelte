@@ -1,13 +1,12 @@
 <script lang="ts">
     import type { ModalData } from "../../../interfaces/Admin";
     import type { Statistics } from "../../../services/dbStatistics";
-    import Chart from "./chart.svelte";
     import type { Banned } from "../../../services/dbUser";
     export let Data:ModalData
     
 </script>
 <style lang="ts"></style>
-<div class="modal modal-lg" tabindex="-1" id="statisticsModal">
+<div class="modal modal-lg" tabindex="-1" id="tableModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-primary bg-gradient text-light">
@@ -19,7 +18,7 @@
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics}
-              <Chart Data={Statistics} />
+              <h2>ASDAS</h2>
             {/await}
           {/if}
         </div>

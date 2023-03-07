@@ -12,7 +12,8 @@
     class="dashboard-card m-3"
     style:--color1={CardData.fromColor}
     style:--color2={CardData.toColor}
-    data-bs-toggle="modal" data-bs-target="#statisticsModal"
+    data-bs-toggle="modal" 
+    data-bs-target={"#"+CardData.modaltype+"Modal"}
     on:click={SendType}
     on:keypress={()=>{}}
 >
