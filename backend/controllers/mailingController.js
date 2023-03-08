@@ -19,12 +19,13 @@ Router.post("/to/:id", (req,res)=>{
                         pass:account.pass
                     }
                 })
-                ejs.renderFile(path.join(__dirname, '../mail.ejs'), {
+                ejs.renderFile(path.join(__dirname, '../mailv2.ejs'), {
                     emailData:{
                         auctionID: req.body.auctionID,
                         auctionTitle: req.body.auctionTitle,
                         auctionPoster: {
                             email:req.body.auctionPosterEmail,
+                            phone:req.body.auctionPosterPhone,
                             fullname:req.body.auctionPosterFullName
                         }
                     }
