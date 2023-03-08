@@ -1,6 +1,7 @@
   
 <script lang="ts">
-    export let Tag:any={}
+    import type { TagInterface } from "../../interfaces/Tags";
+    export let Tag:TagInterface;
     export let TagDel:boolean=false
 
     function Delete(){
@@ -17,5 +18,5 @@
 </style>
 
 <div class="tag m-auto mb-1">
-    <span>{Tag.category}</span>:<span>{Tag.content}</span> {#if TagDel}<input type="button" class="btn-close" on:click={Delete}>{/if} 
+    <span>{Tag.Category}</span>:<span>{Tag.description}</span> {#if TagDel}<input type="button" class="btn-close" on:click={Delete}>{/if} 
 </div>

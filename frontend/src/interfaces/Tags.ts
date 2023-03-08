@@ -4,6 +4,7 @@ export interface TagInterface{
     description:string;
     name:string;
     color:string;
+    Category:string;
 }
 
 export interface TagType{
