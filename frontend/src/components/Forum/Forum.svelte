@@ -1,9 +1,6 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import type { Forum, ForumPost } from "../../interfaces/Forum";
     import { db } from "../../services/dbForum";
     import { Token } from "../../stores";
-    import { fade } from "svelte/transition";
     import PostUpload from "./subcomponents/PostUpload.svelte";
     interface Topic {
         ID: number;

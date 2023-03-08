@@ -10,7 +10,6 @@ module.exports = {
                 req.params.table=="auctionbidders") && req.method=="GET"){
                     next();
             }
-            else res.status(401).json({name: 'JsonWebTokenError',message: "No token given!"});
         }
         else{
             if (req.headers.authorization) {
