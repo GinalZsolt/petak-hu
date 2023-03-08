@@ -4,23 +4,21 @@
     import {userPerms, Token} from './../../stores';
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
+    import type { TagInterface } from "../../interfaces/Tags";
+    import Catalogue from "../Catalogue.svelte";
 
     let tagdel:boolean=true;
     export let Coin:Coin;
-    let newtag:any={}
+    let newtag:TagInterface={
+        description:"",
+        name:"",
+        color:"",
+        Category:"",
+        CoinID:Coin.ID
+    };
+    let category:any=[];
 
-    let tags:any=
-    [
-        {ID:1,category:"Anyag",content:"bronz"},
-        {ID:2,category:"Anyag",content:"bronz"},
-        {ID:3,category:"Anyag",content:"bronz"},
-        {ID:4,category:"Anyag",content:"bronz"},
-        {ID:5,category:"Anyag",content:"bronz"},
-        {ID:6,category:"Anyag",content:"bronz"},
-        {ID:7,category:"Anyag",content:"bronz"},
-        {ID:8,category:"Anyag",content:"bronz"}
-    ]
-
+    let tags:TagInterface[]=[];
 
     async function DelCoin(ID){
         await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
@@ -30,15 +28,31 @@
        await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
     }
     
-    let category:any=[];
 
     async function GetCategories(){
         return await await Get($Token.token, "tagcategories");
     }
 
+    function addTag(){
+        let tag:TagInterface={
+            Category:category[Number(newtag.Category)-1].name,
+            description:newtag.description,
+            CoinID:Coin.ID,
+            name:Coin.name, 
+            color:category[Number(newtag.Category)-1].color
+        };
+        tags.push(tag);
+        tags=tags;
+        console.log(tags);
+    }
+
+    function DeleteTag(del){
+        tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
+        tags=tags
+    }
+
     onMount(async()=>{
         category = await GetCategories();
-        console.log(category);
     });
 
 </script>
@@ -55,7 +69,11 @@
         border: 2px solid black
         border-radius:0.25rem
         padding: 7px
-    
+    .tag
+        background: var(--color)
+        border-radius:0.5rem
+        padding: 5px
+        border: 1px solid black
 </style>
 
 
@@ -85,7 +103,7 @@
                 <div class="tag-creator row mb-3 col-12 mx-auto" >
                     <div class="col-5">
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
-                        <select bind:value={newtag.category} class="form-select" name="tagtype" id="tagtype">
+                        <select bind:value={newtag.Category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
                             {#if category!=undefined}
                                 {#each category as tagtype}
@@ -96,13 +114,16 @@
                     </div>
                     <div class="col-4">
                         <label for="tagcontent" class="form-label">Címke tartalma</label>
-                        <input type="text" bind:value={newtag.content} class="form-control" id="tagcontent" name="tagcontent" >
+                        <input type="text" bind:value={newtag.description} class="form-control" id="tagcontent" name="tagcontent" >
                     </div>
-                    <button type="button" class="btn col-3">Hozzáadás</button>
+                    <button type="button" on:click={addTag} class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
                     {#each tags as tag}
-                        <Tag Tag={tag} TagDel={false}/>
+                        <div style={"--color:"+tag.color} class="tag m-auto mb-1">
+                            <span>{tag.Category}</span>:<span>{tag.description}</span> 
+                            {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
+                        </div>
                     {/each}
                 </div>
                 <div class=" mb-3">
