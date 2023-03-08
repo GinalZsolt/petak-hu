@@ -16,15 +16,20 @@
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
   import { GetUserCoins } from "../services/dbCoin";
-  //import CoinEditModal from "./subcomponents/CoinEditModal.svelte";
   import CoinMod from "./subcomponents/CoinMod.svelte";
   let err1 
+  let err2 
   export let ID:number;
   let profile;
   function Promote(){
-    Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
-      err1.showError()
-    })
+    if ($userPerms.permission!=2) {
+      Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+        err1.showError()
+      })
+    }
+    else{
+      err2.showError()
+    }
   }
 
   function mediaQuery(pixels:number):boolean{
@@ -47,10 +52,11 @@
 
 </script>
 <CoinUpload/>
-<BanModal User={profile} />
+<!-- <BanModal User={profile} /> -->
 {#if profile}
 <main>
   <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
+  <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
           {#if profile.imagefile==undefined||profile.imagefile==null||profile.imagefile==""}
@@ -69,10 +75,10 @@
           {#if ID!=$userPerms.id&&$userPerms.permission==2}
           <div class="dropdown">
             <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
-            <ul class="dropdown-menu">
+            <!-- <ul class="dropdown-menu">
               <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
               <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
-            </ul>
+            </ul> -->
           </div>
           {/if}
         </div>
@@ -133,7 +139,7 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if profile.auctions}
+          <!-- {#if profile.auctions}
             {#if mediaQuery(576)}
             {#each profile.auctions as auction, i}
               <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
@@ -147,7 +153,7 @@
               <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} isFirst={i==0 ? true : false} />
             {/each}
             {/if}
-          {/if}
+          {/if} -->
         </div>
       </div>
       <button

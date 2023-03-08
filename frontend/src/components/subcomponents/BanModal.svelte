@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+  import { onMount } from "svelte";
   import { Post } from "../../services/dbQueries";
-    import { GetBanned } from "../../services/dbUser";
+  import { GetBanned } from "../../services/dbUser";
   import { Token } from "../../stores";
   import ErrorAlert from "./ErrorAlert.svelte";
 
@@ -25,13 +25,16 @@
   }
 
   onMount(async ()=>{
-    let banned = await GetBanned($Token.token)
-    banned.forEach(element => {
+    await GetBanned($Token.token).then(
+     (res)=>{
+      res.forEach(element => {
       if (element.userID==User.ID){
         err3.showError()
         alreadybanned=true
       }
     });
+     } 
+    )
   })
 
 </script>
@@ -53,7 +56,7 @@
       <div class="modal-body">
         <ErrorAlert bind:this={err1} Error={{id:"nodate",text:"Nem adtál meg dátumot!",error:true}}/>
         <ErrorAlert bind:this={err2} Error={{id:"success",text:"Sikeresen kitiltva!",error:false}}/>
-        <ErrorAlert bind:this={err2} Error={{id:"banned",text:"A felhasználó már ki van tiltva!",error:true}}/>
+        <ErrorAlert bind:this={err3} Error={{id:"banned",text:"A felhasználó már ki van tiltva!",error:true}}/>
             <form action="">
               <div class="mb-3">
                 <label for="username" class="form-label">Felhasználó név</label>
