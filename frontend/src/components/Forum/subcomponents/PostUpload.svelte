@@ -89,7 +89,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Bejegyzés írása</h1>
-          <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" on:click={DismissError}>
         </div>
         <div class="modal-body">
             {#if gotError}

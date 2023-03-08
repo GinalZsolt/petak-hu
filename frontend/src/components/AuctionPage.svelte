@@ -84,27 +84,29 @@
         {/if}
         <div class="col-md-6 col-12 pe-md-0">
           {#if new Date(auction.expiration)>new Date()}
-          <h3>Licitálás</h3>
           {#if $userPerms.permission>0}
+          <h3>Licitálás</h3>
           <div class="d-flex flex-row mb-3">
             <div class="input-group me-lg-3">
+              {#if bidders}
               <input
                 type="number"
                 min={originalPrice}
                 step={auction.minBid}
-                disabled={auction.userID==$userPerms.id}
+                disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id}
                 bind:value={auction.price}
                 name="bidAmount"
                 class="form-control border-dark"
               />
+              {/if}
               <label for="bidAmount" class={"input-group-text border-dark"+($userPerms.id==auction.userID ? 'disabled' : '')}>Ft</label>
             </div>
-            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id} on:click={Bid}>Licitálás</button>
+            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id} on:click={Bid}>Licitálás</button>
           </div>
-          {/if}
           <p class="border-bottom border-dark pb-3">
             Licitlépcső: {auction.minBid} Ft
           </p>
+          {/if}
           {:else}
           <div class="alert alert-primary">Ennek az aukciónak vége lett!</div>
           {/if}

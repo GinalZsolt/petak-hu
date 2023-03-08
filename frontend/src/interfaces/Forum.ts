@@ -3,7 +3,12 @@ export interface Topic {
     name:string;
     posts:Array<Post>;
 }
-
+export interface uploadData{
+    description?:string,
+    title?:string,
+    topicID:number,
+    file?:FileList
+}
 export interface Comment{
     userID:number;
     username:string;
@@ -11,6 +16,8 @@ export interface Comment{
     date:string;
 }
 export interface Post{
+    ID:number;
+    topicID:number;
     userID:number;
     username:string;
     imagefile?:string;
