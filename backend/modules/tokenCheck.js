@@ -10,32 +10,25 @@ module.exports = {
                 req.params.table=="auctionbidders") && req.method=="GET"){
                     next();
             }
-        }
-        else{
-            if (req.headers.authorization) {
-                try {
-                    jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWTTOKEN);
-                    fs.readFile(path.join(__dirname, '../blacklist.json'), (err, data) => {
-                        if (JSON.parse(data).includes(req.headers.authorization.split(' ')[1])) res.status(401).send({
-                            name: 'JsonWebTokenError',
-                            message: 'Your token is on the blacklist!'
-                        })
-                        else next();
-                    })
-                }
-                catch (err) {
-                    res.status(401).send(err);
-                }
-            }
             else {
-                switch (req.params.table) {
-                    default: res.status(401).json({name: 'JsonWebTokenError',message: "No token given!"});
-                        break;
-                    
+                if (req.headers.authorization) {
+                    try {
+                        jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWTTOKEN);
+                        fs.readFile(path.join(__dirname, '../blacklist.json'), (err, data) => {
+                            if (JSON.parse(data).includes(req.headers.authorization.split(' ')[1])) res.status(401).send({
+                                name: 'JsonWebTokenError',
+                                message: 'Your token is on the blacklist!'
+                            })
+                            else next();
+                        })
+                    }
+                    catch (err) {
+                        res.status(401).send(err);
+                    }
                 }
-    
             }
         }
+        else next();
     },
     getUser: (req, res) => {
         try {

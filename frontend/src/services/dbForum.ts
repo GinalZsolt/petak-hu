@@ -1,5 +1,6 @@
+import axios from 'axios';
 import type { BlogPost, Comment } from "../interfaces/Blogpost";
-import type { Topic, ForumPost } from "../interfaces/Forum";
+import type { Topic } from "../interfaces/Forum";
 import { Get, Post, Patch } from "./dbQueries";
 
 export interface dbPost{
@@ -10,14 +11,27 @@ export interface dbPost{
     description:string;
 }
 
-async function GetForums(token:string, topicid:number):Promise<ForumPost[]>{
-    return await Get(token, 'forums', 'ID', topicid) as Promise<ForumPost[]>;
+
+
+async function GetForums(token:string):Promise<Topic[]>{
+    let topics = await axios.get('http://localhost:8080/api/topics', {headers:{'Authorization':"JWT "+token}});
+    let posts = await axios.get('http://localhost:8080/api/posts', {headers:{'Authorization':"JWT "+token}});
+    let comments = await axios.get('http://localhost:8080/api/comments', {headers:{'Authorization':"JWT "+token}});
+    return Promise.all([topics, posts, comments]).then(res=>res).catch(err=>err.response)
+
+
+
+
+
+    //return await [] as Topic[];
 }
+
+
+
+
+
 async function GetBlogpost(token:string, postid:number):Promise<BlogPost>{
     return await Get(token, 'posts', 'ID', postid) as Promise<BlogPost>;
-}
-async function GetTopics(token:string):Promise<Topic[]>{
-    return await Get(token, 'topics');
 }
 async function GetTopic(token:string, topicid:number):Promise<Topic>{
     return await Get(token, 'topics', 'ID', topicid);
@@ -47,6 +61,6 @@ async function MailPost(token:string, postID:number){
     });
 }
 const db = {
-    GetForums, GetBlogpost, GetTopics, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost, ClosePost, MailPost
+    GetForums, GetBlogpost, GetTopic, UploadPost, GetPostsComments, UploadComment, DeletePost, ClosePost, MailPost
 }
 export {db};

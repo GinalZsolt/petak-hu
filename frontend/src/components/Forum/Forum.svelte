@@ -1,23 +1,21 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { db } from "../../services/dbForum";
     import { Token } from "../../stores";
     import PostUpload from "./subcomponents/PostUpload.svelte";
-    interface Topic {
-        ID: number;
-        name: string;
-    }
-    let topicID = 1;
-    let Posts = db.GetForums($Token.token, topicID);
-    let Topics = db.GetTopics($Token.token);
+    let Forum = db.GetForums($Token.token);
     //Get every topic for the user
     function ChangeTopic() {
-        Posts = db.GetForums($Token.token, topicID);
+        Forum = db.GetForums($Token.token);
     }
+    onMount(async()=>{
+        console.log(await db.GetForums($Token.token).then(res=>res));
+    })
 </script>
 
 <main>
-{#await Topics}
-    {:then TopicData}
+{#await Forum}
+    <!--{:then TopicData}
         <PostUpload on:upload={ChangeTopic} data={{ topicID: topicID }} Topics={TopicData} />
         <div class="d-flex justify-content-between mx-auto col-lg-8 col-md-8 col-11 mb-3">
             <div/>
@@ -57,7 +55,7 @@
         </div>
             
     {:catch Err}
-        <div>{Err}</div>
+        <div>{Err}</div>-->
     {/await}
 </main>
 
