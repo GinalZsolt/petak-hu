@@ -35,7 +35,7 @@
         <div class="posts">
             {#if Data.find(e=>e.ID==topicID)}
                 {@const Posts = Data.find(e=>e.ID==topicID).posts.sort((a,b)=>(new Date(a.date)).getTime() + (new Date(b.date)).getTime()).filter(m=>m.isDeleted==false)}
-                <div class="col-lg-7 col-md-8 col-11 mx-auto">
+                <div class="col-lg-7 col-md-8 col-11 mx-auto mt-5">
                     {#if Posts.length>0}
                     <table>
                         <tbody>
@@ -66,11 +66,17 @@
 <style lang="sass">
     table
         width: 100%
+        background-color: #ffcc95
+        border: 1px solid black
+    tr
+        border: 1px solid #0000007f
     select
         width: initial
+    .link-primary
+        cursor: pointer
     .btn-add
-        background-color: #f59445
+        background-color: #ffcc95
     .btn-add:active
-        background-color: #f59445
-        box-shadow: 0 0 0 0.25rem (#f594457f)
+        background-color: #ffcc95
+        box-shadow: 0 0 0 0.25rem (#ffcc957f)
 </style>

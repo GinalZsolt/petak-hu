@@ -181,11 +181,11 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:files={data.heads} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:files={data.heads} accept="image/*" name="fej"  type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:files={data.tails} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:files={data.tails} accept="image/*" name="iras"  type="file" id="iras">
                 </div>
             </form>
         </div>

@@ -113,7 +113,7 @@
                         {/each}
                     </select>
                 </div>
-                <input class="form-control mb-3" bind:files={data.file} name="file"  type="file" id="file">
+                <input class="form-control mb-3" bind:files={data.file} accept="image/*" name="file"  type="file" id="file">
             </form>
         </div>
         <div class="modal-footer">
