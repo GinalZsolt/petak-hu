@@ -16,7 +16,8 @@
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
   import { GetUserCoins } from "../services/dbCoin";
-  import CoinEditModal from "./subcomponents/CoinEditModal.svelte";
+  //import CoinEditModal from "./subcomponents/CoinEditModal.svelte";
+  import CoinMod from "./subcomponents/CoinMod.svelte";
   let err1 
   export let ID:number;
   let profile;
@@ -42,7 +43,6 @@
     });
     profile.coins = await GetUserCoins($Token.token,$userPerms.id)
     profile.auctions = await getAuctions();
-    console.log(profile.coins[0]);    
   })
 
 </script>
@@ -156,10 +156,10 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#coineditmodal" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
     {#if profile.coins != undefined}
-      <CoinEditModal coin={profile.coins[0]}></CoinEditModal>
+      <CoinMod Coin={profile.coins[0]}></CoinMod>
     {/if}
   </main>
 {/if}

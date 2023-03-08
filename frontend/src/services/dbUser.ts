@@ -19,7 +19,8 @@ interface DBUser{
 export interface Banned{
     ID:number,
     userID:number,
-    date:string,
+    startdate:string,
+    banTime:string,
     email:string,
     name:string,
 }
@@ -38,7 +39,8 @@ async function GetBanned(token:string):Promise<Banned[]> {
                 return {
                     ID:e.ID,
                     userID: user.ID,
-                    date: e.date,
+                    startdate: e.date,
+                    banTime:e.banTime,
                     email:user.email,
                     name:user.name
                 } as Banned
