@@ -2,17 +2,20 @@
     import { each } from "svelte/internal";
     import type { ModalData } from "../../../interfaces/Admin";
     import type { Statistics } from "../../../services/dbStatistics";
-    import type { Banned } from "../../../services/dbUser";
+    import { GetBanned, type Banned } from "../../../services/dbUser";
     import moment from "moment";
     import { Delete } from "../../../services/dbQueries";
     import { Token } from "../../../stores";
     import ErrorAlert from "../ErrorAlert.svelte";
     export let Data:ModalData
 
-    async function unBan(ID){
-        await Delete($Token.token,"moderations","ID",ID).then(
+    let err1
 
-        )
+    async function unBan(ID){
+        await Delete($Token.token,"moderations","ID",ID).then(()=>{
+          err1.showError()
+          Data.promise=GetBanned($Token.token)
+        })
     }
 
 </script>
@@ -26,12 +29,14 @@
         </div>
         <div class="modal-body">
           {#if Data}
-            <h2>{Data.title}</h2> 
+          <h2>{Data.title}</h2> 
+          <ErrorAlert bind:this={err1} Error={{id:"successful_delete",text:"Sikeresen törölve!",error:false}}/>
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics }
-                 <ErrorAlert bind:this={err1} Error={{id:"badlogin",text:"Hibás bejeletkezési adatok!",error:true}}/>
-
+            {#if Statistics.length==0}
+                <h3 class="text-center text-danger p-3">Nincsen kitiltott felhasználó</h3>
+            {:else}
                 <table class="table table-striped table-hover">
                     <thead>
                         <th>#</th>
@@ -49,7 +54,11 @@
                                 <td>{person.email}</td>
                                 <td>{moment(person.startdate).format("YYYY-MM-DD")}</td>
                                 <td>{moment(person.banTime).format("YYYY-MM-DD")}</td>
-                                <td class="text-center"><button class="btn btn-warning" on:click={unBan(person.ID)}><i class="bi bi-person-check-fill"></i></button></td>
+                                <td class="text-center">
+                                  <button class="btn btn-warning" on:click={()=>{unBan(person.ID)}}>
+                                    <i class="bi bi-person-check-fill"></i>
+                                  </button>
+                                </td>
                             </tr>
                         {/each}
                     </tbody>
@@ -57,6 +66,7 @@
 
                     </tfoot>
                 </table>
+                {/if}
             {/await}
           {/if}
         </div>
