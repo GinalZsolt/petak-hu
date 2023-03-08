@@ -1,11 +1,9 @@
 <script lang="ts">
-    import Tag from "./Tag.svelte";
     import { Delete, Patch, Get } from "../../services/dbQueries";
     import {userPerms, Token} from './../../stores';
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
-    import Catalogue from "../Catalogue.svelte";
 
     let tagdel:boolean=true;
     export let Coin:Coin;
@@ -43,7 +41,6 @@
         };
         tags.push(tag);
         tags=tags;
-        console.log(tags);
     }
 
     function DeleteTag(del){
@@ -53,6 +50,7 @@
 
     onMount(async()=>{
         category = await GetCategories();
+        category=category;
     });
 
 </script>

@@ -1,5 +1,5 @@
 export interface TagInterface{
-    ID:number;
+    ID?:number;
     CoinID:number;
     description:string;
     name:string;

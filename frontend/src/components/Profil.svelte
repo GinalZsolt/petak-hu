@@ -16,7 +16,6 @@
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
   import { GetUserCoins } from "../services/dbCoin";
-  //import CoinEditModal from "./subcomponents/CoinEditModal.svelte";
   import CoinMod from "./subcomponents/CoinMod.svelte";
   let err1 
   export let ID:number;
@@ -47,7 +46,7 @@
 
 </script>
 <CoinUpload/>
-<BanModal User={profile} />
+<!-- <BanModal User={profile} /> -->
 {#if profile}
 <main>
   <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
@@ -69,10 +68,10 @@
           {#if ID!=$userPerms.id&&$userPerms.permission==2}
           <div class="dropdown">
             <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
-            <ul class="dropdown-menu">
+            <!-- <ul class="dropdown-menu">
               <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
               <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
-            </ul>
+            </ul> -->
           </div>
           {/if}
         </div>
@@ -133,6 +132,7 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
+          <!--
           {#if profile.auctions}
             {#if mediaQuery(576)}
             {#each profile.auctions as auction, i}
@@ -148,6 +148,7 @@
             {/each}
             {/if}
           {/if}
+          -->
         </div>
       </div>
       <button
