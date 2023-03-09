@@ -5,4 +5,6 @@ export interface Coin{
     description:string;
     headfile:string;
     tailfile:string;    
+    userID: number;
+    uploadDate:string;
 }

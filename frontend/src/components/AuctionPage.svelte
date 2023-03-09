@@ -13,6 +13,7 @@
   import type { Coin } from "../interfaces/Coin";
     import { GetCoin } from "../services/dbCoin";
     import CoinModal from "./subcomponents/coinModal.svelte";
+    import { db } from "../services/dbForum";
   
   export let ID: number;
   
@@ -28,8 +29,9 @@
     auction = await GetAuctionData($Token.token, ID);
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
-    console.log(await GetCoin(auction.coinID, $Token.token));
-    console.log(originalPrice+auction.minBid);
+    /*if (new Date(auction.expiration) < new Date()){
+      db  
+    }*/
   });
 
   const socket = io("ws://localhost:8080");
@@ -69,7 +71,7 @@
       <div class="row mx-auto">
         {#if coin}
         <CoinModal coin={coin} />
-        <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3" data-bs-target='#coin_' data-bs-toggle="modal">
+        <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3" data-bs-target='#_coinmodal' data-bs-toggle="modal">
           <div class="container-fluid h-100" id="AuctionCoin">
             <img class="img-fluid h-100" src={'http://localhost:8080/img/'+coin.headfile} alt="" />
           <p class="w-100 px-2" id="title">{auction.title}</p>
@@ -81,40 +83,65 @@
         </div>
         {/if}
         <div class="col-md-6 col-12 pe-md-0">
+          {#if new Date(auction.expiration)>new Date()}
+          {#if $userPerms.permission>0}
           <h3>Licitálás</h3>
           <div class="d-flex flex-row mb-3">
             <div class="input-group me-lg-3">
+              {#if bidders}
               <input
                 type="number"
                 min={originalPrice}
                 step={auction.minBid}
-                disabled={auction.userID==$userPerms.id}
+                disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id}
                 bind:value={auction.price}
                 name="bidAmount"
                 class="form-control border-dark"
               />
+              {/if}
               <label for="bidAmount" class={"input-group-text border-dark"+($userPerms.id==auction.userID ? 'disabled' : '')}>Ft</label>
             </div>
-            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id} on:click={Bid}>Licitálás</button>
+            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id} on:click={Bid}>Licitálás</button>
           </div>
           <p class="border-bottom border-dark pb-3">
             Licitlépcső: {auction.minBid} Ft
           </p>
-          <h3>Legutóbbi licitek</h3>
+          {/if}
+          {:else}
+          <div class="alert alert-primary">Ennek az aukciónak vége lett!</div>
+          {/if}
+          <h3>{#if new Date(auction.expiration)<new Date()}Az aukcióra licitáltak{:else}Legutóbbi licitek{/if}</h3>
           <div id="Bidders">
             {#if bidders}
-              {#each bidders as bidder}
-                <p transition:fade><a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
-                  currency:'HUF',
-                  style:'currency'
-                }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
-                  dateStyle:'long',
-                }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}</p>
-              {/each}
+              {#if bidders.length>0}
+                {#each bidders as bidder, i}
+                  {#if new Date(auction.expiration)<new Date() && i == 0}
+                    <p transition:fade>
+                      <a class="link-success" href={`/profile/${bidder.userID}`}>{bidder.username} <i class="bi bi-trophy-fill"></i></a> - {new Intl.NumberFormat('hu-HU', {
+                      currency:'HUF',
+                      style:'currency'
+                    }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
+                      dateStyle:'long',
+                    }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}
+                    </p>
+                  {:else}
+                    <p transition:fade>
+                      <a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
+                      currency:'HUF',
+                      style:'currency'
+                    }).format(bidder.price) } | {new Intl.DateTimeFormat('hu-HU', {
+                      dateStyle:'long',
+                    }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}
+                    </p>
+                  {/if}
+                {/each}
               {:else}
-                <div class="spinner-border" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
+              <h3 class="text-danger">Jelenleg nem érkezett még licit erre az aukcióra!</h3>
+              {/if}
+              {:else}
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
             {/if}
           </div>
         </div>

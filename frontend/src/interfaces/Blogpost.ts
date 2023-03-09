@@ -3,16 +3,16 @@ export interface BlogPost{
     description:string;
     imagefile:string;
     date:string;
-    isClosed:boolean;
+    isClosed:number;
     topicID:number;
     userID:number;
     ID:number;
 }
 export interface Comment{
-    ID:number;
+    ID?:number;
     postID:number;
     userID:number;
-    username:string;
+    username?:string;
     message:string;
     date:string;
 }

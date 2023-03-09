@@ -16,6 +16,9 @@ async function GetBidders(token:string, auctionID:number):Promise<Bidder[]>{
 async function GetAuctions(token:string, userID:number):Promise<Auction[]>{
     return await Get(token, 'auctions', 'userID', userID).then(res=>res).catch(err=>err.response);
 }
+async function GetAllAuctions(token:string):Promise<Auction[]>{
+    return await Get(token, 'auctions');
+}
 async function GetAuctionData(token:string, id:number):Promise<Auction>{
     return await Get(token, 'auctions', 'ID', id).then(res=>res[0]).catch(err=>err.response);
 }
@@ -29,4 +32,4 @@ async function PostNewAuctionPrice(token:string, id:number, data:number){
 }
 
 
-export { GetBidders, GetAuctionData, PostNewBidder, PostNewAuctionPrice, GetAuctions }
+export { GetBidders, GetAuctionData, PostNewBidder, PostNewAuctionPrice, GetAuctions, GetAllAuctions }

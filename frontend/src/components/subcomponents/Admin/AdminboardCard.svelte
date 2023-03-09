@@ -1,11 +1,21 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     export let CardData: any;
+    let dispatch = createEventDispatcher();
+    function SendType(){
+        dispatch("clicked",{
+            title:CardData.title
+        });
+    }
 </script>
 <div
     class="dashboard-card m-3"
     style:--color1={CardData.fromColor}
     style:--color2={CardData.toColor}
-    data-bs-toggle="modal" data-bs-target="#{CardData.modalName}"
+    data-bs-toggle="modal" 
+    data-bs-target={"#"+CardData.modaltype+"Modal"}
+    on:click={SendType}
+    on:keypress={()=>{}}
 >
     <div class="h-100 d-flex justify-content-between p-2">
         <h2 class="fs-1 align-self-start">{CardData.title}</h2>

@@ -17,7 +17,14 @@
     })
     let tagdel:boolean=true;
     let data:any={}
-    let newtag:any={}
+    let newtag:TagInterface={
+        ID:undefined,
+        CoinID: undefined,
+        description: "",
+        name: "",
+        color:"",
+        Category:""
+    };
     let tags:TagInterface[]=[]
 
     function Delete(del){
@@ -34,19 +41,19 @@
     }
  
     function addTag(){
-        if (newtag.category==null||newtag.content==undefined||newtag.content=="") {
+        if (newtag.Category==null||newtag.description==undefined||newtag.description=="") {
             err2.showError()
         }
         else{
             tags = [...tags,{
                 ID:null,
                 CoinID:null,
-                description:newtag.content,
-                name:getname(newtag.category),
-                color:getcolor(newtag.category)
+                description:newtag.description,
+                name:getname(newtag.Category),
+                color:getcolor(newtag.Category)
             } as TagInterface]
-            newtag.content="";
-            newtag.category=null;
+            newtag.description="";
+            newtag.Category=null;
         }
     }
 
@@ -76,13 +83,14 @@
             tags.forEach(element => {
                 let uploadableTag={
                     coinID:coinID,
-                    nameID:tagtypes.find(e=>e.name==element.name).ID,
+                    nameID:element.name,
                     descID:element.description
                 }
+                console.log(uploadableTag)
                 UploadTag(uploadableTag,$Token.token)
             });
             data={}
-            newtag={}
+            newtagClear();
             tags=[]
             err3.showError()
         }
@@ -91,6 +99,12 @@
         }
     }
 
+    function newtagClear(){
+        newtag.color="";
+        newtag.description="";
+        newtag.name="";
+        newtag.Category="";
+    }
 </script>
 <style lang="sass">
     button
@@ -142,7 +156,7 @@
 
                     <div class="col-5">
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
-                        <select bind:value={newtag.category} class="form-select" name="tagtype" id="tagtype">
+                        <select bind:value={newtag.Category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
                             {#if tagtypes}
                                 {#each tagtypes as tagtype}
@@ -153,7 +167,7 @@
                     </div>
                     <div class="col-4">
                         <label for="tagcontent" class="form-label">Címke tartalma</label>
-                        <input type="text" bind:value={newtag.content} class="form-control" id="tagcontent" name="tagcontent" >
+                        <input type="text" bind:value={newtag.description} class="form-control" id="tagcontent" name="tagcontent" >
                     </div>
                     <button type="button" class="btn col-3" on:click={addTag}>Hozzáadás</button>
                 </div>  
@@ -167,11 +181,11 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:files={data.heads} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:files={data.heads} accept="image/*" name="fej"  type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:files={data.tails} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:files={data.tails} accept="image/*" name="iras"  type="file" id="iras">
                 </div>
             </form>
         </div>

@@ -21,7 +21,7 @@
                 console.log(data.file[0]);
                 upload.append('image', data.file[0]);
                 await (UploadImage($Token.token, upload)).then(dt=>{
-                    if (dt.status==500){
+                    if (dt.status){
                         ShowError("A Fájl rossz!", "danger");
                     }
                     else{
@@ -52,6 +52,9 @@
                 }
             }
         }
+        else{
+            ShowError("Nem töltött ki minden kötelező adatot! (Cím, leírás, fórumtéma)!", "danger");
+        }
     }
     function ShowError(text:string, type:string){
         error.text = text;
@@ -74,6 +77,9 @@
         border: 1px solid black
     textarea
         resize: none
+    #alertbtn
+        border: none
+        background: none
 </style>
 
 
@@ -83,11 +89,11 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Bejegyzés írása</h1>
-          <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" on:click={DismissError}>
         </div>
         <div class="modal-body">
             {#if gotError}
-                <div class={`d-flex alert alert-${error.type} fade show`}>{error.text}<button type="button" class="bg-none" on:click={DismissError} data-bs-dismiss="alert" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
+                <div class={`alert alert-${error.type} alert-dismissible fade show`}><span>{error.text}</span><button type="button" class="btn-close" id="alertbtn" on:click={DismissError} data-bs-dismiss="alert" aria-label="Close"><i class="bi bi-x-lg"></i></button></div>
             {/if}
             <form>
                 <div class="mb-3">
@@ -107,7 +113,7 @@
                         {/each}
                     </select>
                 </div>
-                <input class="form-control mb-3" bind:files={data.file} name="file"  type="file" id="file">
+                <input class="form-control mb-3" bind:files={data.file} accept="image/*" name="file"  type="file" id="file">
             </form>
         </div>
         <div class="modal-footer">

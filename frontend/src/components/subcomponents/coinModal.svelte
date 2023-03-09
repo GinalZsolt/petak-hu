@@ -1,13 +1,18 @@
 <script lang="ts">
+    import axios from "axios";
   import type { Coin } from "../../interfaces/Coin";
-    import { userPerms } from "../../stores";
+    import { GetUserData } from "../../services/dbUser";
+  import { userPerms, Token } from "../../stores";
   export let coin: Coin;
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
+  export function loadmodal(loadable){
+    coin=loadable
+  }
 </script>
-
-<div class="modal fade" tabindex="-1" role="dialog" id={"coin_"}>
+{#if coin != undefined}
+<div class="modal fade" tabindex="-1" role="dialog" id="_coinmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -30,16 +35,20 @@
           >
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + coin.headfile}
-                  alt=""
-                />
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
+                    src={"http://localhost:8080/img/" + coin.headfile}
+                    alt=""
+                  />
+                </div>
               </div>
               <div class="carousel-item">
-                <img class="img-fluid"
+                <div class="d-flex justify-content-center imageback">
+                  <img class="img-fluid"
                   src={"http://localhost:8080/img/" + coin.tailfile}
                   alt=""
-                />
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -55,14 +64,13 @@
         {#each coin.description.split('\n') as text}
           <p>{text}</p>
         {/each}
-      </div>
-      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
-        
-        {#if coin.userID == $userPerms.id}
-        <div>
-          <button type="button" class="btn btn-primary">Módosítás</button>
-          <button type="button" class="btn btn-primary">Aukció</button>
         </div>
+      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
+        {#if coin.userID == $userPerms.id}
+          <div>
+            <button type="button" class="btn btn-primary">Módosítás</button>
+            <button type="button" class="btn btn-primary">Aukció</button>
+          </div>
         {/if}
         <div>
           <button 
@@ -78,12 +86,14 @@
     </div>
   </div>
 </div>
-
+{/if}
 <style lang="sass">
-    .btn
-        background-color: #ea9e60
-    .modalpic
-        display: flex
-        flex-direction: column
-        align-items: flex-start
+  .btn
+    background-color: #ea9e60
+  .modalpic
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+  .imageback
+    background-color: black
 </style>

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Auction } from "../interfaces/Auction";
-  import type { Coin } from "../classes/Coin/Coin";
-  import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
-  import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
+  import { GetAllAuctions, GetAuctions } from "../services/dbAuction";
+  import { Token } from "../stores";
+  import AuctionCard from "./subcomponents/AuctionCard.svelte";
   let searchText: string = "";
   function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
+  let Auctions = GetAllAuctions($Token.token);
 </script>
 
 <main>
@@ -35,7 +35,26 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- add meg itt a cardokat! -->
+          {#await Auctions}
+            <div class="spinner-border"></div>
+            {:then Data}
+            {@const FilterArrayTop = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
+              {#each Array(Math.ceil(FilterArrayTop.length/3)) as i, index}
+              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
+                <div class="d-flex">
+                  {#if FilterArrayTop[index]}
+                  <AuctionCard Auction={FilterArrayTop[index]} />
+                  {/if}
+                  {#if FilterArrayTop[index+1]}
+                  <AuctionCard Auction={FilterArrayTop[index+1]} />
+                  {/if}
+                  {#if FilterArrayTop[index+2]}
+                  <AuctionCard Auction={FilterArrayTop[index+2]} />
+                  {/if}
+                </div>
+              </div>
+              {/each}
+          {/await}
         </div>
       </div>
       <button
@@ -55,7 +74,26 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <!-- add meg itt a cardokat! -->
+          {#await Auctions}
+            <div class="spinner-border"></div>
+            {:then Data}
+            {@const FilterArrayBottom = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
+              {#each Array(Math.ceil(FilterArrayBottom.length/3)) as i, index}
+              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
+                <div class="d-flex">
+                  {#if FilterArrayBottom[index]}
+                    <AuctionCard Auction={FilterArrayBottom[index]} />
+                  {/if}
+                  {#if FilterArrayBottom[index+1]}
+                    <AuctionCard Auction={FilterArrayBottom[index+1]} />
+                  {/if}
+                  {#if FilterArrayBottom[index+2]}
+                    <AuctionCard Auction={FilterArrayBottom[index+2]} />
+                  {/if}
+                </div>
+              </div>
+              {/each}
+          {/await}
         </div>
       </div>
       <button

@@ -14,6 +14,6 @@
 </script>
 
 <div class="comment col-lg-8 col-md-8 col-11 mx-auto mt-3" >
-    <div><span>{Data.username}</span><span class="ms-3">{Data.date}</span></div>
+    <div><a href={"/profile/"+Data.userID}>{Data.username}</a><span class="ms-3">{new Intl.DateTimeFormat('hu-HU').format(new Date(Data.date))}</span></div>
     <p>{Data.text}</p>
 </div>

@@ -1,23 +1,30 @@
-export interface Forum {
+export interface Topic {
     ID:number;
     name:string;
-    posts:Array<ForumPost>;
-}
-export interface ForumPost{
-    postID:number;
-    userID:number;
-    title:string;
-    username:string;
-    startingdate:string;
-    isClosed:boolean;
-}
-export interface Topic{
-    ID:number;
-    name:string;
+    posts:Array<Post>;
 }
 export interface uploadData{
-    title?:string;
-    description?:string;
-    topicID?:number;
-    file?:FileList;
+    description?:string,
+    title?:string,
+    topicID:number,
+    file?:FileList
+}
+export interface Comment{
+    userID:number;
+    username:string;
+    message:string;
+    date:string;
+}
+export interface Post{
+    ID:number;
+    topicID:number;
+    userID:number;
+    username:string;
+    imagefile?:string;
+    title:string;
+    description:string;
+    date:string;
+    comments:Array<Comment>
+    isClosed:boolean;
+    isDeleted:boolean;
 }

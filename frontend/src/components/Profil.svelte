@@ -4,70 +4,66 @@
   import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
   import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
   import CoinSlideMdLg from "./subcomponents/CoinSlide-md-lg.svelte";
-  import CoinSlideSm from "./subcomponents/CoinSlide-md-lg.svelte";
-  import CoinModal from "./subcomponents/coinModal.svelte";
+  import CoinSlideSm from "./subcomponents/CoinSlide-sm.svelte";
   import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
   import {userPerms, Token} from './../stores';
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import CoinModal from "./subcomponents/coinModal.svelte";
   import { onMount } from "svelte";
   import {Get,Patch} from "../services/dbQueries";
   import {GetAuctions} from "../services/dbAuction";
   import BanModal from "./subcomponents/BanModal.svelte";
   import { GetUserData } from "../services/dbUser";
   import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-  let err1
-  interface Profile{
-    name:string;
-    email:string;
-    picture?:string;
-    coins:Coin[];
-    auctions:Auction[];
-  }  
+  import { GetUserCoins } from "../services/dbCoin";
+  import CoinMod from "./subcomponents/CoinMod.svelte";
+  let err1 
+  let err2 
   export let ID:number;
-  let profile:Profile={} as Profile;
+  let profile;
   function Promote(){
-    Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
-      err1.showError()
-    })
+    if ($userPerms.permission!=2) {
+      Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+        err1.showError()
+      })
+    }
+    else{
+      err2.showError()
+    }
   }
 
-  let searchText: string = "";
-    function mediaQuery(pixels:number):boolean{
+  function mediaQuery(pixels:number):boolean{
     const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
     return mediaquery.matches;
   }
-  let auction: Auction[] = [];
+
 
   async function getAuctions() {
     return await await GetAuctions($Token.token, $userPerms.id);
-
   }
 
-  async function getCoinList() {
-      profile.coins = await await Get($Token.token, "coins", "userID", $userPerms.id);
-  }
   onMount(async()=>{
     await GetUserData(ID,$Token.token).then((res)=>{
-      profile=res[0]
-    })
-    await getCoinList();
+      profile=res[0];
+    });
+    profile.coins = await GetUserCoins($Token.token,$userPerms.id)
     profile.auctions = await getAuctions();
-    console.log(await profile);    
   })
 
 </script>
 <CoinUpload/>
-<BanModal User={profile} />
+<!-- <BanModal User={profile} /> -->
 {#if profile}
 <main>
   <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
+  <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
     <div id="profile" class="row">  <!-- profile -->
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 d-flex flex-row tulajdonsagok" >  
-          {#if profile.picture==undefined||profile.picture==null||profile.picture==""}
+          {#if profile.imagefile==undefined||profile.imagefile==null||profile.imagefile==""}
             <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src="../../public/test.png" alt=""></div> <!-- profile picture-->
             
           {:else}
-            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
+            <div class="overflow-hidden"><img class="img-fluid mx-auto flexstart" src={"http://localhost:8080/img/"+profile.imagefile} alt=""></div> <!-- profile picture-->
             
           {/if}
             <div id="nevemail">
@@ -79,10 +75,10 @@
           {#if ID!=$userPerms.id&&$userPerms.permission==2}
           <div class="dropdown">
             <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
-            <ul class="dropdown-menu">
+            <!-- <ul class="dropdown-menu">
               <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
               <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
-            </ul>
+            </ul> -->
           </div>
           {/if}
         </div>
@@ -105,21 +101,23 @@
         <div class="carousel-inner">
           <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
             <div class="carousel-inner">
+              <!--
               {#if profile.coins}
                 {#if mediaQuery(576)}
                   {#each profile.coins as coin, i}
-                    <CoinSlideSm Coin={coin} isFirst={i==0 ? true : false} />            
+                    <CoinSlideSm coin={coin} isFirst={i==0 ? true : false} />            
                   {/each}
                 {:else if mediaQuery(768)}
-                  {#each Array(profile.coins.length/2)  as index, i}
+                  {#each Array(profile.coins.length/2) as index, i}
                     <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1]]} isFirst={i==0 ? true : false} />
                   {/each}
-                  {:else}
-                  {#each Array(profile.coins.length/3)  as index, i}
-                  <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
+                {:else}
+                  {#each Array(profile.coins.length/3) as index, i}
+                    <CoinSlideMdLg Coins={[profile.coins[i], profile.coins[i+1], profile.coins[i+2]]} isFirst={i==0 ? true : false} />
                   {/each}
-                  {/if}
+                {/if}
               {/if}
+              --> 
             </div>
           </div>
         </div>
@@ -141,21 +139,21 @@
       >
       <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#if profile.auctions}
+          <!-- {#if profile.auctions}
             {#if mediaQuery(576)}
-              {#each profile.auctions as auction, i}
-                <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
-              {/each}
+            {#each profile.auctions as auction, i}
+              <AuctionSlideSm Auction={auction} Coin={profile.coins.find(e=>e.ID==auction.coinID)} isFirst={i==0 ? true : false} />            
+            {/each}
             {:else if mediaQuery(768)}
-              {#each Array(profile.auctions.length/2)  as index, i}
-                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID)]} isFirst={i==0 ? true : false} />
-              {/each}
-              {:else}
-              {#each Array(profile.auctions.length/3)  as index, i}
-                <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} Coins={[profile.coins.find(e=>e.ID==profile.auctions[i].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+1].coinID), profile.coins.find(e=>e.ID==profile.auctions[i+2].coinID)]} isFirst={i==0 ? true : false} />
-              {/each}
-              {/if}
-          {/if}
+            {#each Array(profile.auctions.length/2)  as index, i}
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1]]} isFirst={i==0 ? true : false} />
+            {/each}
+            {:else}
+            {#each Array(profile.auctions.length/3)  as index, i}
+              <AuctionSlideMdLg Auctions={[profile.auctions[i], profile.auctions[i+1], profile.auctions[i+2]]} isFirst={i==0 ? true : false} />
+            {/each}
+            {/if}
+          {/if} -->
         </div>
       </div>
       <button
@@ -164,8 +162,11 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>  
-    <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
+    <button data-bs-target="#CoinMod" data-bs-toggle="modal">SEGÍCCSÉG</button>
     <AuctionUploadModal/>
+    {#if profile.coins != undefined}
+      <CoinMod Coin={profile.coins[0]}></CoinMod>
+    {/if}
   </main>
 {/if}
 <style lang="sass">

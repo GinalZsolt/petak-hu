@@ -15,6 +15,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors());
 app.use('/img', express.static(path.join(__dirname,"/uploads")))
 app.use('/api/file',require('./controllers/FileActions').router)
+app.use('/mail', require('./controllers/mailing'));
 const io = new Server(server, {
   cors:{
     origin:"http://localhost:5173",
@@ -24,6 +25,7 @@ const io = new Server(server, {
 
 app.use('/api', require('./controllers/sqlController'))
 app.use('/api/users', require('./controllers/usersController'))
+app.use('/mailing', require('./controllers/mailingController'));
 server.listen(process.env.PORT, () => {
   log('http://localhost:'+server.address().port, 'server started');
 });

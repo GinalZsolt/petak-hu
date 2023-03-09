@@ -129,7 +129,7 @@
                 <input type="text" bind:value={data.phone} class="form-control" id="phone" name="phone">
             </div>
             <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
-            <input bind:files={pfp} class="form-control mb-3" name="file"  type="file" id="file">
+            <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">
             <button type="button" class="btn" on:click={()=>{Update()}}>Megerősítés</button>
           </form>
     </div>
