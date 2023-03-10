@@ -6,15 +6,15 @@
     GetBidders,
     PostNewAuctionPrice,
     PostNewBidder,
+    CloseAuctionAndSendMail
   } from "../services/dbAuction";
   import { Token, userPerms } from "../stores";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type { Coin } from "../interfaces/Coin";
-    import { GetCoin } from "../services/dbCoin";
-    import CoinModal from "./subcomponents/coinModal.svelte";
-    import { db } from "../services/dbForum";
-  
+  import { GetCoin } from "../services/dbCoin";
+  import CoinModal from "./subcomponents/coinModal.svelte";
+    import { Get } from "../services/dbQueries";
   export let ID: number;
   
   let coin:Coin;
@@ -29,9 +29,19 @@
     auction = await GetAuctionData($Token.token, ID);
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
-    /*if (new Date(auction.expiration) < new Date()){
-      db  
-    }*/
+    if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false){
+      console.log("dlfjsklflksd")
+      CloseAuctionAndSendMail($Token.token, auction.ID, {
+        auctionID: auction.ID, 
+        userID: auction.userID,
+        auctionPoster:{
+          email:auction.user.email, 
+          fullname: auction.user.fullname,
+          phone: auction.user.phone
+        },
+        auctionTitle:auction.title
+      })
+    }
   });
 
   const socket = io("ws://localhost:8080");

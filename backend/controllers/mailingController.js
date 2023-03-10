@@ -8,6 +8,7 @@ let ejs = require('ejs');
 Router.post("/to/:id", (req,res)=>{
     axios.get('http://localhost:8080/api/users/ID/'+req.params.id, {headers:{'Authorization':req.headers.authorization}}).then(response=>{
         if (response.data.length>0){
+            console.log(req.body);
             let targetEmail = response.data[0].email;
             nodemailer.createTestAccount((err, account)=>{
                 let transporter = nodemailer.createTransport({
