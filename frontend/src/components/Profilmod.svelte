@@ -26,6 +26,7 @@
     let err2
     let err3
     let err4
+    let err5
     let pass1:string=""
     let pass2:string=""
     let pfp
@@ -51,24 +52,51 @@
                 }
                 else
                 {
-                    let userdata={
-                        name:data.name,
-                        fullname:data.fullname,
-                        phone:(data.phone==undefined||data.phone=="")?null:data.phone,
-                        imagefile:null,
-                        address:(data.address==undefined||data.address=="")?null:data.address,
-                        passwd:sha256(pass1).toString()
+                    if(data.phone!=undefined||data.phone!=""){
+                        if (!data.phone.match(/[+][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/)) {
+                            err5.showError()
+                        }
+                        else{
+                            let userdata={
+                            name:data.name,
+                            fullname:data.fullname,
+                            phone:(data.phone==undefined||data.phone=="")?null:data.phone,
+                            imagefile:null,
+                            address:(data.address==undefined||data.address=="")?null:data.address,
+                            passwd:sha256(pass1).toString()
+                        }
+                        let upload = new FormData();
+                        if(pfp!=undefined)  {
+                            upload.append('image', pfp[0]);
+                            await UploadImage($Token.token,upload).then(res=>{
+                                userdata.imagefile = res.filename
+                            })
+                        }
+                        await Patch($Token.token,"users","ID",$userPerms.id,userdata).then(res=>{
+                            err4.showError()
+                        })
+                        }
                     }
-                    let upload = new FormData();
-                    if(pfp!=undefined)  {
-                        upload.append('image', pfp[0]);
-                        await UploadImage($Token.token,upload).then(res=>{
-                            userdata.imagefile = res.filename
+                    else{
+                        let userdata={
+                            name:data.name,
+                            fullname:data.fullname,
+                            phone:(data.phone==undefined||data.phone=="")?null:data.phone,
+                            imagefile:null,
+                            address:(data.address==undefined||data.address=="")?null:data.address,
+                            passwd:sha256(pass1).toString()
+                        }
+                        let upload = new FormData();
+                        if(pfp!=undefined)  {
+                            upload.append('image', pfp[0]);
+                            await UploadImage($Token.token,upload).then(res=>{
+                                userdata.imagefile = res.filename
+                            })
+                        }
+                        await Patch($Token.token,"users","ID",$userPerms.id,userdata).then(res=>{
+                            err4.showError()
                         })
                     }
-                    await Patch($Token.token,"users","ID",$userPerms.id,userdata).then(res=>{
-                        err4.showError()
-                    })
                 }
             }
         }
@@ -100,6 +128,7 @@
         <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik",error:true}}/>
         <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó",error:true}}/>
         <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás",error:false}}/>
+        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám nem megfelelő! (+36301234567)",error:true}}/>
         <form>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
