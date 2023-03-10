@@ -7,6 +7,7 @@
     import AdminStatisticsModal from "./subcomponents/Admin/adminStatisticsModal.svelte";
     import { GetBanned } from "../services/dbUser";
     import AdminTableModal from "./subcomponents/Admin/adminTableModal.svelte";
+    import { GetAllAuctions } from "../services/dbAuction";
     let statisticsModalData:ModalData;
     let TableModalData:ModalData;
 
@@ -35,6 +36,13 @@
                 TableModalData={
                     promise:GetBanned($Token.token),
                     title:"Kitiltott Felhasználók"
+                }
+                break;
+            }
+            case "Aukciók":{
+                TableModalData={
+                    promise:GetAllAuctions($Token.token),
+                    title:"Aukciók"
                 }
                 break;
             }
