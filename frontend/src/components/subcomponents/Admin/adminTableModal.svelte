@@ -34,39 +34,72 @@
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics }
-            {#if Statistics.length==0}
-                <h3 class="text-center text-danger p-3">Nincsen kitiltott felhasználó</h3>
-            {:else}
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <th>#</th>
-                        <th>Felhasználónév</th>
-                        <th>E-mail</th>
-                        <th>Kitiltás kezdete</th>
-                        <th>Kitiltás vége</th>
-                        <th>Kitiltás visszavonása</th>
-                    </thead>
-                    <tbody>
-                        {#each Statistics as person, index}
-                            <tr>
-                                <td>{index+1}</td>
-                                <td>{person.name}</td>
-                                <td>{person.email}</td>
-                                <td>{moment(person.startdate).format("YYYY-MM-DD")}</td>
-                                <td>{moment(person.banTime).format("YYYY-MM-DD")}</td>
-                                <td class="text-center">
-                                  <button class="btn btn-warning" on:click={()=>{unBan(person.ID)}}>
-                                    <i class="bi bi-person-check-fill"></i>
-                                  </button>
-                                </td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                    <tfoot>
+            
+              {#if Data.title=="Kitiltott Felhasználók"}
 
-                    </tfoot>
-                </table>
+                {#if Statistics.length==0}
+                <h3 class="text-center text-danger p-3">Nincsen kitiltott felhasználó</h3>
+                {:else}
+                    <table class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Felhasználónév</th>
+                            <th>E-mail</th>
+                            <th>Kitiltás kezdete</th>
+                            <th>Kitiltás vége</th>
+                            <th>Kitiltás visszavonása</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {#each Statistics as person, index}
+                                <tr>
+                                    <td>{index+1}</td>
+                                    <td>{person.name}</td>
+                                    <td>{person.email}</td>
+                                    <td>{moment(person.startdate).format("YYYY-MM-DD")}</td>
+                                    <td>{moment(person.banTime).format("YYYY-MM-DD")}</td>
+                                    <td class="text-center">
+                                      <button class="btn btn-warning" on:click={()=>{unBan(person.ID)}}>
+                                        <i class="bi bi-person-check-fill"></i>
+                                      </button>
+                                    </td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                       
+                    </table>
                 {/if}
+
+              {:else}
+              {#if Statistics.length==0}
+              <h3 class="text-center text-danger p-3">Jelenleg nincsenek aukciók</h3>
+              {:else}
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Cím</th>
+                        <th>Érték</th>
+                        <th>Lejárat</th>
+                        <th>Állapot</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                          {#each Statistics as auction, index}
+                              <tr>
+                                <td>{index+1}</td>
+                                <td>{auction.title}</td>
+                                <td>{auction.price}</td>
+                                <td>{new Intl.DateTimeFormat("hu-HU").format(new Date(auction.expiration))}</td>
+                                <td class:text-danger='{new Date()>new Date(auction.expiration)}'>{new Date()>new Date(auction.expiration)?"Lezárva":"Folyamatban"}</td>
+                              </tr>
+                          {/each}
+                      </tbody>
+                      
+                  </table>
+              {/if}
+              {/if}
             {/await}
           {/if}
         </div>

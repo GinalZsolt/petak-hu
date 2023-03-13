@@ -2,6 +2,12 @@ export interface Auction{
     ID:number;
     coinID:number;
     userID:number;
+    user:{
+        name:string,
+        email:string,
+        fullname:string,
+        phone:string;
+    }
     price:number;
     title:string;
     minBid:number;

@@ -8,12 +8,10 @@
     
 <a href="#" class="flexCard"  data-bs-target={"#cmodal"} data-bs-toggle="modal">
     <div class="Card">
-    <div class="auctimg d-flex justify-content-center">
-    <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
-</div>
-        <div
-        class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1"
-        >
+      <div class="auctimg d-flex justify-content-center">
+      <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
+    </div>
+    <div class="bottomText d-flex flex-wrap justify-content-between text-light overflow-hidden px-1">
         <p class="my-0 py-0">
         {
           coin.name.substring(0, 15) == coin.name

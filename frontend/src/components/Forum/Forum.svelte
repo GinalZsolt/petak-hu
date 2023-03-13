@@ -37,7 +37,7 @@
                 {@const Posts = Data.find(e=>e.ID==topicID).posts.sort((a,b)=>(new Date(a.date)).getTime() + (new Date(b.date)).getTime()).filter(m=>m.isDeleted==false)}
                 <div class="col-lg-7 col-md-8 col-11 mx-auto mt-5">
                     {#if Posts.length>0}
-                    <table>
+                    <table class="fs-4">
                         <tbody>
                             {#each Posts as post}
                                 {#if post.isDeleted==false}

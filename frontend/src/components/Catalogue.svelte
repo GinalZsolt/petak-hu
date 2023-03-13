@@ -38,25 +38,21 @@
         <a  class="btn border-dark me-2" href="/"><i class="bi bi-arrow-left w-auto" /></a>
         <h4>{profile.name} katalógusa</h4>
     </div>
-    <nav class="navbar bg-light">
-        <form class="container-fluid">
-          <div class="input-group  border border-dark rounded">
-            <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
-            <input type="text" class="form-control" bind:value={searchtext}>
-          </div>
-        </form>
-    </nav>
+    <div class="input-group  border border-dark rounded mt-3">
+      <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
+      <input type="text" class="form-control" bind:value={searchtext}>
+     </div>
     <!--Érme katalógus-->
     <div class="cards row">
       {#if profile.coin_list}
-        {#each profile.coin_list as coin}
+        {#each profile.coin_list.filter(e=>e.name.toLowerCase().includes(searchtext.toLowerCase())) as coin}
           <div class="col-lg-4 col-md-6 col-12" on:click={()=>{PickCoin(coin)}}>
             <CoinCard coin={coin} />
           </div>
         {/each}
       {/if}
     </div>
-      <CoinModal bind:this={modal} />
+    <CoinModal bind:this={modal}/>
 </main>
 
 <style lang="sass">
