@@ -84,14 +84,16 @@
               <ProfileCard />
             {/if}
           </div>
-          <a class="btn" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
+          <a class="btn w-100" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
       </div>
+      {:else}
+      <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn"><i class="bi bi-plus-lg"></i></button></div>
       {/if}
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
       <div class="auctions">
-        {#each Array(Math.ceil(ProfileData.auctions.length/3)) as auction, i}
-          <ProfileCard auction={ProfileData.auctions[i]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
+        {#each ProfileData.auctions as auction, i}
+          <ProfileCard auction={auction} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
         {/each}
       </div>
       {/if}
