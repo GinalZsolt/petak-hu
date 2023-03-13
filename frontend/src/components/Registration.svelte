@@ -106,6 +106,7 @@
             <div class="mb-3">
                 <label for="passwd">Jelszó<span class="text-danger">*</span></label>
                 <input type="password" bind:value={pass1} name="passwd" class="form-control">
+                <div id="minpass" class="form-text">Min. 8 karakter, kis és nagybetű, szám</div>
             </div>
             <div class="mb-3">
                 <label for="passwdagain">Jelszó megerősítése<span class="text-danger">*</span></label>
