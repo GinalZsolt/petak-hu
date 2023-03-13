@@ -30,7 +30,9 @@
         <div class="modal-body">
           {#if Data}
           <h2>{Data.title}</h2> 
-          <ErrorAlert bind:this={err1} Error={{id:"successful_delete",text:"Sikeresen törölve!",error:false}}/>
+          {#if Data.title=="Kitiltott Felhasználók"}
+            <ErrorAlert bind:this={err1} Error={{id:"successful_delete",text:"Sikeresen törölve!",error:false}}/>
+          {/if}
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics }
