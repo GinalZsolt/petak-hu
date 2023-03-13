@@ -1,17 +1,40 @@
 <script lang="ts">
     import { GetUserProfile } from "../services/dbUser";
-    import { Token } from '../stores';
+    import { Token,userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
     export let ID;
+    import {Patch} from "../services/dbQueries";
+    import BanModal from "./subcomponents/BanModal.svelte";
+    import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+
     let profile = GetUserProfile(ID, $Token.token);
+
+    let err1
+    let err2
+
+    function Promote(){
+    if ($userPerms.permission!=2) {
+      Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+        err1.showError()
+      })
+    }
+    else{
+      err2.showError()
+    }
+  }
+
 </script>
 
 
 <main>
+  
   <div class="col-lg-7 col-md-9 col-11 mx-auto">
     {#await profile}
-      <div class="spinner-border"></div>
+    <div class="spinner-border"></div>
     {:then ProfileData}
+      <BanModal User={ProfileData.user} />
+      <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
+      <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
       <div class="profileheader mt-5">
         <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
           <div>
@@ -25,7 +48,17 @@
             <h3 class="mb-0 mt-3">{ProfileData.user.name}</h3>
             <h4 class="text-muted mb-0">{ProfileData.user.email}</h4>
           </div>
-          <button class="btn" id="interactionbtn"><i class="bi bi-three-dots"></i></button>
+
+          {#if ID!=$userPerms.id&&$userPerms.permission==2}
+          <div class="dropdown">
+            <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
+              <li><button class="dropdown-item" on:click={()=>{Promote()}}>Adminokhoz adás</button></li>
+            </ul>
+          </div>
+          {/if}
+
         </div>
       </div>
       <hr>
