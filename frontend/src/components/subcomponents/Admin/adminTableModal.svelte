@@ -42,12 +42,14 @@
                 {:else}
                     <table class="table table-striped table-hover">
                       <thead>
+                        <tr>
                             <th>#</th>
                             <th>Felhasználónév</th>
                             <th>E-mail</th>
                             <th>Kitiltás kezdete</th>
                             <th>Kitiltás vége</th>
                             <th>Kitiltás visszavonása</th>
+                          </tr>
                         </thead>
                         <tbody>
                             {#each Statistics as person, index}
@@ -75,11 +77,13 @@
               {:else}
                   <table class="table table-striped table-hover">
                     <thead>
-                          <th>#</th>
-                          <th>Cím</th>
-                          <th>Érték</th>
-                          <th>Lejárat</th>
-                          <th>Állapot</th>
+                      <tr>
+                        <th>#</th>
+                        <th>Cím</th>
+                        <th>Érték</th>
+                        <th>Lejárat</th>
+                        <th>Állapot</th>
+                      </tr>
                       </thead>
                       <tbody>
                           {#each Statistics as auction, index}
