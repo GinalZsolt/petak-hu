@@ -1,6 +1,6 @@
 <script lang="ts">
     import { GetUserProfile } from "../services/dbUser";
-    import { Token } from '../stores';
+    import { Token, userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
     export let ID;
     let profile = GetUserProfile(ID, $Token.token);
@@ -12,6 +12,7 @@
     {#await profile}
       <div class="spinner-border"></div>
     {:then ProfileData}
+    {(console.log(ProfileData))}
       <div class="profileheader mt-5">
         <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
           <div>
@@ -25,11 +26,17 @@
             <h3 class="mb-0 mt-3">{ProfileData.user.name}</h3>
             <h4 class="text-muted mb-0">{ProfileData.user.email}</h4>
           </div>
+          {#if ProfileData.user.ID == $userPerms.id}
           <button class="btn" id="interactionbtn"><i class="bi bi-three-dots"></i></button>
+          {/if}
         </div>
       </div>
       <hr>
-      <h3>{ProfileData.user.name} zsetonjai</h3>
+      {#if ProfileData.coins.length>0}
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h3>{ProfileData.user.name} zsetonjai</h3>
+        <button class="btn"><i class="bi bi-plus-lg"></i></button>
+      </div>
       <div class="coins mb-3">
           <div class="d-flex flex-row justify-content-between">
             {#if ProfileData.coins[0]}
@@ -50,12 +57,15 @@
           </div>
           <a class="btn" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
       </div>
+      {/if}
+      {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
       <div class="auctions">
         {#each Array(Math.ceil(ProfileData.auctions.length/3)) as auction, i}
           <ProfileCard auction={ProfileData.auctions[i]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
         {/each}
       </div>
+      {/if}
     {/await}
     
 </main>

@@ -112,7 +112,7 @@
             <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
                 <div class="input-group">
                     <input type="text" name="message" id="message" class="form-control" bind:value={newMessage}>
-                    <button type="button" class="btn input-group-text" on:click={SendComment}><i class="bi bi-send"></i></button>
+                    <button type="button" class="btn input-group-text" disabled={newMessage==undefined} on:click={SendComment}><i class="bi bi-send"></i></button>
                 </div>
             </div> 
         {/if}
