@@ -30,10 +30,10 @@
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
     if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false){
-      console.log("dlfjsklflksd")
-      CloseAuctionAndSendMail($Token.token, auction.ID, {
+      console.log(bidders[0])
+      CloseAuctionAndSendMail($Token.token, ID, {
         auctionID: auction.ID, 
-        userID: auction.userID,
+        userID: bidders[0].userID,
         auctionPoster:{
           email:auction.user.email, 
           fullname: auction.user.fullname,
