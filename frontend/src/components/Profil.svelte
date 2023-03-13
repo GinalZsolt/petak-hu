@@ -6,7 +6,7 @@
     import {Patch} from "../services/dbQueries";
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-
+    import CoinUpload from "./subcomponents/CoinUpload.svelte";
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1
@@ -32,6 +32,7 @@
     <div class="spinner-border"></div>
     {:then ProfileData}
       <BanModal User={ProfileData.user} />
+      <CoinUpload/>
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
       <div class="profileheader mt-4">
@@ -64,7 +65,7 @@
       {#if ProfileData.coins.length>0}
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3>{ProfileData.user.name} zsetonjai</h3>
-        <button class="btn"><i class="bi bi-plus-lg"></i></button>
+        <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
       </div>
       <div class="coins mb-3">
           <div class="d-flex flex-row justify-content-between">
