@@ -80,7 +80,7 @@
       <div class="row mx-auto">
         {#if coin}
         <CoinModal coin={coin} />
-        <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3" data-bs-target='#_coinmodal' data-bs-toggle="modal">
+        <div class="ps-md-0 col-md-6 col-12 mb-md-0 mb-3" data-bs-target='#coinmodal' data-bs-toggle="modal">
           <div class="container-fluid h-100" id="AuctionCoin">
             <img class="img-fluid h-100" src={'http://localhost:8080/img/'+coin.headfile} alt="" />
           <p class="w-100 px-2" id="title">{auction.title}</p>

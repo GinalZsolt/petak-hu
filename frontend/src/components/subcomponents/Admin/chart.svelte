@@ -14,7 +14,8 @@
                 datasets:[
                         {
                             label:Data.map(e=>e.title)[0],
-                            data: Data.map(e=>e.value)
+                            data: Data.map(e=>e.value),
+                            backgroundColor: "#f59445af"
                         }
                 ]
             },

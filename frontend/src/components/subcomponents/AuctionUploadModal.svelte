@@ -85,4 +85,7 @@ function AUCTION_UPLOAD(){
             resize: none
         textarea
           height: 15vh
+        .modal-header
+          background-color: #f59445
+          background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
   </style>

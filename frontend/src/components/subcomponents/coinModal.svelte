@@ -98,4 +98,7 @@
     align-items: flex-start
   .imageback
     background-color: black
+  .modal-header
+    background-color: #f59445
+    background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
 </style>
