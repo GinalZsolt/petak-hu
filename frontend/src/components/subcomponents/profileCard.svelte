@@ -3,6 +3,17 @@
     import type { Coin } from "../../interfaces/Coin";
     export let coin: Coin | undefined;
     export let auction: Auction | undefined;
+	import { createEventDispatcher } from 'svelte';
+    import CoinMod from "./CoinMod.svelte";
+
+	const dispatch = createEventDispatcher();
+
+
+	function sayHello() {
+		dispatch('modcoin', {
+			Coin: coin
+		});
+	}
 
 </script>
 <style lang="sass">
@@ -28,7 +39,7 @@
 
 
 {#if coin}
-<div class="card">
+<div class="card" on:click={sayHello} data-bs-target="#CoinMod" data-bs-toggle="modal">
     <div>
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
     </div>

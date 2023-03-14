@@ -4,9 +4,19 @@
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
+    import Tag from "./Tag.svelte";
 
     let tagdel:boolean=true;
-    export let Coin:Coin;
+    export let Coin:Coin | undefined={
+        ID: 0,
+        name:"",
+        worth: 0,
+        description: "",
+        headfile: "",
+        tailfile: "",    
+        userID: 0,
+        uploadDate: ""
+    };
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -26,9 +36,14 @@
        await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
     }
     
+    async function GetTags() {
+        let tagsarray: any[];
+        await Get($Token.token, "cointags", "ID", Coin.ID).then((res)=> tagsarray=res.data);
+        return tagsarray;
+    }
 
     async function GetCategories(){
-        return await await Get($Token.token, "tagcategories");
+        await await Get($Token.token, "tagcategories").then((res)=> {category=res; category = category});
     }
 
     function addTag(){
@@ -49,8 +64,10 @@
     }
 
     onMount(async()=>{
-        category = await GetCategories();
-        category=category;
+        await GetCategories();
+        category = category;
+        tags = await GetTags();
+        tags = tags;
     });
 
 </script>
@@ -104,9 +121,9 @@
                         <select bind:value={newtag.Category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
                             {#if category!=undefined}
-                                {#each category as tagtype}
+                                 {#each category as tagtype}
                                     <option value={tagtype.ID}>{tagtype.name}</option>
-                                {/each}
+                                {/each} 
                             {/if}
                         </select>
                     </div>
@@ -117,12 +134,12 @@
                     <button type="button" on:click={addTag} class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                    {#each tags as tag}
+                    <!-- {#each tags as tag}
                         <div style={"--color:"+tag.color} class="tag m-auto mb-1">
                             <span>{tag.Category}</span>:<span>{tag.description}</span> 
                             {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
                         </div>
-                    {/each}
+                    {/each}  -->
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
