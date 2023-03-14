@@ -1,6 +1,6 @@
 <script lang="ts">
     import CoinCard from "./subcomponents/CoinCard.svelte";
-    import type { Coin } from "../classes/Coin/Coin";
+    import type { Coin } from "../interfaces/Coin";
     import CoinModal from "./subcomponents/coinModal.svelte";
     import {Token} from './../stores';
     import {Get} from '../services/dbQueries';

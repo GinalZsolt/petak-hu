@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Coin } from "../../interfaces/Coin";
   import { userPerms, Token } from "../../stores";
-   let coin: Coin;
+   let coin: Coin=undefined;
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
@@ -10,7 +10,7 @@
   }
 </script>
 {#if coin != undefined}
-<div class="modal fade" tabindex="-1" role="dialog" id="_coinmodal">
+<div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
