@@ -1,14 +1,29 @@
 let jwt = require('jsonwebtoken');
 let fs = require('fs');
 let path = require('path');
+
+function IsWhiteListedTable(table){
+    switch (table){
+        case "auctions":
+        case "coins":
+        case "tags":
+        case "tagcategories":
+        case "cointags":
+        case "bidders":
+        case "users":
+        case "moderations":
+        case "auctionbidders":
+        case "bidders":
+            return true;
+        default: return false;
+    }
+}
+
 module.exports = {
     tokenCheck: () => (req, res, next) => {
         if (req.params.table){
-            if ((req.params.table=="auctions" || req.params.table=="bidders" ||
-                req.params.table=="coins" || req.params.table=="cointags" ||
-                req.params.table=="tags" || req.params.table == "users" || 
-                req.params.table=="auctionbidders") && req.method=="GET"){
-                    next();
+            if (IsWhiteListedTable(req.params.table) && req.method=="GET"){
+                next();
             }
             else {
                 if (req.headers.authorization) {

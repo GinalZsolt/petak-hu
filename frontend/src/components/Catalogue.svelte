@@ -16,7 +16,7 @@
     let selectedcoin:Coin
     
     async function getCoinList() {
-      profile.coin_list = await await Get($Token.token, "coins", "userID", $userPerms.id);
+      profile.coin_list = await await Get($Token.token, "coins", "userID", ID);
       selectedcoin=profile.coin_list[0]
     }
     onMount(async()=>{

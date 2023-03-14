@@ -126,7 +126,7 @@
               {#if bidders.length>0}
                 {#each bidders as bidder, i}
                   {#if new Date(auction.expiration)<new Date() && i == 0}
-                    <p transition:fade>
+                    <p in:fade>
                       <a class="link-success" href={`/profile/${bidder.userID}`}>{bidder.username} <i class="bi bi-trophy-fill"></i></a> - {new Intl.NumberFormat('hu-HU', {
                       currency:'HUF',
                       style:'currency'
@@ -135,7 +135,7 @@
                     }).format(new Date(bidder.date))} - {bidder.date.split('T')[1].split('.')[0]}
                     </p>
                   {:else}
-                    <p transition:fade>
+                    <p in:fade>
                       <a href={`/profile/${bidder.userID}`}>{bidder.username}</a> - {new Intl.NumberFormat('hu-HU', {
                       currency:'HUF',
                       style:'currency'
