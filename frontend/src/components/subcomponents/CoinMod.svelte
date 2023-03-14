@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Delete, Patch, Get } from "../../services/dbQueries";
+    import { Delete, Patch, Get, Post } from "../../services/dbQueries";
     import {userPerms, Token} from './../../stores';
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
@@ -26,7 +26,7 @@
     };
     let category:any=[];
 
-    let tags:TagInterface[]=[];
+    let tags: TagInterface[]=[];
 
     async function DelCoin(ID){
         await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
@@ -38,7 +38,7 @@
     
     async function GetTags() {
         let tagsarray: any[];
-        await Get($Token.token, "cointags", "ID", Coin.ID).then((res)=> tagsarray=res.data);
+        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> console.log(res));
         return tagsarray;
     }
 
@@ -56,7 +56,26 @@
         };
         tags.push(tag);
         tags=tags;
+        tagdesup(tag);
     }
+
+    async function tagdesup(tag: TagInterface) {
+        let desID:Number;       //TODO
+        await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
+    //     tagup(tag, desID);
+    }
+
+    // async function tagup(tag: TagInterface, desID: Number) {
+    //     await await Post($Token.token, "cointags", {coinID: tag.CoinID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
+
+    // }
+
+    // function gettagID(categoryname: String){
+    //     for (let i = 0; i < category.length; i++) {
+    //         if(category[i].name ==  categoryname) return category[i].ID; 
+    //     }
+    //     return 0;
+    // }
 
     function DeleteTag(del){
         tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
@@ -66,8 +85,8 @@
     onMount(async()=>{
         await GetCategories();
         category = category;
-        tags = await GetTags();
-        tags = tags;
+        // tags = await GetTags();
+        // tags = tags;
     });
 
 </script>
