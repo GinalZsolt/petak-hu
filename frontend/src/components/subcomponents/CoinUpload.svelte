@@ -3,7 +3,6 @@
     import type { TagInterface, TagType } from "../../interfaces/Tags";
     import { GetTagTypes, UploadCoin, UploadTag } from "../../services/dbCoin";
     import { Token } from "../../stores";
-    import Tag from "./Tag.svelte";
     import { userPerms } from "../../stores";
     import { UploadImages } from "../../services/fileService";
     import ErrorAlert from "./ErrorAlert.svelte";

@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Coin } from "../../interfaces/Coin";
-  import { GetUserData } from "../../services/dbUser";
   import { userPerms, Token } from "../../stores";
   export let coin: Coin;
+  import CoinMod from "./CoinMod.svelte";
+  import AuctionUploadModal from "./AuctionUploadModal.svelte";
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
@@ -11,7 +12,7 @@
   }
 </script>
 {#if coin != undefined}
-<div class="modal fade" tabindex="-1" role="dialog" id="_coinmodal">
+<div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -67,8 +68,8 @@
       <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
         {#if coin.userID == $userPerms.id}
           <div>
-            <button type="button" class="btn btn-primary">Módosítás</button>
-            <button type="button" class="btn btn-primary">Aukció</button>
+            <button type="button" class="btn btn-primary" data-bs-target="#CoinMod" data-bs-toggle="modal">Módosítás</button>
+            <button type="button" class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
           </div>
         {/if}
         <div>
@@ -86,6 +87,8 @@
   </div>
 </div>
 {/if}
+<CoinMod Coin={coin}/>
+<AuctionUploadModal/>
 <style lang="sass">
   .btn
     background-color: #ea9e60

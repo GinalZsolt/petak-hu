@@ -4,7 +4,6 @@
     export let coin: Coin | undefined;
     export let auction: Auction | undefined;
 	import { createEventDispatcher } from 'svelte';
-    import CoinMod from "./CoinMod.svelte";
 
 	const dispatch = createEventDispatcher();
 

@@ -9,7 +9,6 @@
     import CoinUpload from "./subcomponents/CoinUpload.svelte";
     import { router } from "tinro";
     import CoinMod from "./subcomponents/CoinMod.svelte";
-    import Profilmod from "./Profilmod.svelte";
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1

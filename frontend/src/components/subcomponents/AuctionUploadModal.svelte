@@ -1,9 +1,7 @@
 <script lang="ts">
-  import axios from "axios";
   import { onMount } from "svelte";
   import {userPerms, Token} from '../../stores';
-  import {Get, Post, Patch, Delete} from '../../services/dbQueries';
-    import { User } from "../../classes/User";
+  import {Post} from '../../services/dbQueries';
 onMount(()=>{
   console.log($userPerms);
 })
@@ -24,7 +22,7 @@ function AUCTION_UPLOAD(){
 
 </script>
 
-<div class="modal" tabindex="-1" id="auctionupload">
+<div class="modal fade" tabindex="-1" id="auctionupload">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
