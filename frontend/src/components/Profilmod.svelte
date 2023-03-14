@@ -145,6 +145,7 @@
             <div class="mb-3">
                 <label for="pass1" class="form-label">Jelszó <em>*</em></label>
                 <input type="password" bind:value={pass1} class="form-control" id="pass1" name="pass1">
+                <div id="minpass" class="form-text">Min. 8 karakter, kis és nagybetű, szám</div>
             </div><div class="mb-3">
                 <label for="pass2" class="form-label">Jelszó Megerősítése<em>*</em></label>
                 <input type="password" bind:value={pass2} class="form-control" id="pass2" name="pass2">
