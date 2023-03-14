@@ -1,9 +1,8 @@
 <script lang="ts">
-    import axios from "axios";
   import type { Coin } from "../../interfaces/Coin";
-    import { GetUserData } from "../../services/dbUser";
+  import { GetUserData } from "../../services/dbUser";
   import { userPerms, Token } from "../../stores";
-  export let coin: Coin;
+   let coin: Coin;
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }
