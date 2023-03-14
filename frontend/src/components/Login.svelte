@@ -3,7 +3,6 @@
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte"
     import {Token, userPerms} from "../stores"
     import { GetPerms } from "../services/permissionGetter";
-    import { router } from "tinro";
     import sha256 from 'crypto-js/sha256';
     let data:any = {}
     let err1

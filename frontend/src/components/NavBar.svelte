@@ -1,8 +1,6 @@
 <script lang="ts">
     import {active} from 'tinro';
-    import type {User} from '../classes/User';
     import {userPerms, Routes} from '../stores';
-    import {GetUserData} from '../services/dbUser';
     import { GetPerms } from '../services/permissionGetter';
     function LogOut():void{
       sessionStorage.removeItem('petakhu');

@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Coin } from "../../interfaces/Coin";
-  import { GetUserData } from "../../services/dbUser";
   import { userPerms, Token } from "../../stores";
    let coin: Coin;
   async function CopyLink(){

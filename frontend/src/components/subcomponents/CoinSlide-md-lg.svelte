@@ -15,7 +15,6 @@
     import CoinCard from "./CoinCard.svelte";
     export let Coins:Coin[];
     export let isFirst: boolean;
-    import CoinModal from "./coinModal.svelte";
     let modal
     function PickCoin(picked){
       modal.loadmodal(picked)

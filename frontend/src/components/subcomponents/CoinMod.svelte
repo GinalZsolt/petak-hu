@@ -4,7 +4,6 @@
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
-    import Tag from "./Tag.svelte";
 
     let tagdel:boolean=true;
     export let Coin:Coin | undefined={

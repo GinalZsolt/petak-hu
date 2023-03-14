@@ -1,9 +1,7 @@
 <script lang="ts">
-  import axios from "axios";
   import { onMount } from "svelte";
   import {userPerms, Token} from '../../stores';
-  import {Get, Post, Patch, Delete} from '../../services/dbQueries';
-    import { User } from "../../classes/User";
+  import {Post} from '../../services/dbQueries';
 onMount(()=>{
   console.log($userPerms);
 })
