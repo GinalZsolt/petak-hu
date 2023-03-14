@@ -118,6 +118,9 @@
         border: 1px solid black
     em
         color: red
+    main
+        display: flex
+        justify-content: center
 </style>
 
 <!-- Content -->

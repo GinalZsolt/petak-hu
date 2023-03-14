@@ -2,7 +2,7 @@
   import type { Coin } from "../../interfaces/Coin";
   import { GetUserData } from "../../services/dbUser";
   import { userPerms, Token } from "../../stores";
-   let coin: Coin;
+  export let coin: Coin;
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
   }

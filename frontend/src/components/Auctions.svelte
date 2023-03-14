@@ -11,8 +11,8 @@
 </script>
 
 <main>
-  <div class="col-lg-9 col-md-10 col-11 mx-auto">
-    <div class="input-group mb-5">
+  <div class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
+    <div class="input-group mb-3">
       <span class="input-group-text border-dark"
         ><i class="bi bi-search" /></span
       >

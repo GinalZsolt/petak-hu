@@ -77,7 +77,10 @@
     $bg-card: #ffcc95
     .card-header, .card-footer
         background-color:$bg-card
-
+    main
+        display: flex
+        flex-flow: column
+        justify-content: center
 </style>
 <main>
     <form class="card mx-auto col-lg-6 col-md-8 col-11">

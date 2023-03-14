@@ -50,6 +50,10 @@ button
 button:hover
     background: #ea9e60
     border: 1px solid black
+main
+    display: flex
+    flex-flow: column
+    justify-content: center
 </style>
 
 <!-- Content -->

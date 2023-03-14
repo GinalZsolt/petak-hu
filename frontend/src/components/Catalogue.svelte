@@ -35,10 +35,8 @@
 </script>
 
 <main>
-    <div class="d-flex">
-        <a  class="btn border-dark me-2" href="/"><i class="bi bi-arrow-left w-auto" /></a>
-        <h4>{profile.name} katalógusa</h4>
-    </div>
+  <div id="catalogue" class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
+    <h4><a  class="btn border-dark" href="/"><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
     <div class="input-group  border border-dark rounded mt-3">
       <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
       <input type="text" class="form-control" bind:value={searchtext}>
@@ -47,26 +45,19 @@
     <div class="cards row">
       {#if profile.coin_list}
         {#each profile.coin_list.filter(e=>e.name.toLowerCase().includes(searchtext.toLowerCase())) as coin}
-          <div class="col-lg-4 col-md-6 col-12" on:click={()=>{PickCoin(coin)}}>
+          <div class="col-lg-4 col-md-6 col-12 cn" on:click={()=>{PickCoin(coin)}}>
             <CoinCard coin={coin} />
           </div>
         {/each}
       {/if}
     </div>
     <CoinModal bind:this={modal}/>
+  </div>
 </main>
 
 <style lang="sass">
-    main
-        background-color: white
-        width: 80vw
-        height: 100vh
-        margin-left: 10vw
     .btn
-        background-color: #e99d60
-        width: 5vw
-    h4
-      margin-top: 1vh
-    .w-auto
-      width: auto
+      background-color: #e99d60
+    .cn
+      margin-bottom: 1rem
 </style>

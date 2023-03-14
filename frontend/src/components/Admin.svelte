@@ -52,26 +52,31 @@
 
 </script>
 <style lang="sass">
-
+    main
+        display: flex
+        flex-flow: column
+        justify-content: center
 </style>
 
 <main>
-    <h2>Adminisztráció</h2>
     <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
+        <h2>Adminisztráció</h2>
+        <div>
+            <div class="row">
+                <div class="col-6">
+                    <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
+                </div>
+                <div class="col-6">
+                    <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék értéke",icon:"currency-dollar",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
+                </div>
             </div>
-            <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék értéke",icon:"currency-dollar",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Kitiltott Felhasználók",icon:"person-exclamation",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"table"}} />
-            </div>
-            <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Aukciók",icon:"database",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"table"}} />
+            <div class="row">
+                <div class="col-6">
+                    <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Kitiltott Felhasználók",icon:"person-exclamation",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"table"}} />
+                </div>
+                <div class="col-6">
+                    <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Aukciók",icon:"database",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"table"}} />
+                </div>
             </div>
         </div>
     </div>

@@ -20,7 +20,7 @@
     {#await Forum}
         <div class="spinner-border"></div>
     {:then Data}
-        <div class="d-flex flex-row flex-wrap col-lg-7 col-md-8 col-11 mx-auto justify-content-between align-items-center mt-3">
+        <div class="d-flex flex-row flex-wrap col-lg-7 col-md-8 col-11 mx-auto mt-5 justify-content-between align-items-center">
             <div></div>
             <select class="form-select" bind:value={topicID}>
                 {#if topicID == -1}

@@ -50,7 +50,7 @@
       <CoinUpload/>
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
-      <div class="profileheader mt-4">
+      <div class="profileheader mt-3">
         <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
           <div>
             <div class="profileimage rounded-circle">
@@ -129,8 +129,7 @@
     padding: 1rem
     border-radius: 0.25rem
   .img-fluid
-    height: auto
-    width: 100%
+    height: 100%
   .profileimage
     height: 150px
     width: 150px

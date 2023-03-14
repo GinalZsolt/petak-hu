@@ -65,10 +65,10 @@
         <div class="spinner-border m-auto"></div>
     {:then Data}
         {#if Data[0].isDeleted}
-            <div class="alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto mt-3"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
+            <div class="alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}    
         {#if Data[0].isClosed}
-            <div class="alert alert-dismissible alert-primary col-lg-8 col-md-8 col-11 mx-auto mt-3"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
+            <div class="alert alert-dismissible alert-primary col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}
         <div class="d-flex flex-row justify-content-between col-lg-8 col-md-8 col-11 mx-auto my-2">
             <a href="/forums" id="backbtn" class="btn"><i class="bi bi-arrow-left"></i></a>
