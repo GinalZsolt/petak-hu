@@ -79,7 +79,7 @@
       {#if ProfileData.coins.length>0}
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3>{ProfileData.user.name} zsetonjai</h3>
-        {#if ID==$userPerms.id}
+        {#if ID===$userPerms.id}
           <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
         {/if}
       </div>

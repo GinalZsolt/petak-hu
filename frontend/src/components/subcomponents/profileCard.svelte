@@ -34,11 +34,22 @@
         position: absolute
         top: calc(100% - 1.5rem)
         background-color: #aaaaaa7f
+        color: white
 </style>
 
 
-{#if coin}
-<div class="card" on:click={sayHello} data-bs-target="#CoinMod" data-bs-toggle="modal">
+{#if auction}
+<a href={`/auctions/${auction.ID}`} class="card" on:click={sayHello}>
+    <div>
+        <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
+    </div>
+    <div class="bottomText">
+        <span>{auction ? auction.title : coin.name}</span>
+
+    </div>
+</a>
+{:else if coin}
+<div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal">
     <div>
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
     </div>
