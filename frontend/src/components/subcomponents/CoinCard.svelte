@@ -1,7 +1,5 @@
 <script lang="ts">
     import type { Coin } from '../../interfaces/Coin';
-    import Profil from '../Profil.svelte';
-    import CoinModal from './coinModal.svelte';
     export let coin: Coin;
     console.log(coin)
 </script>

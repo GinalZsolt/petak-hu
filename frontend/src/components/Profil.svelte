@@ -7,7 +7,12 @@
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
     import CoinUpload from "./subcomponents/CoinUpload.svelte";
+<<<<<<< HEAD
     import { router } from "tinro";
+=======
+    import CoinMod from "./subcomponents/CoinMod.svelte";
+    import Profilmod from "./Profilmod.svelte";
+>>>>>>> c0c4c80d10035da9d9563cc0bdc10b949b90608f
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1
@@ -24,8 +29,20 @@
     }
   }
 
+  let modcoin: Coin ={
+        ID: 0,
+        name:"",
+        worth: 0,
+        description: "",
+        headfile: "",
+        tailfile: "",    
+        userID: 0,
+        uploadDate: ""
+    };
+  function handleMessage(event) {
+    modcoin=event.detail.Coin;
+	}
 </script>
-
 
 <main>
   <div class="col-lg-7 col-md-9 col-11 mx-auto">
@@ -73,17 +90,17 @@
       <div class="coins mb-3">
           <div class="d-flex flex-row justify-content-between">
             {#if ProfileData.coins[0]}
-              <ProfileCard coin={ProfileData.coins[0]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} />
             {:else}
               <ProfileCard/>
             {/if}
             {#if ProfileData.coins[1]}
-              <ProfileCard coin={ProfileData.coins[1]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[1]}/>
             {:else}
               <ProfileCard />
             {/if}
             {#if ProfileData.coins[2]}
-              <ProfileCard coin={ProfileData.coins[2]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[2]} />
             {:else}
               <ProfileCard />
             {/if}
@@ -102,7 +119,8 @@
       </div>
       {/if}
     {/await}
-    
+    <CoinMod Coin={modcoin}></CoinMod>
+
 </main>
 
 
