@@ -22,7 +22,7 @@ function AUCTION_UPLOAD(){
 
 </script>
 
-<div class="modal" tabindex="-1" id="auctionupload">
+<div class="modal fade" tabindex="-1" id="auctionupload">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
