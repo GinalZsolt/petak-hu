@@ -6,7 +6,8 @@
     import {Get} from '../services/dbQueries';
     import { onMount } from "svelte";
     import { GetUserData } from "../services/dbUser";
-    export let ID:number;
+    import { router } from "tinro";
+    let ID = Number(router.meta().params.id);
     let modal
     let searchtext:string=""
     let profile={

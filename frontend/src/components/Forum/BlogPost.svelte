@@ -2,7 +2,8 @@
     import CommentSvelte from "./subcomponents/Comment.svelte";
     import {db} from '../../services/dbForum';
     import {Token, userPerms} from '../../stores';
-    export let ID:number;
+    import { router } from "tinro";
+    let ID:number = Number(router.meta().params.id);
     let Comments = db.GetPostsComments($Token.token, ID);
     let Posts = db.GetBlogpost($Token.token, ID);
     let newMessage:string;
@@ -120,7 +121,7 @@
     {#await Comments}
     <div class="spinner-border"></div>
         {:then CommentsData} 
-            {#each CommentsData as comment}
+            {#each CommentsData.sort((a,b)=>new Date(a.date).getTime()+new Date(b.date).getTime()) as comment}
                 <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
             {/each}
     {/await}

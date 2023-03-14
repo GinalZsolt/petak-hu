@@ -2,11 +2,12 @@
     import { GetUserProfile } from "../services/dbUser";
     import { Token,userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
-    export let ID;
+    let ID = Number(router.meta().params.id);
     import {Patch} from "../services/dbQueries";
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
     import CoinUpload from "./subcomponents/CoinUpload.svelte";
+    import { router } from "tinro";
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1

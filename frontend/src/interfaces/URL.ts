@@ -1,8 +1,8 @@
-import type { ComponentType } from "svelte/internal";
 export interface URL{
     url:string;
     name:string;
     minPermission:number;
-    component:ComponentType
+    component:string
     children?:Array<URL>;
+    showInNavbar:boolean;
 }

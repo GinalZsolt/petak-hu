@@ -14,9 +14,8 @@
   import type { Coin } from "../interfaces/Coin";
   import { GetCoin } from "../services/dbCoin";
   import CoinModal from "./subcomponents/coinModal.svelte";
-    import { Get } from "../services/dbQueries";
-  export let ID: number;
-  
+  import { router } from "tinro";
+  let ID = router.meta().params.id;
   let coin:Coin;
   let auction: Auction;
   let bidders: Bidder[];

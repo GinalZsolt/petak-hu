@@ -60,10 +60,10 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék",icon:"person",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
             </div>
             <div class="col-6">
-                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék értéke",icon:"coin",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
+                <AdminboardCard on:clicked={DetermineStatistic} CardData={{title:"Érmék értéke",icon:"currency-dollar",fromColor:"#ea9e60",toColor:"#eb6a00",modaltype:"statistics"}} />
             </div>
         </div>
         <div class="row">
