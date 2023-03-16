@@ -1,4 +1,5 @@
 let tCheck = require('../modules/tokenCheck');
+let log =require('../logging').log;
 const multer = require('multer')({
     storage:require('multer').diskStorage({
       destination:"./uploads",
@@ -19,16 +20,17 @@ const multer = require('multer')({
       fileSize: 5242880
     }
   });
-var mysql = require('mysql')
-var pool =require("../config.js").pool
-
+const fs = require('fs');
 const path = require('path')
 const router=require('express').Router()
 
 router.post('/single', tCheck.tokenCheck(), function (req, res) {
   multer.single('image')(req,res,(err)=>{
     if (err) res.status(500).send(err);
-    else res.status(200).json(req.file);
+    else{
+      log(req.socket.remoteAddress, `${req.file.filename} uploaded`)
+      res.status(200).json(req.file);
+    } 
   });
 })
 
@@ -38,9 +40,26 @@ router.post('/multiple', tCheck.tokenCheck() ,function (req, res) {
     {name:"tail"}
   ])(req,res,(err)=>{
     if (err) res.status(500).send(err);
-    else res.status(200).json(req.files);
+    else{
+      log(req.socket.remoteAddress, `${req.files.map(e=>e.filename).join(",")} files uploaded`)
+      res.status(200).json(req.files);
+    } 
   })
 })
 
+router.delete('/single/:name', tCheck.tokenCheck(), (req,res)=>{
+  if (fs.existsSync(path.join(__dirname, `../uploads/${req.params.name}`))){
+    fs.rm(path.join(__dirname, `../uploads/${req.params.name}`), ()=>{
+      log(req.socket.remoteAddress, `${req.params.name} file deleted`)
+      res.status(200).json(
+        {message: "sikeres törlés!", error: false}
+      );
+    });
+  }
+  else{
+    log(req.socket.remoteAddress, `tried to delete a file`)
+    res.status(400).json({message:"sikertelen törlés!", error: true});
+  }
+});
 
 module.exports={multer,router};
