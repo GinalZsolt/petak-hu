@@ -5,11 +5,11 @@
     import { userPerms, Token } from "../stores";
     import { Patch } from "../services/dbQueries";
     import sha256 from "crypto-js/sha256"
-    import { UploadImage } from "../services/fileService";
+    import { DeleteImage, UploadImage } from "../services/fileService";
+    let dt
     let data:any={}
     onMount(async()=>{
         GetUserData($userPerms.id,$Token.token).then(res=>{
-            let dt:any={}
             console.log(res)
             dt=res[0]
             console.log(dt)
@@ -17,8 +17,8 @@
             data.name=dt.name
             data.email=dt.email
             data.fullname=dt.fullname
-            data.address=dt.address
-            data.phone=dt.phone
+            data.address=dt.address.address==null?undefined:data.address
+            data.phone=dt.phone==null?undefined:data.phone
         })
     })
 
@@ -52,7 +52,7 @@
                 }
                 else
                 {
-                    if(data.phone!=undefined||data.phone!=""){
+                    if(data.phone!=undefined&&data.phone!=""){
                         if (!data.phone.match(/[+][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/)) {
                             err5.showError()
                         }
@@ -67,6 +67,7 @@
                         }
                         let upload = new FormData();
                         if(pfp!=undefined)  {
+                            DeleteImage($Token.token,dt.imagefile)
                             upload.append('image', pfp[0]);
                             await UploadImage($Token.token,upload).then(res=>{
                                 userdata.imagefile = res.filename
@@ -88,6 +89,7 @@
                         }
                         let upload = new FormData();
                         if(pfp!=undefined)  {
+                            DeleteImage($Token.token,dt.imagefile)
                             upload.append('image', pfp[0]);
                             await UploadImage($Token.token,upload).then(res=>{
                                 userdata.imagefile = res.filename
