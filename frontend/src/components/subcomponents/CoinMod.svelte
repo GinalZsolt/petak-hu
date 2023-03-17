@@ -6,16 +6,7 @@
     import type { TagInterface } from "../../interfaces/Tags";
 
     let tagdel:boolean=true;
-    export let Coin:Coin | undefined={
-        ID: 0,
-        name:"",
-        worth: 0,
-        description: "",
-        headfile: "",
-        tailfile: "",    
-        userID: 0,
-        uploadDate: ""
-    };
+    export let Coin:Coin | undefined;
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -61,20 +52,20 @@
     async function tagdesup(tag: TagInterface) {
         let desID:Number;       //TODO
         await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
-    //     tagup(tag, desID);
+        tagup(tag, desID);
     }
 
-    // async function tagup(tag: TagInterface, desID: Number) {
-    //     await await Post($Token.token, "cointags", {coinID: tag.CoinID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
+    async function tagup(tag: TagInterface, desID: Number) {
+        console.log(Coin.ID);
+        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
+    }
 
-    // }
-
-    // function gettagID(categoryname: String){
-    //     for (let i = 0; i < category.length; i++) {
-    //         if(category[i].name ==  categoryname) return category[i].ID; 
-    //     }
-    //     return 0;
-    // }
+    function gettagID(categoryname: String){
+        for (let i = 0; i < category.length; i++) {
+            if(category[i].name ==  categoryname) return category[i].ID;
+        }
+        return 0;
+    }
 
     function DeleteTag(del){
         tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
@@ -84,8 +75,8 @@
     onMount(async()=>{
         await GetCategories();
         category = category;
-        // tags = await GetTags();
-        // tags = tags;
+        //tags = await GetTags();
+        //tags = tags;
     });
 
 </script>
@@ -155,12 +146,12 @@
                     <button type="button" on:click={addTag} class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                    <!-- {#each tags as tag}
+                     {#each tags as tag}
                         <div style={"--color:"+tag.color} class="tag m-auto mb-1">
                             <span>{tag.Category}</span>:<span>{tag.description}</span> 
                             {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
                         </div>
-                    {/each}  -->
+                    {/each}  
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>

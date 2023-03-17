@@ -34,7 +34,8 @@
         tailfile: "",    
         userID: 0,
         uploadDate: ""
-    };
+  };
+
   function handleMessage(event) {
     modcoin=event.detail.Coin;
 	}
