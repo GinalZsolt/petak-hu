@@ -199,6 +199,7 @@ hr
   max-height: 150px
   overflow: auto
 #AuctionCoin
+  cursor: pointer
   border-radius: 0.25rem
   display: flex
   flex-flow: row wrap

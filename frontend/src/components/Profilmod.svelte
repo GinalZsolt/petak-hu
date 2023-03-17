@@ -162,6 +162,7 @@
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telefon</label>
                 <input type="text" bind:value={data.phone} class="form-control" id="phone" name="phone">
+                <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
             </div>
             <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
             <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">
