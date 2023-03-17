@@ -8,6 +8,7 @@
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
     export let tags: Array<TagInterface>=[];
+    console.log(tags);
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -88,9 +89,7 @@
     }
 
     async function getTagDesc(id: Number){
-        let object=[];
-        await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=>console.log(res));
-        console.log(object[0]);
+        let object=await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=>res);
         return object[0].description;
     }
 </script>

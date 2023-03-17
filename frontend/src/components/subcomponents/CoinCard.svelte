@@ -34,6 +34,9 @@
         position: relative
       .auctimg
         background-color: #000
+        height: 100%
+        img
+          object-fit: cover
       .bottomText
         position: absolute
         top: calc(100% - 24px)

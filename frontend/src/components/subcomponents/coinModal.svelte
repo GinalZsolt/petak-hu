@@ -34,7 +34,7 @@
           class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
         >
           <button
-            class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
+            class="startBtn btn rounded-0 rounded-start border-0 border-end border-dark fw-bold"
             data-bs-target="#modalslider"
             data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
           >
@@ -45,7 +45,7 @@
           >
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <div class="d-flex justify-content-center imageback">
+                <div class="img">
                   <img class="img-fluid"
                     src={"http://localhost:8080/img/" + coin.headfile}
                     alt=""
@@ -53,7 +53,7 @@
                 </div>
               </div>
               <div class="carousel-item">
-                <div class="d-flex justify-content-center imageback">
+                <div class="img">
                   <img class="img-fluid"
                   src={"http://localhost:8080/img/" + coin.tailfile}
                   alt=""
@@ -63,7 +63,7 @@
             </div>
           </div>
           <button
-            class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
+            class="endBtn btn rounded-0 rounded-end border-0 border-start border-dark fw-bold"
             data-bs-target="#modalslider"
             data-bs-slide="next"><i class="bi bi-arrow-right" /></button
           >
@@ -78,12 +78,12 @@
       <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
         {#if coin.userID == $userPerms.id}
           <div>
-            <button type="button" class="btn btn-primary" data-bs-target="#CoinMod" data-bs-toggle="modal">Módosítás</button>
+            <button type="button" class="btn" data-bs-target="#CoinMod" data-bs-toggle="modal">Módosítás</button>
             {#await CheckIfCanAuction(coin.ID) then result}
               {#if result == true}
-              <button type="button" class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
+              <button type="button" class="btn" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
               {:else}
-              <button type="button" disabled class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
+              <button type="button" disabled class="btn" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
               {/if}
             {/await}
           </div>
@@ -91,29 +91,37 @@
         <div>
           <button 
             type="button"
-            class="btn btn-primary" 
+            class="btn" 
             data-bs-dismiss="modal"
           >
             OK
           </button>
-          <button><i class="bi btn bi-share"></i></button>
+          <button class="btn"><i class="bi bi-share"></i></button>
         </div>
       </div>
     </div>
   </div>
 </div>
+<AuctionUploadModal Coin={coin}/>
 {/if}
-<CoinMod Coin={coin}/>
-<AuctionUploadModal/>
+<!--<CoinMod Coin={coin}/>-->
+
 <style lang="sass">
   .btn
     background-color: #ea9e60
-  .modalpic
-    display: flex
-    flex-direction: column
-    align-items: flex-start
-  .imageback
+    border: 0
+  .btn:active
+    background-color: #ea9e60bf
+  .btn:hover
+    background-color: #ea9e60ef
+  .img
+    height: 300px
     background-color: black
+    display: flex
+    justify-content: center
+  .img-fluid
+    object-fit: cover
+    height: 100%
   .modal-header
     background-color: #f59445
     background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  

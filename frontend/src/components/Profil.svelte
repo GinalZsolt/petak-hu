@@ -40,15 +40,12 @@
   let tags: Array<TagInterface>=[]; 
   async function handleMessage(event) {
     modcoin=event.detail.Coin;
-    
     await GetTags(modcoin);
-    tags = tags;
-    console.log(tags);
 	}
 
   async function GetTags(Coin:Coin) {
         let tagsarray: any[]=[];
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=>{tags = res});
     }
 </script>
 
@@ -127,8 +124,9 @@
       </div>
       {/if}
     {/await}
-    <CoinMod tags={tags} Coin={modcoin}></CoinMod>
-
+    {#await GetTags(modcoin) then _tags}
+    <CoinMod tags={_tags} Coin={modcoin}></CoinMod>
+    {/await}
 </main>
 
 
@@ -141,6 +139,7 @@
     border-radius: 0.25rem
   .img-fluid
     height: 100%
+    object-fit: cover
   .profileimage
     height: 150px
     width: 150px

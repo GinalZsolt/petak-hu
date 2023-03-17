@@ -51,7 +51,7 @@
         {/each}
       {/if}
     </div>
-    <CoinModal bind:this={modal}/>
+    <CoinModal bind:this={modal} coin={selectedcoin}/>
   </div>
 </main>
 
