@@ -41,7 +41,7 @@ router.post('/multiple', tCheck.tokenCheck() ,function (req, res) {
   ])(req,res,(err)=>{
     if (err) res.status(500).send(err);
     else{
-      log(req.socket.remoteAddress, `${req.files.map(e=>e.filename).join(",")} files uploaded`)
+      //log(req.socket.remoteAddress, `${req.files.map(e=>e.filename).join(",")} files uploaded`)
       res.status(200).json(req.files);
     } 
   })

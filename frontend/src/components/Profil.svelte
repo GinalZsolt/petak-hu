@@ -105,7 +105,7 @@
           <a class="btn w-100" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
       </div>
       {:else}
-      <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn"><i class="bi bi-plus-lg"></i></button></div>
+      <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button></div>
       {/if}
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>

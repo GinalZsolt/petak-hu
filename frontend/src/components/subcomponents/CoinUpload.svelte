@@ -13,6 +13,7 @@
     let tagtypes:TagType[];
     onMount(async()=>{
         tagtypes=await GetTagTypes($Token.token)
+        console.log(tagtypes);
     })
     let tagdel:boolean=true;
     let data:any={}
@@ -45,7 +46,7 @@
         }
         else{
             tags = [...tags,{
-                ID:null,
+                ID:Number(newtag.Category),
                 CoinID:null,
                 description:newtag.description,
                 name:getname(newtag.Category),
@@ -78,11 +79,12 @@
                 headfile:uploadedimages.head[0].filename,
                 tailfile:uploadedimages.tail[0].filename
             }
-            let coinID = await UploadCoin(Coin,$Token.token)
+            let coinID = await UploadCoin(Coin,$Token.token).then(res=>res)
+            console.log(tags);
             tags.forEach(element => {
                 let uploadableTag={
                     coinID:coinID,
-                    nameID:element.name,
+                    nameID:element.ID,
                     descID:element.description
                 }
                 console.log(uploadableTag)
