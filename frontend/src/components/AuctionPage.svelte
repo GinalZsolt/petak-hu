@@ -179,6 +179,7 @@
 </main>
 
 <style lang="sass">
+
 hr
   background-color: --bs-dark
 #Bidders
