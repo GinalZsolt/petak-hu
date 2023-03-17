@@ -44,12 +44,18 @@
                 <div class="d-flex">
                   {#if FilterArrayTop[index]}
                   <AuctionCard Auction={FilterArrayTop[index]} />
+                  {:else}
+                  <div/>
                   {/if}
                   {#if FilterArrayTop[index+1]}
                   <AuctionCard Auction={FilterArrayTop[index+1]} />
+                  {:else}
+                  <div/>
                   {/if}
                   {#if FilterArrayTop[index+2]}
                   <AuctionCard Auction={FilterArrayTop[index+2]} />
+                  {:else}
+                  <div/>
                   {/if}
                 </div>
               </div>
@@ -111,8 +117,12 @@
         background-color: $searchbarColor
     .carousel
         background-color: #000
+    .startBtn, .endBtn
+      transition: opacity 0.3s ease-out
     .startBtn
         background: linear-gradient(42deg, rgba(234,149,80,1) 0%, rgba(215,113,29,1) 100%)
     .endBtn
         background: linear-gradient(231deg, rgba(234,149,80,1) 0%, rgba(215,113,29,1) 100%)
+    .startBtn:hover, .endBtn:hover
+        opacity: 0.8
 </style>

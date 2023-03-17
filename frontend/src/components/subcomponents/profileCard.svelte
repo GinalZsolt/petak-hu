@@ -45,7 +45,7 @@
     </div>
     <div class="bottomText">
         <span>{auction ? auction.title : coin.name}</span>
-
+        
     </div>
 </a>
 {:else if coin}

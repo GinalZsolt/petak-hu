@@ -15,13 +15,14 @@
   import { GetCoin } from "../services/dbCoin";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import { router } from "tinro";
-  let ID = router.meta().params.id;
+  let ID = Number(router.meta().params.id);
   let coin:Coin;
   let auction: Auction;
-  let bidders: Bidder[];
+  let bidders: Bidder[] = [];
   let originalPrice: number;
   let room = "auction-" + ID;
-
+  let actbtn:HTMLInputElement;
+  let btn:HTMLButtonElement;
 
   onMount(async () => {
     bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date)<new Date(b.date));
@@ -29,7 +30,6 @@
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
     if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false){
-      console.log(bidders[0])
       CloseAuctionAndSendMail($Token.token, ID, {
         auctionID: auction.ID, 
         userID: bidders[0].userID,
@@ -49,10 +49,20 @@
     auction.price = data;
     originalPrice = data;
     bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date)<new Date(b.date));
+    if (!isLatestOrOwn(auction.userID)){
+      actbtn.disabled = false;
+      btn.disabled = true;
+    }
   });
-
+  function isLatestOrOwn(id:number):boolean{
+    if (bidders.length>0){
+      return ($userPerms.id == id || bidders[0].userID == $userPerms.id) == true;
+    }
+    else{
+      return ($userPerms.id == id) == true;
+    }
+  }
   function Bid() {
-    console.log(auction.price);
     if (auction.price >= originalPrice + auction.minBid && $userPerms.id!=auction.userID) {
       PostNewAuctionPrice($Token.token, ID, auction.price).then(
         () => {
@@ -63,6 +73,8 @@
             date: new Date().toISOString(),
           }).then(() => {
             socket.emit("bid", auction.price, room);
+            actbtn.disabled = true;
+            btn.disabled = true;
           });
         }
       );
@@ -99,10 +111,11 @@
             <div class="input-group me-lg-3">
               {#if bidders}
               <input
+                bind:this={actbtn}
                 type="number"
                 min={originalPrice}
                 step={auction.minBid}
-                disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id}
+                disabled={isLatestOrOwn(auction.userID)}
                 bind:value={auction.price}
                 name="bidAmount"
                 class="form-control border-dark"
@@ -110,7 +123,7 @@
               {/if}
               <label for="bidAmount" class={"input-group-text border-dark"+($userPerms.id==auction.userID ? 'disabled' : '')}>Ft</label>
             </div>
-            <button class="btn border-dark ms-2" disabled={auction.userID==$userPerms.id || bidders[0].userID==$userPerms.id} on:click={Bid}>Licitálás</button>
+            <button bind:this={btn} class="btn border-dark ms-2" disabled={isLatestOrOwn(auction.userID)} on:click={Bid}>Licitálás</button>
           </div>
           <p class="border-bottom border-dark pb-3">
             Licitlépcső: {auction.minBid} Ft

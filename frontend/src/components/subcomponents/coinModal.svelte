@@ -4,8 +4,18 @@
   export let coin: Coin;
   import CoinMod from "./CoinMod.svelte";
   import AuctionUploadModal from "./AuctionUploadModal.svelte";
+    import { GetCoin } from "../../services/dbCoin";
+    import { GetAllAuctions } from "../../services/dbAuction";
+    import { GetUserProfile } from "../../services/dbUser";
   async function CopyLink(){
     await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
+  }
+  async function CheckIfCanAuction(coinID:number, ):Promise<boolean>{
+    let auction = await GetAllAuctions($Token.token);
+    let user = await GetUserProfile($userPerms.id, $Token.token);
+    return await Promise.all([auction, user]).then(res=>{
+      return res[1].user.address!=null && res[1].user.phone!=null && res[0].find(e=>e.coinID==coinID)==undefined;
+    });
   }
   export function loadmodal(loadable){
     coin=loadable
@@ -69,7 +79,13 @@
         {#if coin.userID == $userPerms.id}
           <div>
             <button type="button" class="btn btn-primary" data-bs-target="#CoinMod" data-bs-toggle="modal">Módosítás</button>
-            <button type="button" class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
+            {#await CheckIfCanAuction(coin.ID) then result}
+              {#if result == true}
+              <button type="button" class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
+              {:else}
+              <button type="button" disabled class="btn btn-primary" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
+              {/if}
+            {/await}
           </div>
         {/if}
         <div>
