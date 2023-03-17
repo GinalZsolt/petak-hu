@@ -5,12 +5,19 @@
     export let Data: Statistics[];
     let ctx: HTMLCanvasElement;
     onMount(async ()=>{
+        let dates=[]
+
         Data = Data.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime());
         Data = Data;
+
+        Data.map(e=>e.date).forEach(element => {
+            dates.push( new Intl.DateTimeFormat("hu-HU").format(new Date(element)))
+        });
+        
         new Chart(ctx, {
             type:"bar",
             data:{
-                labels:Data.map(e=>e.date),
+                labels:dates,
                 datasets:[
                         {
                             label:Data.map(e=>e.title)[0],
