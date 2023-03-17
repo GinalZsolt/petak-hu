@@ -3,12 +3,13 @@
     import { Token,userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
     let ID = Number(router.meta().params.id);
-    import {Patch} from "../services/dbQueries";
+    import {Patch, Get} from "../services/dbQueries";
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
     import CoinUpload from "./subcomponents/CoinUpload.svelte";
     import { router } from "tinro";
     import CoinMod from "./subcomponents/CoinMod.svelte";
+    import type { TagInterface } from "../interfaces/Tags";
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1
@@ -36,9 +37,19 @@
         uploadDate: ""
   };
 
-  function handleMessage(event) {
+  let tags: Array<TagInterface>=[]; 
+  async function handleMessage(event) {
     modcoin=event.detail.Coin;
+    
+    await GetTags(modcoin);
+    tags = tags;
+    console.log(tags);
 	}
+
+  async function GetTags(Coin:Coin) {
+        let tagsarray: any[]=[];
+        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+    }
 </script>
 
 <main>
@@ -116,7 +127,7 @@
       </div>
       {/if}
     {/await}
-    <CoinMod Coin={modcoin}></CoinMod>
+    <CoinMod tags={tags} Coin={modcoin}></CoinMod>
 
 </main>
 

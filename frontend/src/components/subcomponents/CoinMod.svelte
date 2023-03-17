@@ -7,6 +7,7 @@
 
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
+    export let tags: Array<TagInterface>=[];
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -16,7 +17,6 @@
     };
     let category:any=[];
 
-    let tags: TagInterface[]=[];
 
     async function DelCoin(ID){
         await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
@@ -25,18 +25,13 @@
     async function UpdateCoin(ID){
        await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
     }
-    
-    async function GetTags() {
-        let tagsarray: any[];
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> console.log(res));
-        return tagsarray;
-    }
 
     async function GetCategories(){
         await await Get($Token.token, "tagcategories").then((res)=> {category=res; category = category});
     }
 
     function addTag(){
+        tags=[];
         let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
@@ -75,10 +70,29 @@
     onMount(async()=>{
         await GetCategories();
         category = category;
-        //tags = await GetTags();
-        //tags = tags;
+        console.log(category);
     });
 
+    function getTagCategoryName(id: Number){
+        for (let i = 0; i < category.length; i++) {
+            if(category[i].ID==id) return category[i].name;
+        }
+        return "";
+    }
+
+    function getTagCategoryColor(id: Number){
+        for (let i = 0; i < category.length; i++) {
+            if(category[i].ID==id) return category[i].color;
+        }
+        return "";
+    }
+
+    async function getTagDesc(id: Number){
+        let object=[];
+        await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=>console.log(res));
+        console.log(object[0]);
+        return object[0].description;
+    }
 </script>
 <style lang="sass">
     button
@@ -146,12 +160,15 @@
                     <button type="button" on:click={addTag} class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                     {#each tags as tag}
-                        <div style={"--color:"+tag.color} class="tag m-auto mb-1">
-                            <span>{tag.Category}</span>:<span>{tag.description}</span> 
-                            {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
-                        </div>
-                    {/each}  
+                    {#if tags!=undefined || tags.length!=0}
+                        {#each tags as tag}
+                            <div style={"--color:"+getTagCategoryColor(tag.nameID)} class="tag m-auto mb-1">
+                                <span>{getTagCategoryName(tag.nameID)}</span>:<span>{getTagDesc(tag.descID)}</span> 
+                                {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
+                            </div>
+                        {/each} 
+                    {/if}
+                     
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
