@@ -42,12 +42,12 @@
 </script>
 
 <main>
+  <CoinUpload/>
   <div class="col-lg-7 col-md-9 col-11 mx-auto">
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
       <BanModal User={ProfileData.user} />
-      <CoinUpload/>
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
       <div class="profileheader mt-3">
