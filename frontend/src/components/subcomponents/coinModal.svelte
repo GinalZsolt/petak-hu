@@ -4,108 +4,161 @@
   export let coin: Coin;
   import CoinMod from "./CoinMod.svelte";
   import AuctionUploadModal from "./AuctionUploadModal.svelte";
-    import { GetCoin } from "../../services/dbCoin";
-    import { GetAllAuctions } from "../../services/dbAuction";
-    import { GetUserProfile } from "../../services/dbUser";
-  async function CopyLink(){
-    await navigator.clipboard.writeText('http://localhost:8080/profile/'+$userPerms.id);
+  import { GetCoin } from "../../services/dbCoin";
+  import { GetAllAuctions } from "../../services/dbAuction";
+  import { GetUserProfile } from "../../services/dbUser";
+  async function CopyLink() {
+    await navigator.clipboard.writeText(
+      "http://localhost:8080/profile/" + $userPerms.id
+    );
   }
-  async function CheckIfCanAuction(coinID:number, ):Promise<boolean>{
+  async function CheckIfCanAuction(coinID: number): Promise<{reason:string, can:boolean}> {
     let auction = await GetAllAuctions($Token.token);
     let user = await GetUserProfile($userPerms.id, $Token.token);
-    return await Promise.all([auction, user]).then(res=>{
-      return res[1].user.address!=null && res[1].user.phone!=null && res[0].find(e=>e.coinID==coinID)==undefined;
+    return await Promise.all([auction, user]).then((res) => {
+      return {can:(
+        res[1].user.address != null &&
+        res[1].user.phone != null &&
+        res[0].find((e) => e.coinID == coinID) == undefined
+      ), 
+        reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
+    };
     });
   }
-  export function loadmodal(loadable){
-    coin=loadable
+  export function loadmodal(loadable) {
+    coin = loadable;
   }
 </script>
+
 {#if coin != undefined}
-<div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">{coin.name}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div
-          class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
-        >
+  <div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">{coin.name}</h2>
           <button
-            class="startBtn btn rounded-0 rounded-start border-0 border-end border-dark fw-bold"
-            data-bs-target="#modalslider"
-            data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
-          >
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          />
+        </div>
+        <div class="modal-body">
           <div
-            id="modalslider"
-            class="carousel slide w-100"
-            data-bs-ride="carousel"
+            class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
           >
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <div class="img">
-                  <img class="img-fluid"
-                    src={"http://localhost:8080/img/" + coin.headfile}
-                    alt=""
-                  />
+            <button
+              class="startBtn btn rounded-0 rounded-start border-0 border-end border-dark fw-bold"
+              data-bs-target="#modalslider"
+              data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
+            >
+            <div
+              id="modalslider"
+              class="carousel slide carousel-fade w-100"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <div class="img">
+                    <img
+                      class="img-fluid"
+                      src={"http://localhost:8080/img/" + coin.headfile}
+                      alt=""
+                    />
+                  </div>
                 </div>
-              </div>
-              <div class="carousel-item">
-                <div class="img">
-                  <img class="img-fluid"
-                  src={"http://localhost:8080/img/" + coin.tailfile}
-                  alt=""
-                  />
+                <div class="carousel-item">
+                  <div class="img">
+                    <img
+                      class="img-fluid"
+                      src={"http://localhost:8080/img/" + coin.tailfile}
+                      alt=""
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+            <button
+              class="endBtn btn rounded-0 rounded-end border-0 border-start border-dark fw-bold"
+              data-bs-target="#modalslider"
+              data-bs-slide="next"><i class="bi bi-arrow-right" /></button
+            >
           </div>
-          <button
-            class="endBtn btn rounded-0 rounded-end border-0 border-start border-dark fw-bold"
-            data-bs-target="#modalslider"
-            data-bs-slide="next"><i class="bi bi-arrow-right" /></button
-          >
+          <h4>Becsült érték: {coin.worth} Ft</h4>
+          <hr />
+          <h4>Információk az érméről:</h4>
+          {#each coin.description.split("\n") as text}
+            <p>{text}</p>
+          {/each}
         </div>
-        <h4>Becsült érték: {coin.worth} Ft</h4>
-        <hr>
-        <h4>Információk az érméről:</h4>
-        {#each coin.description.split('\n') as text}
-          <p>{text}</p>
-        {/each}
-        </div>
-      <div class={`modal-footer ${coin.userID == $userPerms.id ? 'd-flex flex-row justify-content-between': ''}`}>
-        {#if coin.userID == $userPerms.id}
-          <div>
-            <button type="button" class="btn" data-bs-target="#CoinMod" data-bs-toggle="modal">Módosítás</button>
-            {#await CheckIfCanAuction(coin.ID) then result}
-              {#if result == true}
-              <button type="button" class="btn" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
-              {:else}
-              <button type="button" disabled class="btn" data-bs-target="#auctionupload" data-bs-toggle="modal">Aukció</button>
-              {/if}
-            {/await}
+        <div class="modal-footer">
+          <div class={"buttons "+ ($userPerms.id==coin.userID) ? "d-flex w-100 justify-content-between" : "" }>
+            {#if ($userPerms.id == coin.userID)}
+              <div>
+                <button
+                  type="button"
+                  class="btn"
+                  data-bs-target="#CoinMod"
+                  data-bs-toggle="modal">Módosítás</button
+                >
+                {#await CheckIfCanAuction(coin.ID) then result}
+                  {#if result.can}
+                    <button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#auctionupload"
+                      data-bs-toggle="modal">Aukció</button
+                    >
+                  {:else if result.reason == "noaddress"}
+                    <button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#collapseExample"
+                      data-bs-toggle="collapse">Aukció</button
+                    >
+                    {:else}
+                    <button
+                      type="button"
+                      class="btn"
+                      disabled
+                      data-bs-target="#collapseExample"
+                      data-bs-toggle="collapse">Aukció</button
+                    >
+                  {/if}
+                {/await}
+              </div>
+            {/if}
+  
+            <div>
+              <button type="button" class="btn" data-bs-dismiss="modal">OK</button
+              >
+              <button class="btn"><i class="bi bi-share" /></button>
+            </div>
           </div>
-        {/if}
-        <div>
-          <button 
-            type="button"
-            class="btn" 
-            data-bs-dismiss="modal"
-          >
-            OK
-          </button>
-          <button class="btn"><i class="bi bi-share"></i></button>
+          {#await CheckIfCanAuction(coin.ID) then result}
+            {#if !result.can && result.reason == "noaddress"}
+            <div class="collapse" id="collapseExample">
+              <div class="card bg-danger text-light fw-bold card-body">
+                <p class="mb-0">
+                  Még nem adott meg elérhetőséget, kérem adja meg a
+                </p>
+                <p class="mb-0">
+                  <a data-bs-dismiss="modal" href="/profilemod"
+                    >profilmódosításnál!</a
+                  >
+                </p>
+              </div>
+            </div>
+            {/if}
+          {/await}
         </div>
       </div>
     </div>
   </div>
-</div>
-<AuctionUploadModal Coin={coin}/>
+  <AuctionUploadModal Coin={coin} />
 {/if}
-<!--<CoinMod Coin={coin}/>-->
 
+<!--<CoinMod Coin={coin}/>-->
 <style lang="sass">
   .btn
     background-color: #ea9e60
@@ -124,5 +177,5 @@
     height: 100%
   .modal-header
     background-color: #f59445
-    background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
+    background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))
 </style>
