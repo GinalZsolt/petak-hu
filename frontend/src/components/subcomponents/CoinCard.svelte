@@ -30,12 +30,13 @@
         border-left: 1px solid white
         border-right: 1px solid white
       .Card
-        height: 100%
+        height: 300px
         position: relative
       .auctimg
         background-color: #000
         height: 100%
         img
+          height: 100%
           object-fit: cover
       .bottomText
         position: absolute

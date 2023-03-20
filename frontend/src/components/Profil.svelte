@@ -2,7 +2,6 @@
     import { GetUserProfile } from "../services/dbUser";
     import { Token,userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
-    let ID = Number(router.meta().params.id);
     import {Patch, Get} from "../services/dbQueries";
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
@@ -10,6 +9,7 @@
     import { router } from "tinro";
     import CoinMod from "./subcomponents/CoinMod.svelte";
     import type { TagInterface } from "../interfaces/Tags";
+    let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1
@@ -50,7 +50,7 @@
 </script>
 
 <main>
-  <CoinUpload/>
+  <CoinUpload on:success={()=>{profile = GetUserProfile(ID, $Token.token)}}/>
   <div class="col-lg-7 col-md-9 col-11 mx-auto">
     {#await profile}
     <div class="spinner-border"></div>
@@ -62,7 +62,7 @@
         <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
           <div>
             <div class="profileimage rounded-circle">
-              {#if ProfileData.user.imagefile!=null}
+              {#if ProfileData.user.imagefile!=null && ProfileData.user.imagefile!="null"}
               <img src={'http://localhost:8080/img/'+ProfileData.user.imagefile} alt="" class="img-fluid">
               {:else}
               <img src="/tempProfile.jpg" alt="" class="img-fluid">
@@ -113,14 +113,18 @@
           <a class="btn w-100" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
       </div>
       {:else}
-      <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button></div>
+        {#if $userPerms.id == ID}
+          <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button></div>
+        {/if}
       {/if}
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
-      <div class="auctions">
+      <div class="auctions mb-3">
+        <div class="d-flex flex-row justify-content-between">
         {#each ProfileData.auctions as auction, i}
           <ProfileCard auction={auction} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
         {/each}
+        </div>
       </div>
       {/if}
     {/await}

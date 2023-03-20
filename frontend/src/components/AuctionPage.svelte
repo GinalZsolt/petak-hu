@@ -15,6 +15,7 @@
   import { GetCoin } from "../services/dbCoin";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import { router } from "tinro";
+  import { GetUserData } from "../services/dbUser";
   let ID = Number(router.meta().params.id);
   let coin:Coin;
   let auction: Auction;
@@ -87,7 +88,9 @@
     <div class="col-11 mx-auto mt-5">
       <aside class="d-block mb-4 d-flex flex-row align-items-center">
         <a href="/auctions" class="btn border-dark me-2"><i class="bi bi-arrow-left" /></a>
-        <h2 class="mb-0">{auction.userID} - {auction.title}</h2>
+        {#await GetUserData(auction.userID, $Token.token) then userdata}
+        <h2 class="mb-0"><a href={`/profile/${userdata[0].ID}`}>{userdata[0].name}</a> - {auction.title}</h2>
+        {/await}
       </aside>
       <div class="row mx-auto">
         {#if coin}

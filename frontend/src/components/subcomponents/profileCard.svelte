@@ -38,25 +38,26 @@
 
 
 {#if auction}
-<a href={`/auctions/${auction.ID}`} class="card" on:click={sayHello}>
-    <div>
-        <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
-    </div>
-    <div class="bottomText">
-        <span>{auction ? auction.title : coin.name}</span>
-        
-    </div>
-</a>
-{:else if coin}
-<div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal" on:click={sayHello}>
-    <div>
-        <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
-    </div>
-    <div class="bottomText">
-        <span>{auction ? auction.title : coin.name}</span>
+    {#if coin}
+    <a href={`/auctions/${auction.ID}`} class="card" on:click={sayHello}>
+        <div>
+            <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
+        </div>
+        <div class="bottomText">
+            <span>{auction ? auction.title : coin.name}</span>
+        </div>
+    </a>
+    {/if}
+    {:else if coin}
+    <div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal" on:click={sayHello} on:keypress={()=>{}}>
+        <div>
+            <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
+        </div>
+        <div class="bottomText">
+            <span>{auction ? auction.title : coin.name}</span>
 
+        </div>
     </div>
-</div>
-{:else}
+    {:else}
 <div class="empty"></div>
 {/if}

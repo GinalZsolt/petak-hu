@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { GetAllAuctions, GetAuctions } from "../services/dbAuction";
+  import { AuctionPageAuctions, GetAllAuctions, GetAuctions } from "../services/dbAuction";
   import { Token } from "../stores";
   import AuctionCard from "./subcomponents/AuctionCard.svelte";
   let searchText: string = "";
@@ -35,28 +35,27 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
         <div class="carousel-inner">
-          {#await Auctions}
+          {#await AuctionPageAuctions($Token.token)}
             <div class="spinner-border"></div>
             {:then Data}
-            {@const FilterArrayTop = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
-              {#each Array(Math.ceil(FilterArrayTop.length/3)) as i, index}
-              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
+              {#each Data as array, i}
+              <div class={"carousel-item" + (i == 0 ? " active" : "")}>
                 <div class="d-flex">
-                  {#if FilterArrayTop[index]}
-                  <AuctionCard Auction={FilterArrayTop[index]} />
-                  {:else}
-                  <div/>
-                  {/if}
-                  {#if FilterArrayTop[index+1]}
-                  <AuctionCard Auction={FilterArrayTop[index+1]} />
-                  {:else}
-                  <div/>
-                  {/if}
-                  {#if FilterArrayTop[index+2]}
-                  <AuctionCard Auction={FilterArrayTop[index+2]} />
-                  {:else}
-                  <div/>
-                  {/if}
+                    {#if array[0]}  
+                      <AuctionCard Auction={array[0]}/>
+                      {:else}
+                      <div class="flexCard"></div>
+                    {/if}
+                    {#if array[1]}  
+                      <AuctionCard Auction={array[1]}/>
+                      {:else}
+                      <div class="flexCard"></div>
+                    {/if}
+                    {#if array[2]}  
+                      <AuctionCard Auction={array[2]}/>
+                      {:else}
+                      <div class="flexCard"></div>
+                    {/if}
                 </div>
               </div>
               {/each}
@@ -69,49 +68,12 @@
         data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>
-    <h3>Legújabb aukciók</h3>
-    <div
-      class="d-flex flex-row w-100 border-dark border rounded-start rounded-end"
-    >
-      <button
-        class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
-        data-bs-target="#bottom"
-        data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
-      >
-      <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {#await Auctions}
-            <div class="spinner-border"></div>
-            {:then Data}
-            {@const FilterArrayBottom = Data.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase()))}
-              {#each Array(Math.ceil(FilterArrayBottom.length/3)) as i, index}
-              <div class={"carousel-item" + (index == 0 ? " active" : "")}>
-                <div class="d-flex">
-                  {#if FilterArrayBottom[index]}
-                    <AuctionCard Auction={FilterArrayBottom[index]} />
-                  {/if}
-                  {#if FilterArrayBottom[index+1]}
-                    <AuctionCard Auction={FilterArrayBottom[index+1]} />
-                  {/if}
-                  {#if FilterArrayBottom[index+2]}
-                    <AuctionCard Auction={FilterArrayBottom[index+2]} />
-                  {/if}
-                </div>
-              </div>
-              {/each}
-          {/await}
-        </div>
-      </div>
-      <button
-        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
-        data-bs-target="#bottom"
-        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
-      >
-    </div>
   </div>
 </main>
 
 <style lang="sass">
+    .flexCard
+      width:33%
     $searchbarColor: #ffcc95
     .input-group-text
         background-color: $searchbarColor

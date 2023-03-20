@@ -15,14 +15,16 @@
         });
         
         new Chart(ctx, {
-            type:"bar",
+            type:"line",
             data:{
                 labels:dates,
                 datasets:[
                         {
                             label:Data.map(e=>e.title)[0],
                             data: Data.map(e=>e.value),
-                            backgroundColor: "#f59445af"
+                            backgroundColor: "#f59445",
+                            borderColor: '#f59445af',
+                            tension: 0.25
                         }
                 ]
             },

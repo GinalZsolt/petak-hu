@@ -1,12 +1,12 @@
 <script lang="ts">
-    import {onMount} from "svelte"
+    import {createEventDispatcher, onMount} from "svelte"
     import type { TagInterface, TagType } from "../../interfaces/Tags";
     import { GetTagTypes, UploadCoin, UploadTag } from "../../services/dbCoin";
     import { Token } from "../../stores";
     import { userPerms } from "../../stores";
     import { UploadImages } from "../../services/fileService";
     import ErrorAlert from "./ErrorAlert.svelte";
-    
+    const dispatch = createEventDispatcher();
     let err1
     let err2
     let err3
@@ -92,8 +92,10 @@
             });
             data={}
             newtagClear();
-            tags=[]
-            err3.showError()
+            tags=[];
+            tags = tags;
+            err3.showError();
+            dispatch('success');
         }
         else{
             err1.showError()
