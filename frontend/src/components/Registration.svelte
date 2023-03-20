@@ -120,6 +120,7 @@
             <div class="mb-3">
                 <label for="phone">Telefonszám</label>
                 <input type="tel" bind:value={User.phone} name="phone" class="form-control">
+                <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
             </div>
             <div class="mb-3">
                 <label for="address">Cím</label>

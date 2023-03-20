@@ -29,7 +29,7 @@
     auction = await GetAuctionData($Token.token, ID);
     originalPrice = await (await GetAuctionData($Token.token, ID)).price;
     coin = (await GetCoin(auction.coinID, $Token.token));
-    if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false){
+    if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false && bidders.length>0){
       CloseAuctionAndSendMail($Token.token, ID, {
         auctionID: auction.ID, 
         userID: bidders[0].userID,
