@@ -22,6 +22,9 @@
     </div>
 </a>
   <style lang="sass">
+      .Card  
+        border: 1px solid black
+        border-radius: 0.25rem
       a
         color: white
         text-decoration: none
