@@ -4,11 +4,12 @@
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
+    import Tag from "./Tag.svelte";
 
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
     export let tags: Array<TagInterface>=[];
-    console.log(tags);
+    export let tag_descriptions: Array<String>=[];
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -48,6 +49,11 @@
         tags=tags;
     }
 
+    async function getTagDesc(id: Number){
+        let des: String = await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=> res=res[0].description);
+        return des;
+    }
+
     async function tagdesup(tag: TagInterface) {
         let desID:Number;       
         await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
@@ -67,7 +73,8 @@
     }
 
     async function DeleteTag(del){
-        tags.splice(tags.findIndex(e=>e.ID==del.ID),1)
+        let index=tags.findIndex(e=>e.ID==del.ID);
+        tags.splice(index,1);
         tags=tags
         await Delete($Token.token, "cointags", "ID", del.ID);
         await Delete($Token.token, "tagdescriptions", "ID", del.descID);
@@ -76,7 +83,6 @@
     onMount(async()=>{
         await GetCategories();
         category = category;
-        console.log(category);
     });
 
     function getTagCategoryName(id: Number){
@@ -92,14 +98,6 @@
         }
         return "";
     }
-
-    async function getTagDesc(id: Number){
-        let des:String;
-        await await Get($Token.token, "tagdescriptions", "ID", id).then((res)=>des=res[0].description);
-        console.log(des);
-        return des;
-    }
-
 </script>
 <style lang="sass">
     button
@@ -168,9 +166,9 @@
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
                     {#if tags!=undefined || tags.length!=0}
-                        {#each tags as tag}
+                        {#each tags as tag, i }
                             <div style={"--color:"+getTagCategoryColor(tag.nameID)} class="tag m-auto mb-1">
-                                <span>{getTagCategoryName(tag.nameID)}</span>:<span>{getTagDesc(tag.descID)}</span> 
+                                <span>{getTagCategoryName(tag.nameID)}</span>:<span>{tag_descriptions[i]}</span> 
                                 {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
                             </div>
                         {/each} 
