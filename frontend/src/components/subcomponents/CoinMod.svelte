@@ -30,8 +30,7 @@
         await await Get($Token.token, "tagcategories").then((res)=> {category=res; category = category});
     }
 
-    function addTag(){
-        tags=[];
+    async function addTag(){
         let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
@@ -39,13 +38,17 @@
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
         };
-        tags.push(tag);
+        await tagdesup(tag);
+        await GetTags(Coin);
+    }
+
+    async function GetTags(Coin:Coin) {
+        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
         tags=tags;
-        tagdesup(tag);
     }
 
     async function tagdesup(tag: TagInterface) {
-        let desID:Number;       //TODO
+        let desID:Number;       
         await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
         tagup(tag, desID);
     }
@@ -62,9 +65,11 @@
         return 0;
     }
 
-    function DeleteTag(del){
-        tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
+    async function DeleteTag(del){
+        tags.splice(tags.findIndex(e=>e.ID==del.ID),1)
         tags=tags
+        await Delete($Token.token, "cointags", "ID", del.ID);
+        await Delete($Token.token, "tagdescriptions", "ID", del.descID);
     }
 
     onMount(async()=>{
@@ -88,11 +93,12 @@
     }
 
     async function getTagDesc(id: Number){
-        let object=[];
-        await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=>console.log(res));
-        console.log(object[0]);
-        return object[0].description;
+        let des:String;
+        await await Get($Token.token, "tagdescriptions", "ID", id).then((res)=>des=res[0].description);
+        console.log(des);
+        return des;
     }
+
 </script>
 <style lang="sass">
     button

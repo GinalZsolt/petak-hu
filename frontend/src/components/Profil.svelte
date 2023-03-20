@@ -47,8 +47,7 @@
 	}
 
   async function GetTags(Coin:Coin) {
-        let tagsarray: any[]=[];
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+      tags = await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> res);
     }
 </script>
 
