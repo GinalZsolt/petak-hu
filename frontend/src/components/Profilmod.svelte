@@ -129,11 +129,11 @@
 <main>
     <div id="modform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Profil Módosítása</h2>
-        <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
-        <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik",error:true}}/>
-        <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó",error:true}}/>
-        <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás",error:false}}/>
-        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám nem megfelelő! (+36301234567)",error:true}}/>
+        <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
+        <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik!",error:true}}/>
+        <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó!",error:true}}/>
+        <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás!",error:false}}/>
+        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám formátuma nem megfelelő!",error:true}}/>
         <form>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
