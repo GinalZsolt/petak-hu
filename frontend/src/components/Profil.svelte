@@ -44,12 +44,7 @@
 	}
 
   async function GetTags(Coin:Coin) {
-<<<<<<< HEAD
       tags = await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> res);
-=======
-        let tagsarray: any[]=[];
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=>{tags = res});
->>>>>>> f7b795e784488a4ea2292e12c03bd831aa71457b
     }
 </script>
 
@@ -128,9 +123,8 @@
       </div>
       {/if}
     {/await}
-    {#await GetTags(modcoin) then _tags}
-    <CoinMod tags={_tags} Coin={modcoin}></CoinMod>
-    {/await}
+    <CoinMod tags={tags} Coin={modcoin}></CoinMod>
+
 </main>
 
 

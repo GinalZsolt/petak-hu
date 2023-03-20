@@ -7,7 +7,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	function sayHello() {
+	function sendCoin() {
         dispatch('modcoin', {
 			Coin: coin
 		});
@@ -38,7 +38,7 @@
 
 
 {#if auction}
-<a href={`/auctions/${auction.ID}`} class="card" on:click={sayHello}>
+<a href={`/auctions/${auction.ID}`} class="card" on:click={sendCoin}>
     <div>
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
     </div>
@@ -48,7 +48,7 @@
     </div>
 </a>
 {:else if coin}
-<div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal" on:click={sayHello}>
+<div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal" on:click={sendCoin}>
     <div>
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
     </div>
