@@ -52,7 +52,7 @@
     bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date)<new Date(b.date));
     if (!isLatestOrOwn(auction.userID)){
       actbtn.disabled = false;
-      btn.disabled = true;
+      btn.disabled = false;
     }
   });
   function isLatestOrOwn(id:number):boolean{
