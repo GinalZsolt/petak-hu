@@ -24,24 +24,24 @@
     async function DelCoin(ID){     //TODO
         let auc:boolean = await isInAuctions(ID);
         if(!auc){
-            console.log("nincs benne az aukciókban");
-            let del_data:any = await await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
-
-            if(del_data!=undefined){
-                await await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
-                await await Delete($Token.token, "tagdescriptions", "ID", del_data.descID).then((res)=> console.log(res));
-            }
+            let del_data:any|undefined = await await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> res=res);
+            console.log(del_data);
+            if(del_data.length>0) delDescs(del_data, ID);
             await await Delete($Token.token, "coins", "ID", `${ID}`).then((res)=> console.log(res));;
             updatecoins();
         }
-        else{
-            console.log("benne van az aukciókban");
+    }
+
+    async function delDescs(del_data:Array<any|undefined>, ID:Number) {
+        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+        for (let i = 0; i < del_data.length; i++) {
+            await Delete($Token.token, "tagdescriptions", "ID", del_data.descID).then((res)=> console.log(res));
         }
     }
 
     async function isInAuctions(coinID:Number) {
-        return await await Get($Token.token, "auctions", "coinID", `${coinID}`).then((res)=> res=res.ID)==undefined ? false : true;
-        
+        let data: any|undefined = await Get($Token.token, "auctions", "coinID", `${coinID}`);
+        return data.length>0 ? true : false;
     }
 
     async function UpdateCoin(ID){
@@ -83,7 +83,7 @@
     }
 
     async function tagup(tag: TagInterface, desID: Number) {
-        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
+        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID});
     }
 
     function gettagID(categoryname: String){
@@ -97,8 +97,11 @@
         let index=tags.findIndex(e=>e.ID==del.ID);
         tags.splice(index,1);
         tags=tags
-        await Delete($Token.token, "cointags", "ID", del.ID);
-        await Delete($Token.token, "tagdescriptions", "ID", del.descID);
+        console.log(del);
+        let desc_ID = await Get($Token.token, "cointags", "ID", del.ID).then((res)=> res=res);
+        console.log(desc_ID);
+        await Delete($Token.token, "cointags", "ID", del.ID).then((res)=>console.log(res));
+        await await Delete($Token.token, "tagdescriptions", "ID", desc_ID.descID).then((res)=>console.log(res));
     }
 
 
