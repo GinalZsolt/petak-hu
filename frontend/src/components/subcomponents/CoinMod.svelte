@@ -22,11 +22,26 @@
 
 
     async function DelCoin(ID){     //TODO
-        //let del_data = await 
-        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
-        //await Delete($Token.token, "tagdescriptions", "ID", )
-        await Delete($Token.token, "coins", "ID", `${ID}`);
-        updatecoins();
+        let auc:boolean = await isInAuctions(ID);
+        if(!auc){
+            console.log("nincs benne az aukciókban");
+            let del_data:any = await await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+
+            if(del_data!=undefined){
+                await await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+                await await Delete($Token.token, "tagdescriptions", "ID", del_data.descID).then((res)=> console.log(res));
+            }
+            await await Delete($Token.token, "coins", "ID", `${ID}`).then((res)=> console.log(res));;
+            updatecoins();
+        }
+        else{
+            console.log("benne van az aukciókban");
+        }
+    }
+
+    async function isInAuctions(coinID:Number) {
+        return await await Get($Token.token, "auctions", "coinID", `${coinID}`).then((res)=> res=res.ID)==undefined ? false : true;
+        
     }
 
     async function UpdateCoin(ID){
@@ -84,7 +99,6 @@
         tags=tags
         await Delete($Token.token, "cointags", "ID", del.ID);
         await Delete($Token.token, "tagdescriptions", "ID", del.descID);
-        console.log(tags);
     }
 
 
