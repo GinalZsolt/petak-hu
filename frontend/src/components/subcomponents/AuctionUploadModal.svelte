@@ -2,6 +2,8 @@
   import {userPerms, Token} from '../../stores';
   import {Post} from '../../services/dbQueries';
   import type { Coin } from '../../interfaces/Coin';
+  import ErrorAlert from './ErrorAlert.svelte';
+  import { router } from 'tinro';
   export let Coin:Coin;
   let data = {
     coinID: Coin.ID,
@@ -12,13 +14,15 @@
     description: "",
     expiration: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
   }
+  let err1
   function AUCTION_UPLOAD(){
-    if(filledForm()) Post($Token.token, "auctions", data);
-    else alert('A bemeneti adatok hiányosak vagy nem megfelelőek!');
+    if(filledForm()){ 
+      Post($Token.token, "auctions", data).then(/*res=> router.goto("/auctions/"+ res.insertId)*/);
+    }
+    else err1.showError();
   }
   function filledForm():boolean{
-    console.log(data.title, data.price, data.minBid, data.description);
-    return data.title!="" && data.price>0 && data.minBid>0 && data.description!="";
+    return data.title!="" &&data.title!=undefined && data.price!=undefined  && data.minBid>0 && data.description!=""&&data.description!=undefined;
   }
 </script>
 
@@ -30,6 +34,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
             <form class="modal-form ">
                 <div class="mb-3">
                   <label for="coin">Aukcióra bocsátandó érme</label>
@@ -43,14 +48,14 @@
                     <label for="auction_start_value">Aukció kezdő értéke</label>
                     <div class="input-group mx-w">
                         <input type="number" class="form-control" min={Coin.worth} bind:value={data.price}>
-                        <span class="input-group-text bg-orange" id="inputGroupPrepend2">Ft</span>
+                        <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="auction-licit">Aukció licitlépcsője</label>
                     <div class="input-group mx-w">
                         <input type="number" class="form-control" min="0" bind:value={data.minBid}>
-                        <span class="input-group-text bg-orange" id="inputGroupPrepend2">Ft</span>
+                        <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -78,8 +83,6 @@
         .btn:active
           background-color: #ea9e60af
           box-shadow: 0 0 0 0.2rem #ea9e604f
-        #des
-            resize: none
         textarea
           height: 15vh
         .modal-header
