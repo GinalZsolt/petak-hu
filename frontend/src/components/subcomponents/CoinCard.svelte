@@ -4,7 +4,7 @@
     console.log(coin)
 </script>
     
-<a href="#" class="flexCard"  data-bs-target="#coinmodal" data-bs-toggle="modal">
+<a href="#" class="flexCard" data-bs-target="#coinmodal" data-bs-toggle="modal">
     <div class="Card">
       <div class="auctimg d-flex justify-content-center">
       <img class="m-auto img-fluid" src={"http://localhost:8080/img/" + coin.headfile} alt={coin.name} />
