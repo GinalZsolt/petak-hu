@@ -5,6 +5,8 @@
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
     import Tag from "./Tag.svelte";
+	import { createEventDispatcher } from 'svelte';
+
 
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
@@ -19,12 +21,17 @@
     let category:any=[];
 
 
-    async function DelCoin(ID){
-        await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
+    async function DelCoin(ID){     //TODO
+        //let del_data = await 
+        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+        //await Delete($Token.token, "tagdescriptions", "ID", )
+        await Delete($Token.token, "coins", "ID", `${ID}`);
+        updatecoins();
     }
 
     async function UpdateCoin(ID){
-       await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
+       await Patch($Token.token, "coins", "ID", ID, Coin);
+       updatecoins();
     }
 
     async function GetCategories(){
@@ -32,19 +39,25 @@
     }
 
     async function addTag(){
-        let tag:TagInterface={
+        if(newtag.Category=="" 
+        || newtag.Category==undefined 
+        ||newtag.Category==null 
+        || newtag.description=="" ) alert("A cimke hozzáadásához ki kell töltenie minen mezőt.")
+        else{
+            let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
             CoinID:Coin.ID,
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
-        };
-        await tagdesup(tag);
-        await GetTags(Coin);
+            };
+            await tagdesup(tag);
+            await GetTags(Coin);
+        }
     }
 
     async function GetTags(Coin:Coin) {
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+        await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> tags=res);
         tags=tags;
     }
 
@@ -55,7 +68,6 @@
     }
 
     async function tagup(tag: TagInterface, desID: Number) {
-        console.log(Coin.ID);
         await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
     }
 
@@ -74,6 +86,12 @@
         await Delete($Token.token, "tagdescriptions", "ID", del.descID);
         console.log(tags);
     }
+
+
+	const dispatch = createEventDispatcher();
+    function updatecoins() {
+        dispatch('updatecoins', {});
+	}
 
     onMount(async()=>{
         await GetCategories();
