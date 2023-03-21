@@ -9,7 +9,6 @@
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
     export let tags: Array<TagInterface>=[];
-    export let tag_descriptions: Array<String>=[];
     let newtag:TagInterface={
         description:"",
         name:"",
@@ -33,25 +32,26 @@
     }
 
     async function addTag(){
-        let tag:TagInterface={
+        if(newtag.Category=="" 
+        || newtag.Category==undefined 
+        ||newtag.Category==null 
+        || newtag.description=="" ) alert("A cimke hozzáadásához ki kell töltenie minen mezőt.")
+        else{
+            let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
             CoinID:Coin.ID,
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
-        };
-        await tagdesup(tag);
-        await GetTags(Coin);
+            };
+            await tagdesup(tag);
+            await GetTags(Coin);
+        }
     }
 
     async function GetTags(Coin:Coin) {
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+        await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> tags=res);
         tags=tags;
-    }
-
-    async function getTagDesc(id: Number){
-        let des: String = await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=> res=res[0].description);
-        return des;
     }
 
     async function tagdesup(tag: TagInterface) {
@@ -61,7 +61,6 @@
     }
 
     async function tagup(tag: TagInterface, desID: Number) {
-        console.log(Coin.ID);
         await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
     }
 
@@ -78,26 +77,13 @@
         tags=tags
         await Delete($Token.token, "cointags", "ID", del.ID);
         await Delete($Token.token, "tagdescriptions", "ID", del.descID);
+        console.log(tags);
     }
 
     onMount(async()=>{
         await GetCategories();
         category = category;
     });
-
-    function getTagCategoryName(id: Number){
-        for (let i = 0; i < category.length; i++) {
-            if(category[i].ID==id) return category[i].name;
-        }
-        return "";
-    }
-
-    function getTagCategoryColor(id: Number){
-        for (let i = 0; i < category.length; i++) {
-            if(category[i].ID==id) return category[i].color;
-        }
-        return "";
-    }
 </script>
 <style lang="sass">
     button
@@ -167,8 +153,8 @@
                 <div class="tag-container d-flex flex-wrap mb-3">
                     {#if tags!=undefined || tags.length!=0}
                         {#each tags as tag, i }
-                            <div style={"--color:"+getTagCategoryColor(tag.nameID)} class="tag m-auto mb-1">
-                                <span>{getTagCategoryName(tag.nameID)}</span>:<span>{tag_descriptions[i]}</span> 
+                            <div style={"--color:"+tag.color} class="tag m-auto mb-1">
+                                <span>{tag.name}</span>:<span>{tag.description}</span> 
                                 {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
                             </div>
                         {/each} 

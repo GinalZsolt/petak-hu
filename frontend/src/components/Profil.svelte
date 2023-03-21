@@ -38,24 +38,14 @@
   };
 
   let tags: Array<TagInterface>=[]; 
-  let tag_descriptions: Array<String>=[];
   async function handleMessage(event) {
     modcoin=event.detail.Coin;
     await GetTags(modcoin);
-    for (let i = 0; i < tags.length; i++) {
-      tag_descriptions.push(await getTagDesc(tags[i].descID));
-      tag_descriptions=tag_descriptions;
-    }
-    console.log(tag_descriptions);
+    console.log(tags);
 	}
 
-  async function getTagDesc(id: Number){
-        let des: String = await Get($Token.token, "tagdescriptions", "ID", `${id}`).then((res)=> res=res[0].description);
-        return des;
-  }
-
   async function GetTags(Coin:Coin) {
-      tags = await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> res);
+      tags = await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> res);
     }
 </script>
 
@@ -138,8 +128,7 @@
       </div>
       {/if}
     {/await}
-    <CoinMod tag_descriptions={tag_descriptions} tags={tags} Coin={modcoin}></CoinMod>
-
+    <CoinMod tags={tags} Coin={modcoin}></CoinMod>
 </main>
 
 
