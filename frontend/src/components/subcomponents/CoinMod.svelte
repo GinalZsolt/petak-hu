@@ -32,19 +32,25 @@
     }
 
     async function addTag(){
-        let tag:TagInterface={
+        if(newtag.Category=="" 
+        || newtag.Category==undefined 
+        ||newtag.Category==null 
+        || newtag.description=="" ) alert("A cimke hozzáadásához ki kell töltenie minen mezőt.")
+        else{
+            let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
             CoinID:Coin.ID,
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
-        };
-        await tagdesup(tag);
-        await GetTags(Coin);
+            };
+            await tagdesup(tag);
+            await GetTags(Coin);
+        }
     }
 
     async function GetTags(Coin:Coin) {
-        await Get($Token.token, "cointags", "coinID", Coin.ID).then((res)=> tags=res);
+        await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> tags=res);
         tags=tags;
     }
 
@@ -55,7 +61,6 @@
     }
 
     async function tagup(tag: TagInterface, desID: Number) {
-        console.log(Coin.ID);
         await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
     }
 
