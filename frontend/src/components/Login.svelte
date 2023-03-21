@@ -9,7 +9,7 @@
     let err2
     let err3
     async function login(){
-        if(data.email==undefined||data.passwd==undefined)
+        if(data.email==undefined||data.passwd==undefined || data.email == "" || data.passwd == "")
         {
             err2.showError();
         }
@@ -25,11 +25,13 @@
                     userPerms.update(perms=>data);
                 })
             }).catch(err=>{
-                if(err.response.status==400){
-                    err1.showError();
-                }
-                else if(err.response.status==403){
-                    err3.showError();
+                switch (err.response.status){
+                    case 400:
+                        err1.showError();
+                        break;
+                    case 403:
+                        err3.showError();
+                        break;
                 }
             })
         }

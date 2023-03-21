@@ -1,5 +1,6 @@
 <div 
-class={visible ? "alert d-flex flex-row justify-content-between" : "d-none"}
+class="alert d-flex flex-row justify-content-between"
+class:d-none={!visible}
 class:alert-danger={danger}
 class:alert-success={success}
 role="alert" id={Error.id}>
