@@ -19,6 +19,10 @@
   let ID = Number(router.meta().params.id);
   let coin:Coin;
   let auction: Auction;
+  let user = {
+    name: "",
+    url: ""
+  }
   let bidders: Bidder[] = [];
   let originalPrice: number;
   let room = "auction-" + ID;
@@ -88,9 +92,7 @@
     <div class="col-11 mx-auto mt-5">
       <aside class="d-block mb-4 d-flex flex-row align-items-center">
         <a href="/auctions" class="btn border-dark me-2"><i class="bi bi-arrow-left" /></a>
-        {#await GetUserData(auction.userID, $Token.token) then userdata}
-        <h2 class="mb-0"><a href={`/profile/${userdata[0].ID}`}>{userdata[0].name}</a> - {auction.title}</h2>
-        {/await}
+        <h2 class="mb-0"><a href={`/profile/${auction.userID}`}>{auction.user.name}</a> - {auction.title}</h2>
       </aside>
       <div class="row mx-auto">
         {#if coin}
