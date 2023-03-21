@@ -1,8 +1,8 @@
 <div 
 class="alert d-flex flex-row justify-content-between"
 class:d-none={!visible}
-class:alert-danger={danger}
-class:alert-success={success}
+class:alert-danger={Error.error}
+class:alert-success={!Error.error}
 role="alert" id={Error.id}>
     <div>{Error.text}</div>
     <button type="button" class="btn-close" on:click={()=>{hideError()}}></button>
@@ -18,7 +18,4 @@ role="alert" id={Error.id}>
     export function showError(){
         visible = true;
     }
-    let danger:boolean=Error.error
-    let success:boolean=!Error.error
-    
 </script>

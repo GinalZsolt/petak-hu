@@ -7,7 +7,6 @@
       GetPerms().then(res=>{
         userPerms.update(d=>res);
       });
-      console.log('Bruh');
     }
 </script>
 <style lang="sass">

@@ -7,6 +7,7 @@
     import { onMount } from "svelte";
     import { GetUserData } from "../services/dbUser";
     import { router } from "tinro";
+  import CoinUpload from "./subcomponents/CoinUpload.svelte";
     let ID = Number(router.meta().params.id);
     let modal
     let searchtext:string=""
@@ -36,7 +37,10 @@
 
 <main>
   <div id="catalogue" class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
-    <h4><a  class="btn border-dark" href="/"><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
+    <div class="d-flex justify-content-between align-items-center">
+      <h4><a  class="btn border-dark" href="/"><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
+      <button data-bs-target="#CoinUpload" data-bs-toggle="modal" class="btn"><i class="bi bi-plus-lg"></i></button>
+    </div>
     <div class="input-group  border border-dark rounded mt-3">
       <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
       <input type="text" class="form-control" bind:value={searchtext}>
@@ -52,6 +56,7 @@
       {/if}
     </div>
     <CoinModal bind:this={modal} coin={selectedcoin}/>
+    <CoinUpload on:success={async()=>{await getCoinList()}}/>
   </div>
 </main>
 

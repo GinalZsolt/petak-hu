@@ -5,7 +5,7 @@
     let User:any = {}
     let ErrorData = {
         id: "",
-        message: "",
+        text: "",
         error: false
     };
     let err;
@@ -17,49 +17,38 @@
     }
     function SetError(id:string, message:string, isError:boolean){
         ErrorData.id = id;
-        ErrorData.message = message;
+        ErrorData.text = message;
         ErrorData.error = isError;
+        err.showError();
     }
 
     function Register(){
-        switch (false){
+        switch (true){
             case (badData(User.name)||badData(User.fullname)||badData(User.email)||badData(pass1)||badData(pass2)):
-                console.log(User, pass1, pass2);    
                 SetError('emptyfields', 'Nem töltöttél ki minden mezőt!', true);
-                err.showError();
                 break;
             case (!User.email.match(/(?:[a-z0-9+!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi)):
                 SetError('bademail', 'Az e-mail cím formátum nem megfelelő!', true);
-                err.showError();
                 break;
             case (pass1!=pass2):
                 SetError('passwdmismatch', 'A jelszavak nem egyeznek!', true);
-                err.showError();
                 break;
             case (!pass1.match((/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/))):
                 SetError('nonsecurepasswd', 'A jelszó nem elég biztonságos!', true);
-                err.showError();
                 break;
             case (!badData(User.phone)):
-                if (!pass1.match((/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/))){
-                    SetError('badPhone', 'A telefonszám nem a formátumnak megfelelő!', true);
-                    err.showError();
-                }
-                else
-                    TryRegister();
+                User.phone.match(/\+[0-9]{11}/g) ? TryRegister() : SetError('badPhone', 'A telefonszám nem megfelelő!', true);
                 break;
             default: TryRegister();
         }
     }
     function TryRegister(){
         User.passwd = sha256(pass1).toString();
-        axios.post("http://localhost:8080/api/users/register",User).then((res)=>{
+        axios.post("http://localhost:8080/api/users/register",User).then(()=>{
             SetError('success', 'Sikeres regisztráció', false);
-            err.showError();
-        }).catch((err)=>{
-            if (err.response.status==400){
+        }).catch((error)=>{
+            if (error.response.status==400){
                 SetError('takenemail', 'Ez az e-mail cím már foglalt!', true);
-                err.showError();
             }
         });
     }
@@ -78,7 +67,7 @@
         <h3 class="card-header card-title">Regisztráció</h3>
         <div class="card-body">
             <h4>Fiókadatok</h4>
-            <ErrorAlert bind:this={err} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
+            <ErrorAlert bind:this={err} Error={ErrorData}/>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév<span class="text-danger">*</span></label>
                 <input type="text" name="username" bind:value={User.name} class="form-control">
