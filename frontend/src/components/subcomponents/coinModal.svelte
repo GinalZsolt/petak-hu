@@ -7,6 +7,9 @@
   import { GetCoin } from "../../services/dbCoin";
   import { GetAllAuctions } from "../../services/dbAuction";
   import { GetUserProfile } from "../../services/dbUser";
+
+  let auctionmodal
+
   async function CopyLink() {
     await navigator.clipboard.writeText(
       "http://localhost:8080/profile/" + $userPerms.id
@@ -28,6 +31,7 @@
   export function loadmodal(loadable) {
     coin = loadable;
   }
+
 </script>
 
 {#if coin != undefined}
@@ -106,6 +110,7 @@
                     <button
                       type="button"
                       class="btn"
+                      on:click={()=>{auctionmodal.loadmodal(coin)}}
                       data-bs-target="#auctionupload"
                       data-bs-toggle="modal">Aukció</button
                     >
@@ -155,7 +160,7 @@
       </div>
     </div>
   </div>
-  <AuctionUploadModal Coin={coin} />
+  <AuctionUploadModal bind:this={auctionmodal} Coin={coin}/>
 {/if}
 
 <!--<CoinMod Coin={coin}/>-->

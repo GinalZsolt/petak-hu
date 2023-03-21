@@ -3,7 +3,6 @@
   import {Post} from '../../services/dbQueries';
   import type { Coin } from '../../interfaces/Coin';
   import ErrorAlert from './ErrorAlert.svelte';
-  import { router } from 'tinro';
   export let Coin:Coin;
   let data = {
     coinID: Coin.ID,
@@ -23,6 +22,18 @@
   }
   function filledForm():boolean{
     return data.title!="" &&data.title!=undefined && data.price!=undefined  && data.minBid>0 && data.description!=""&&data.description!=undefined;
+  }
+  export function loadmodal(loadable) {
+    Coin = loadable;
+    data = {
+    coinID: Coin.ID,
+    userID: $userPerms.id,
+    title: "",
+    price: Coin.worth,
+    minBid: 0,
+    description: "",
+    expiration: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
+  }
   }
 </script>
 
@@ -69,7 +80,7 @@
               </form>
         </div>
         <div class="modal-footer">
-          <button type="button" on:click={AUCTION_UPLOAD} class="btn bg-orange">Létrehozás</button>
+          <button type="button" on:click={()=>{AUCTION_UPLOAD()}} class="btn bg-orange">Létrehozás</button>
         </div>
       </div>
     </div>
