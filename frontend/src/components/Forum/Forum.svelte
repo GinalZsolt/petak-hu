@@ -8,9 +8,6 @@
     let topics = [] as Topic[];
     let topicID = -1;
     //Get every topic for the user
-    function ChangeTopic() {
-        console.log(topicID);
-    }
     onMount(async()=>{
         topics = await Forum;
     })
@@ -35,14 +32,22 @@
         <div class="posts">
             {#if Data.find(e=>e.ID==topicID)}
                 {@const Posts = Data.find(e=>e.ID==topicID).posts.sort((a,b)=>(new Date(a.date)).getTime() + (new Date(b.date)).getTime()).filter(m=>m.isDeleted==false)}
-                <div class="col-lg-7 col-md-8 col-11 mx-auto mt-5">
+                <div class="col-lg-7 col-md-8 col-11 mx-auto mt-3 table-responsive">
                     {#if Posts.length>0}
-                    <table class="fs-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Lezárva</th>
+                                <th>Cím</th>
+                                <th>Dátum</th>
+                                <th>Felhasználó</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             {#each Posts as post}
                                 {#if post.isDeleted==false}
                                 <tr>
-                                    <td>{#if post.isClosed==true}<i class="bi-check2-circle text-success"></i>{/if}</td>
+                                    <td><i class="bi" class:bi-check-circle={post.isClosed} class:bi-dash-circle-dotted={!post.isClosed}></i></td>
                                     <td><a href={'/forums/'+post.ID}>{post.title}</a></td>
                                     <td>{new Intl.DateTimeFormat('hu-HU').format(new Date(post.date))}</td>
                                     <td><a href={'/profile/'+post.userID}>{post.username}</a></td>
@@ -76,6 +81,9 @@
         cursor: pointer
     .btn-add
         background-color: #ffcc95
+        border: 0
+    .btn-add:hover
+        background-color: #ffcc95fd
     .btn-add:active
         background-color: #ffcc95
         box-shadow: 0 0 0 0.25rem (#ffcc957f)
