@@ -5,6 +5,8 @@
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
     import Tag from "./Tag.svelte";
+	import { createEventDispatcher } from 'svelte';
+
 
     let tagdel:boolean=true;
     export let Coin:Coin | undefined;
@@ -19,12 +21,17 @@
     let category:any=[];
 
 
-    async function DelCoin(ID){
-        await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
+    async function DelCoin(ID){     //TODO
+        //let del_data = await 
+        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+        //await Delete($Token.token, "tagdescriptions", "ID", )
+        await Delete($Token.token, "coins", "ID", `${ID}`);
+        updatecoins();
     }
 
     async function UpdateCoin(ID){
-       await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
+       await Patch($Token.token, "coins", "ID", ID, Coin);
+       updatecoins();
     }
 
     async function GetCategories(){
@@ -79,6 +86,12 @@
         await Delete($Token.token, "tagdescriptions", "ID", del.descID);
         console.log(tags);
     }
+
+
+	const dispatch = createEventDispatcher();
+    function updatecoins() {
+        dispatch('updatecoins', {});
+	}
 
     onMount(async()=>{
         await GetCategories();

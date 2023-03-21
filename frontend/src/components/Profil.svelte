@@ -9,6 +9,7 @@
     import { router } from "tinro";
     import CoinMod from "./subcomponents/CoinMod.svelte";
     import type { TagInterface } from "../interfaces/Tags";
+    import { GetCoin } from "../services/dbCoin";
     let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
 
@@ -41,7 +42,10 @@
   async function handleMessage(event) {
     modcoin=event.detail.Coin;
     await GetTags(modcoin);
-    console.log(tags);
+	}
+
+  async function handleCoinModUpdate(event) {
+    profile = GetUserProfile(ID, $Token.token)
 	}
 
   async function GetTags(Coin:Coin) {
@@ -128,7 +132,7 @@
       </div>
       {/if}
     {/await}
-    <CoinMod tags={tags} Coin={modcoin}></CoinMod>
+    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}></CoinMod>
 </main>
 
 
