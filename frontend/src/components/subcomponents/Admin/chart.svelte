@@ -24,12 +24,35 @@
                             data: Data.map(e=>e.value),
                             backgroundColor: "#f59445",
                             borderColor: '#f59445af',
-                            tension: 0.25
+                            tension: 0.1
                         }
                 ]
             },
             options:{
-                responsive:true
+                responsive:true,
+                plugins:{
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                },
+                scales: 
+                {
+                    x: {
+                        title: {
+                        display: true,
+                        text: 'Dátum'
+                        }
+                    },
+                    y: {
+                        title: {
+                        display: true,
+                        },
+                        ticks: {
+                        stepSize: 1
+                        }
+                    }
+                }
             }
         })
     })

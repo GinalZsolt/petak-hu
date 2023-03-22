@@ -92,7 +92,7 @@
           <hr />
           <h4>Információk az érméről:</h4>
           {#each coin.description.split("\n") as text}
-            <p>{text}</p>
+            <p class="text-break text-wrap">{text}</p>
           {/each}
         </div>
         <div class="modal-footer">
