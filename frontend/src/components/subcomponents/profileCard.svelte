@@ -40,7 +40,9 @@
 {#if auction}
 <a href={`/auctions/${auction.ID}`} class="card" on:click={sendCoin}>
     <div>
+        {#if coin}
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
+        {/if}
     </div>
     <div class="bottomText">
         <span>{auction ? auction.title : coin.name}</span>

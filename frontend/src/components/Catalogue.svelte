@@ -8,6 +8,7 @@
     import { GetUserData } from "../services/dbUser";
     import { router } from "tinro";
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import { GetUserCoins } from "../services/dbCoin";
     let ID = Number(router.meta().params.id);
     let modal
     let searchtext:string=""
@@ -18,7 +19,7 @@
     let selectedcoin:Coin
     
     async function getCoinList() {
-      profile.coin_list = await await Get($Token.token, "coins", "userID", ID);
+      profile.coin_list = await GetUserCoins($Token.token, ID);
       selectedcoin=profile.coin_list[0]
     }
     onMount(async()=>{
@@ -45,9 +46,9 @@
     </div>
     {#if profile.coin_list}
     {#if profile.coin_list.length>0}
-    <div class="input-group  border border-dark rounded mt-3">
+    <div class="input-group  border rounded mt-3">
       <span class="input-group-text border-dark"><i class="bi bi-search" /></span>
-      <input type="text" class="form-control" placeholder="Keresés..." bind:value={searchtext}>
+      <input type="text" class="form-control border-dark" placeholder="Keresés..." bind:value={searchtext}>
     </div>
     {:else}
     <div class="text-center my-5">
@@ -61,7 +62,10 @@
     {/if}
     <!--Érme katalógus-->
     <div class="cards row">
-        {#each profile.coin_list.filter(e=>e.name.toLowerCase().includes(searchtext.toLowerCase())) as coin}
+        {#each profile.coin_list
+                  .filter(e=>
+                    e.tags.filter(h=>h.description.toLowerCase().includes(searchtext.toLowerCase())).length>0
+                    || e.name.toLowerCase().includes(searchtext.toLowerCase())) as coin}
           <div class="col-lg-4 col-md-6 col-12 cn" on:click={()=>{PickCoin(coin)}} on:keypress={()=>{}}>
             <CoinCard coin={coin} />
           </div>
