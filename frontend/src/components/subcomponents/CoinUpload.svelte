@@ -127,6 +127,9 @@
         border-radius:0.5rem
         padding: 5px
         border: 1px solid black
+    .modal-header
+        background-color: #f59445
+        background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
 </style>
 
 

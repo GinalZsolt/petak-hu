@@ -1,3 +1,5 @@
+import type { TagInterface } from "./Tags";
+
 export interface Coin{
     ID:number;
     name:string;
@@ -7,4 +9,5 @@ export interface Coin{
     tailfile:string;    
     userID: number;
     uploadDate:string;
+    tags?: TagInterface[] 
 }

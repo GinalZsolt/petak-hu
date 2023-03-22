@@ -1,10 +1,10 @@
 export interface TagInterface{
     ID?:number;
-    CoinID:number;
+    coinID:number;
     description:string;
     name:string;
     color:string;
-    Category:string;
+    Category?:string;
 }
 
 export interface TagType{

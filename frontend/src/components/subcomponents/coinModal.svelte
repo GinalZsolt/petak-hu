@@ -22,7 +22,9 @@
       return {can:(
         res[1].user.address != null &&
         res[1].user.phone != null &&
-        res[0].find((e) => e.coinID == coinID) == undefined
+        res[0].find((e) => e.coinID == coinID) == undefined &&
+        res[1].user.phone!="null"&&
+        res[1].user.address!="null"
       ), 
         reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
     };
@@ -97,6 +99,7 @@
         </div>
         <div class="modal-footer">
           <div class={"buttons "+ ($userPerms.id==coin.userID) ? "d-flex w-100 justify-content-between" : "" }>
+            {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
                 <button
@@ -118,7 +121,7 @@
                     <button
                       type="button"
                       class="btn"
-                      data-bs-target="#collapseExample"
+                      data-bs-target="#noaddress"
                       data-bs-toggle="collapse">Aukció</button
                     >
                     {:else}
@@ -126,14 +129,14 @@
                       type="button"
                       class="btn"
                       disabled
-                      data-bs-target="#collapseExample"
+                      data-bs-target="#noaddress"
                       data-bs-toggle="collapse">Aukció</button
                     >
                   {/if}
                 {/await}
               </div>
             {/if}
-  
+            {/if}
             <div>
               <button type="button" class="btn" data-bs-dismiss="modal">OK</button
               >
@@ -142,15 +145,13 @@
           </div>
           {#await CheckIfCanAuction(coin.ID) then result}
             {#if !result.can && result.reason == "noaddress"}
-            <div class="collapse" id="collapseExample">
+            <div class="collapse w-100" id="noaddress">
               <div class="card bg-danger text-light fw-bold card-body">
                 <p class="mb-0">
                   Még nem adott meg elérhetőséget, kérem adja meg a
                 </p>
                 <p class="mb-0">
-                  <a data-bs-dismiss="modal" href="/profilemod"
-                    >profilmódosításnál!</a
-                  >
+                  <a class="link-light" data-bs-dismiss="modal" href="/profilemod">profilmódosításnál!</a>
                 </p>
               </div>
             </div>

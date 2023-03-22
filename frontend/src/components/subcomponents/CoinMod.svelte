@@ -4,21 +4,22 @@
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
-    import Tag from "./Tag.svelte";
 	import { createEventDispatcher } from 'svelte';
-
-
-    let tagdel:boolean=true;
+  import { UploadImages } from "../../services/fileService";
     export let Coin:Coin | undefined;
     export let tags: Array<TagInterface>=[];
-    let newtag:TagInterface={
-        description:"",
-        name:"",
-        color:"",
-        Category:"",
-        CoinID:Coin.ID
-    };
-    let category:any=[];
+
+    let headfile: FileList,
+        tailfile: FileList,
+        tagdel:boolean=true,
+        newtag:TagInterface={
+            description:"",
+            name:"",
+            color:"",
+            Category:"",
+            coinID:Coin.ID
+        },
+        category:any=[];
 
 
     async function DelCoin(ID){     //TODO
@@ -44,8 +45,16 @@
     }
 
     async function UpdateCoin(ID){
-       await Patch($Token.token, "coins", "ID", ID, Coin);
-       updatecoins();
+        let files = new FormData();
+        if (headfile.length>0 && tailfile.length>0){
+            files.append('head', headfile[0]);
+            files.append('tail', tailfile[0]);  
+            UploadImages($Token.token, files).then(res=>{
+                Coin.headfile = res.head[0].filename, Coin.tailfile = res.tail[0].filename
+            });
+            Patch($Token.token, "coins", "ID", ID, Coin).then((rs)=>console.log(rs));
+        }
+        //updatecoins();
     }
 
     async function GetCategories(){
@@ -61,7 +70,7 @@
             let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
-            CoinID:Coin.ID,
+            coinID:Coin.ID,
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
             };
@@ -188,11 +197,11 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:files={Coin.headfile} name="fej" accept="image/*" type="file" id="fej">
+                    <input class="form-control" bind:files={headfile} name="fej" accept="image/*" type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:files={Coin.tailfile} name="iras" accept="image/*" type="file" id="iras">
+                    <input class="form-control" bind:files={tailfile} name="iras" accept="image/*" type="file" id="iras">
                 </div>
             </form>
         </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { db } from "../../services/dbForum";
     import { Token } from "../../stores";
     import type { Topic } from "../../interfaces/Forum";
@@ -7,52 +6,68 @@
     let Forum = db.GetForums($Token.token);
     let topics = [] as Topic[];
     let topicID = -1;
-    //Get every topic for the user
-    function ChangeTopic() {
-        console.log(topicID);
-    }
-    onMount(async()=>{
-        topics = await Forum;
-    })
 </script>
 
 <main>
-    {#await Forum}
-        <div class="spinner-border"></div>
-    {:then Data}
-        <div class="d-flex flex-row flex-wrap col-lg-7 col-md-8 col-11 mx-auto mt-5 justify-content-between align-items-center">
-            <div></div>
-            <select class="form-select" bind:value={topicID}>
-                {#if topicID == -1}
-                    <option value={topicID} disabled selected>Válasszon témát!</option>
-                {/if}
+{#await Forum}
+    <div class="spinner-border"></div>
+{:then Data}
+    <div class="d-flex flex-row flex-wrap col-lg-7 col-md-8 col-11 mx-auto mt-5 justify-content-between align-items-center">
+        <div/>
+        <select class="form-select" bind:value={topicID}>
+        {#if topicID == -1}
+            <option value={topicID} disabled selected>Válasszon témát!</option>
+            {/if}
                 {#each Data as topic}
                     <option value={topic.ID}>{topic.name}</option>
                 {/each}
-            </select>
-            <button type="button" class="btn btn-add" data-bs-target="#ForumUpload" data-bs-toggle="modal"><i class="bi bi-plus"></i></button>
+        </select>
+        <button type="button" class="btn btn-add" data-bs-target="#ForumUpload" data-bs-toggle="modal"><i class="bi bi-plus"></i></button>
         </div> 
         <div class="posts">
-            {#if Data.find(e=>e.ID==topicID)}
-                {@const Posts = Data.find(e=>e.ID==topicID).posts.sort((a,b)=>(new Date(a.date)).getTime() + (new Date(b.date)).getTime()).filter(m=>m.isDeleted==false)}
-                <div class="col-lg-7 col-md-8 col-11 mx-auto mt-5">
-                    {#if Posts.length>0}
-                    <table class="fs-4">
-                        <tbody>
-                            {#each Posts as post}
-                                {#if post.isDeleted==false}
-                                <tr>
-                                    <td>{#if post.isClosed==true}<i class="bi-check2-circle text-success"></i>{/if}</td>
-                                    <td><a href={'/forums/'+post.ID}>{post.title}</a></td>
-                                    <td>{new Intl.DateTimeFormat('hu-HU').format(new Date(post.date))}</td>
-                                    <td><a href={'/profile/'+post.userID}>{post.username}</a></td>
-                                </tr>
-                                {/if}
-                            {/each}
-                        </tbody>
+        {#if Data.find(e=>e.ID==topicID)}
+            {
+            @const Posts = Data.find(e=>e.ID==topicID).posts.sort((a,b)=>
+                                        (new Date(a.date)).getTime() + (new Date(b.date)).getTime())
+                                        .filter(m=>m.isDeleted==false)
+            }
+                <div class="col-lg-7 col-md-8 col-11 mx-auto mt-3 table-responsive">
+                {#if Posts.length>0}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Lezárva</th>
+                            <th>Cím</th>
+                            <th>Dátum</th>
+                            <th>Felhasználó</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {#each Posts as post}
+                        {#if post.isDeleted==false}
+                        <tr>
+                            <td>
+                                <i
+                                    class="bi"
+                                    class:bi-check-circle={post.isClosed}
+                                    class:bi-dash-circle-dotted={!post.isClosed}
+                                />
+                            </td>
+                            <td><a href={'/forums/'+post.ID}>{post.title}</a></td>
+                            <td>{new Intl.DateTimeFormat('hu-HU').format(new Date(post.date))}</td>
+                            <td><a href={'/profile/'+post.userID}>{post.username}</a></td>
+                        </tr>
+                        {/if}
+                    {/each}
+                    </tbody>
                     </table>
                     {:else}
-                    <h2>Ebben a fórumtémában még nincs bejegyzés, de <span class="link-primary" data-bs-target="#ForumUpload" data-bs-toggle="modal">hozzáadhat egyet!</span></h2>
+                    <h2>
+                        Ebben a fórumtémában még nincs bejegyzés, de 
+                        <span class="link-primary"
+                        data-bs-target="#ForumUpload"
+                        data-bs-toggle="modal">hozzáadhat egyet!</span>
+                    </h2>
                     {/if}
                 </div>
             {:else}
@@ -76,6 +91,9 @@
         cursor: pointer
     .btn-add
         background-color: #ffcc95
+        border: 0
+    .btn-add:hover
+        background-color: #ffcc95fd
     .btn-add:active
         background-color: #ffcc95
         box-shadow: 0 0 0 0.25rem (#ffcc957f)
