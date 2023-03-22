@@ -38,8 +38,10 @@
   <div id="catalogue" class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
     <h4><a  class="btn border-dark" href="/"><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
     <div class="input-group  border border-dark rounded mt-3">
-      <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
-      <input type="text" class="form-control" bind:value={searchtext}>
+      <span class="input-group-text border-dark"
+        ><i class="bi bi-search" /></span
+      >
+      <input type="text" class="form-control border-dark" placeholder="Keresés..." bind:value={searchtext}>
      </div>
     <!--Érme katalógus-->
     <div class="cards row">
@@ -56,8 +58,11 @@
 </main>
 
 <style lang="sass">
+    $searchbarColor: #ffcc95
     .btn
       background-color: #e99d60
     .cn
       margin-bottom: 1rem
+    .input-group-text
+      background-color: $searchbarColor
 </style>

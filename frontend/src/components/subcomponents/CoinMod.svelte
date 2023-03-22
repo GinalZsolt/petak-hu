@@ -197,7 +197,7 @@
             </form>
         </div>
         <div class="modal-footer d-flex justify-content-between">
-            <input type="button" class="btn btn-danger" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
+            <input type="button" class="btn btn-danger" data-bs-dismiss="modal" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
             <button type="button" class="btn" on:click={()=>{UpdateCoin(Coin.ID)}}>Feltöltés</button>
         </div>
       </div>
