@@ -188,11 +188,11 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:value={Coin.headfile} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:files={Coin.headfile} name="fej" accept="image/*" type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:value={Coin.tailfile} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:files={Coin.tailfile} name="iras" accept="image/*" type="file" id="iras">
                 </div>
             </form>
         </div>
