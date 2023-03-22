@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { AuctionPageAuctions, GetAllAuctions, GetAuctions } from "../services/dbAuction";
+  import { AuctionPageAuctions } from "../services/dbAuction";
   import { Token } from "../stores";
   import AuctionCard from "./subcomponents/AuctionCard.svelte";
+  import {fade, fly} from 'svelte/transition';
   let searchText: string = "";
-  function mediaQuery(pixels:number):boolean{
-    const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
-    return mediaquery.matches;
-  }
-  let Auctions = GetAllAuctions($Token.token);
 </script>
 
 <main>
@@ -24,6 +20,7 @@
         bind:value={searchText}
       />
     </div>
+    {#if searchText == "" || searchText == undefined}
     <h3>Aktuális aukciók</h3>
     <div
       class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
@@ -33,7 +30,7 @@
         data-bs-target="#top"
         data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
       >
-      <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
+      <div id="top" class="carousel slide w-100" data-bs-ride="carousel" in:fade='{{duration:140}}'>
         <div class="carousel-inner">
           {#await AuctionPageAuctions($Token.token)}
             <div class="spinner-border"></div>
@@ -63,15 +60,38 @@
         </div>
       </div>
       <button
-        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
-        data-bs-target="#top"
-        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
+      class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
+      data-bs-target="#top"
+      data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>
+    {:else}
+    <div id="searchresults">
+      {#await AuctionPageAuctions($Token.token)}
+        <i class="bi threedots"></i>
+      {:then data} 
+      {#each data as array}
+        {#each array.filter(e=>e.title.toLowerCase().includes(searchText.toLowerCase())) as item}
+        <a in:fade='{{duration:140}}' href={`/auctions/${item.ID}`}><p class="searchresult">{item.title} | {new Intl.NumberFormat('hu-HU', {style:'currency', currency:'HUF'}).format(item.price)}</p></a>
+        {/each}
+      {/each}
+      {/await}
+    </div>
+    {/if}
   </div>
 </main>
 
 <style lang="sass">
+    #searchresults
+      .searchresult
+        margin-bottom: 0
+        color: black
+        text-decoration: underline 1px solid black
+        transition: font-weight 0.1s, background-color 0.1s
+        border-bottom: 1px solid gray
+      .searchresult:hover
+        font-weight: bold
+        background-color: #00000011
     .flexCard
       width:33%
     $searchbarColor: #ffcc95

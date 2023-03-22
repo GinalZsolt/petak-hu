@@ -99,6 +99,7 @@
         </div>
         <div class="modal-footer">
           <div class={"buttons "+ ($userPerms.id==coin.userID) ? "d-flex w-100 justify-content-between" : "" }>
+            {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
                 <button
@@ -135,7 +136,7 @@
                 {/await}
               </div>
             {/if}
-  
+            {/if}
             <div>
               <button type="button" class="btn" data-bs-dismiss="modal">OK</button
               >
