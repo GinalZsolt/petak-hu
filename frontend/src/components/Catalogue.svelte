@@ -46,8 +46,8 @@
     {#if profile.coin_list}
     {#if profile.coin_list.length>0}
     <div class="input-group  border border-dark rounded mt-3">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="form-control" placeholder="keresés a zsetonok közt..." bind:value={searchtext}>
+      <span class="input-group-text border-dark"><i class="bi bi-search" /></span>
+      <input type="text" class="form-control" placeholder="Keresés..." bind:value={searchtext}>
     </div>
     {:else}
     <div class="text-center my-5">
@@ -88,4 +88,6 @@
       margin-bottom: 1rem
     .link-primary
       cursor: pointer
+    .input-group-text
+      background-color: #e99d60
 </style>

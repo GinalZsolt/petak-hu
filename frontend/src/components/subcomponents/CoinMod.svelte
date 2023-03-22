@@ -22,11 +22,25 @@
 
 
     async function DelCoin(ID){     //TODO
-        //let del_data = await 
+        let auc:boolean = await isInAuctions(ID);
+        if(!auc){
+            let del_data:any= await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> res=res);
+            if(del_data.length>0) delDescs(del_data, ID);
+            await await Delete($Token.token, "coins", "ID", `${ID}`).then((res)=> console.log(res));;
+            updatecoins();
+        }
+    }
+
+    async function delDescs(del_data:Array<any>, ID:Number) {
         await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
-        //await Delete($Token.token, "tagdescriptions", "ID", )
-        await Delete($Token.token, "coins", "ID", `${ID}`);
-        updatecoins();
+        for (let i = 0; i < del_data.length; i++) {
+            await Delete($Token.token, "tagdescriptions", "ID", del_data[i].descID);
+        }
+    }
+
+    async function isInAuctions(coinID:Number) {
+        let data: any|undefined = await Get($Token.token, "auctions", "coinID", `${coinID}`);
+        return data.length>0 ? true : false;
     }
 
     async function UpdateCoin(ID){
@@ -68,7 +82,7 @@
     }
 
     async function tagup(tag: TagInterface, desID: Number) {
-        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID}).then((res)=>console.log(res));
+        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID});
     }
 
     function gettagID(categoryname: String){
@@ -79,12 +93,10 @@
     }
 
     async function DeleteTag(del){
-        let index=tags.findIndex(e=>e.ID==del.ID);
-        tags.splice(index,1);
-        tags=tags
+        let desc_ID:any = await await Get($Token.token, "cointags", "ID", del.ID).then((res)=> res);
         await Delete($Token.token, "cointags", "ID", del.ID);
-        await Delete($Token.token, "tagdescriptions", "ID", del.descID);
-        console.log(tags);
+        await await Delete($Token.token, "tagdescriptions", "ID", desc_ID[0].descID);
+        GetTags(Coin);
     }
 
 
@@ -176,16 +188,16 @@
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:value={Coin.headfile} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:files={Coin.headfile} name="fej" accept="image/*" type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:value={Coin.tailfile} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:files={Coin.tailfile} name="iras" accept="image/*" type="file" id="iras">
                 </div>
             </form>
         </div>
         <div class="modal-footer d-flex justify-content-between">
-            <input type="button" class="btn btn-danger" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
+            <input type="button" class="btn btn-danger" data-bs-dismiss="modal" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
             <button type="button" class="btn" on:click={()=>{UpdateCoin(Coin.ID)}}>Feltöltés</button>
         </div>
       </div>
