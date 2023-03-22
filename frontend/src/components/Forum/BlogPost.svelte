@@ -2,7 +2,8 @@
     import CommentSvelte from "./subcomponents/Comment.svelte";
     import {db} from '../../services/dbForum';
     import {Token, userPerms} from '../../stores';
-    export let ID:number;
+    import { router } from "tinro";
+    let ID:number = Number(router.meta().params.id);
     let Comments = db.GetPostsComments($Token.token, ID);
     let Posts = db.GetBlogpost($Token.token, ID);
     let newMessage:string;
@@ -30,14 +31,15 @@
     }
 </script>
 <style lang="sass">
+    #backbtn, #newcomment, #post, #newcomment button
+        background-color: #ffcc95
     #newcomment
         border:1px solid black
         border-radius:0.25rem
-        background-color: #ffcc95
         padding:10px
     #newcomment input
         border:1px solid black
-        border-radius: 0.25rem 0 0 0.25rem 
+        border-radius: 0.25rem 0 0 0.25rem
     #newcomment button
         border:1px solid black
         background-color: #ea9e60
@@ -45,13 +47,11 @@
     #post
         border:1px solid black
         border-radius:0.25rem
-        background-color: #ffcc95
         padding:10px
     #post_image
         width:50%
         margin-left: auto
     #backbtn
-        background: #ffcc95
         border: 1px solid var(--bs-dark)
     .input-group>button
         border:1px solid black
@@ -64,10 +64,10 @@
         <div class="spinner-border m-auto"></div>
     {:then Data}
         {#if Data[0].isDeleted}
-            <div class="alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto mt-3"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
+            <div class="mt-3 alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}    
         {#if Data[0].isClosed}
-            <div class="alert alert-dismissible alert-primary col-lg-8 col-md-8 col-11 mx-auto mt-3"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
+            <div class="mt-3 alert alert-dismissible alert-primary col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt le van zárva, így kommentet írni erre a posztra nem lehet! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}
         <div class="d-flex flex-row justify-content-between col-lg-8 col-md-8 col-11 mx-auto my-2">
             <a href="/forums" id="backbtn" class="btn"><i class="bi bi-arrow-left"></i></a>
@@ -116,12 +116,12 @@
                 </div>
             </div> 
         {/if}
-    {/await}
-    {#await Comments}
-    <div class="spinner-border"></div>
-        {:then CommentsData} 
-            {#each CommentsData as comment}
-                <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
-            {/each}
+        {#await Comments}
+        <div class="spinner-border"></div>
+            {:then CommentsData} 
+                {#each CommentsData.sort((a,b)=>new Date(a.date).getTime()+new Date(b.date).getTime()) as comment}
+                    <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
+                {/each}
+        {/await}
     {/await}
 </main>

@@ -2,11 +2,15 @@
     import { GetUserProfile } from "../services/dbUser";
     import { Token,userPerms } from '../stores';
     import ProfileCard from "./subcomponents/profileCard.svelte";
-    export let ID;
-    import {Patch} from "../services/dbQueries";
+    import {Patch, Get} from "../services/dbQueries";
     import BanModal from "./subcomponents/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
     import CoinUpload from "./subcomponents/CoinUpload.svelte";
+    import { router } from "tinro";
+    import CoinMod from "./subcomponents/CoinMod.svelte";
+    import type { TagInterface } from "../interfaces/Tags";
+    import { GetCoin } from "../services/dbCoin";
+    let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
 
     let err1
@@ -23,23 +27,46 @@
     }
   }
 
+  let modcoin: Coin ={
+        ID: 0,
+        name:"",
+        worth: 0,
+        description: "",
+        headfile: "",
+        tailfile: "",    
+        userID: 0,
+        uploadDate: ""
+  };
+
+  let tags: Array<TagInterface>=[]; 
+  async function handleMessage(event) {
+    modcoin=event.detail.Coin;
+    await GetTags(modcoin);
+	}
+
+  async function handleCoinModUpdate(event) {
+    profile = GetUserProfile(ID, $Token.token)
+	}
+
+  async function GetTags(Coin:Coin) {
+      tags = await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> res);
+    }
 </script>
 
-
 <main>
+  <CoinUpload on:success={()=>{profile = GetUserProfile(ID, $Token.token)}}/>
   <div class="col-lg-7 col-md-9 col-11 mx-auto">
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
       <BanModal User={ProfileData.user} />
-      <CoinUpload/>
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
-      <div class="profileheader mt-4">
+      <div class="profileheader mt-3">
         <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
           <div>
             <div class="profileimage rounded-circle">
-              {#if ProfileData.user.imagefile!=null}
+              {#if ProfileData.user.imagefile!=null && ProfileData.user.imagefile!="null"}
               <img src={'http://localhost:8080/img/'+ProfileData.user.imagefile} alt="" class="img-fluid">
               {:else}
               <img src="/tempProfile.jpg" alt="" class="img-fluid">
@@ -65,22 +92,24 @@
       {#if ProfileData.coins.length>0}
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3>{ProfileData.user.name} zsetonjai</h3>
-        <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+        {#if ID===$userPerms.id}
+          <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+        {/if}
       </div>
       <div class="coins mb-3">
           <div class="d-flex flex-row justify-content-between">
             {#if ProfileData.coins[0]}
-              <ProfileCard coin={ProfileData.coins[0]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} />
             {:else}
               <ProfileCard/>
             {/if}
             {#if ProfileData.coins[1]}
-              <ProfileCard coin={ProfileData.coins[1]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[1]}/>
             {:else}
               <ProfileCard />
             {/if}
             {#if ProfileData.coins[2]}
-              <ProfileCard coin={ProfileData.coins[2]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[2]} />
             {:else}
               <ProfileCard />
             {/if}
@@ -88,18 +117,22 @@
           <a class="btn w-100" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
       </div>
       {:else}
-      <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn"><i class="bi bi-plus-lg"></i></button></div>
+        {#if $userPerms.id == ID}
+          <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button></div>
+        {/if}
       {/if}
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
-      <div class="auctions">
+      <div class="auctions mb-3">
+        <div class="d-flex flex-row justify-content-between">
         {#each ProfileData.auctions as auction, i}
           <ProfileCard auction={auction} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
         {/each}
+        </div>
       </div>
       {/if}
     {/await}
-    
+    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}></CoinMod>
 </main>
 
 
@@ -111,8 +144,8 @@
     padding: 1rem
     border-radius: 0.25rem
   .img-fluid
-    height: auto
-    width: 100%
+    height: 100%
+    object-fit: cover
   .profileimage
     height: 150px
     width: 150px

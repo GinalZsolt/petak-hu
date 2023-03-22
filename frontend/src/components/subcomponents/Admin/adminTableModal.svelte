@@ -19,18 +19,24 @@
     }
 
 </script>
-<style lang="ts"></style>
+<style lang="sass">
+  .modal-header
+    background-color: #f59445
+    background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
+</style>
 <div class="modal modal-lg" tabindex="-1" id="tableModal">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-        <div class="modal-header bg-primary bg-gradient text-light">
+        <div class="modal-header text-light">
           <h5 class="modal-title">Statisztika</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           {#if Data}
           <h2>{Data.title}</h2> 
-          <ErrorAlert bind:this={err1} Error={{id:"successful_delete",text:"Sikeresen törölve!",error:false}}/>
+          {#if Data.title=="Kitiltott Felhasználók"}
+            <ErrorAlert bind:this={err1} Error={{id:"successful_delete",text:"Sikeresen törölve!",error:false}}/>
+          {/if}
             {#await Data.promise}
             <div class="spinner"></div>
             {:then Statistics }

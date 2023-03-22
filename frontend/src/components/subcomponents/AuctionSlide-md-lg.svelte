@@ -8,7 +8,6 @@
 
 <script lang="ts">
   import type { Auction } from "../../interfaces/Auction";
-  import type {Coin} from "../../classes/Coin/Coin";
   import AuctionCard from './AuctionCard.svelte';
   export let Auctions:Array<Auction>, isFirst:boolean|undefined;
 </script>

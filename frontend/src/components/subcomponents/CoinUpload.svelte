@@ -1,19 +1,19 @@
 <script lang="ts">
-    import {onMount} from "svelte"
+    import {createEventDispatcher, onMount} from "svelte"
     import type { TagInterface, TagType } from "../../interfaces/Tags";
     import { GetTagTypes, UploadCoin, UploadTag } from "../../services/dbCoin";
     import { Token } from "../../stores";
-    import Tag from "./Tag.svelte";
     import { userPerms } from "../../stores";
     import { UploadImages } from "../../services/fileService";
     import ErrorAlert from "./ErrorAlert.svelte";
-    
+    const dispatch = createEventDispatcher();
     let err1
     let err2
     let err3
     let tagtypes:TagType[];
     onMount(async()=>{
         tagtypes=await GetTagTypes($Token.token)
+        console.log(tagtypes);
     })
     let tagdel:boolean=true;
     let data:any={}
@@ -46,7 +46,7 @@
         }
         else{
             tags = [...tags,{
-                ID:null,
+                ID:Number(newtag.Category),
                 CoinID:null,
                 description:newtag.description,
                 name:getname(newtag.Category),
@@ -79,11 +79,12 @@
                 headfile:uploadedimages.head[0].filename,
                 tailfile:uploadedimages.tail[0].filename
             }
-            let coinID = await UploadCoin(Coin,$Token.token)
+            let coinID = await UploadCoin(Coin,$Token.token).then(res=>res)
+            console.log(tags);
             tags.forEach(element => {
                 let uploadableTag={
                     coinID:coinID,
-                    nameID:element.name,
+                    nameID:element.ID,
                     descID:element.description
                 }
                 console.log(uploadableTag)
@@ -91,8 +92,10 @@
             });
             data={}
             newtagClear();
-            tags=[]
-            err3.showError()
+            tags=[];
+            tags = tags;
+            err3.showError();
+            dispatch('success');
         }
         else{
             err1.showError()
@@ -124,6 +127,9 @@
         border-radius:0.5rem
         padding: 5px
         border: 1px solid black
+    .modal-header
+        background-color: #f59445
+        background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
 </style>
 
 

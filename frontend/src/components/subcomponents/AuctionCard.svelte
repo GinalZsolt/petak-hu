@@ -37,12 +37,16 @@
   border-left: 1px solid white
   border-right: 1px solid white
   width: 33%
+  height: 300px
+.img-fluid
+  height: 100%
+  object-fit: cover
 .Card
   height: 100%
   position: relative
 .auctimg
   background-color: #000
-  max-width: 100%
+  height: 100%
 .bottomText
   position: absolute
   top: calc(100% - 24px)

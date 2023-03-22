@@ -1,30 +1,43 @@
 <script lang="ts">
-  import axios from "axios";
-  import { onMount } from "svelte";
   import {userPerms, Token} from '../../stores';
-  import {Get, Post, Patch, Delete} from '../../services/dbQueries';
-    import { User } from "../../classes/User";
-onMount(()=>{
-  console.log($userPerms);
-})
-function AUCTION_UPLOAD(){
-  let isCorrectInput: boolean=true;
-  let data={
-    'coinID': 1,  //selected coin ID set
-    'userID': $userPerms.id,
-    'title': document.querySelector('#coin').value != "" ? document.querySelector('#coin').value : isCorrectInput = false,
-    'price': document.querySelector('#auction_start_value').value !="" ? document.querySelector('#auction_start_value').value : isCorrectInput = false,
-    'minBid': document.querySelector('#auction_licit').value != "" ? document.querySelector('#auction_licit').value : isCorrectInput = false,
-    'description': document.querySelector('#des').value != "" ? document.querySelector('#des').value : isCorrectInput = false,
-    'expiration' : document.querySelector('#end_date').value != "" ? document.querySelector('#end_date').value : isCorrectInput = false
+  import {Post} from '../../services/dbQueries';
+  import type { Coin } from '../../interfaces/Coin';
+  import ErrorAlert from './ErrorAlert.svelte';
+  export let Coin:Coin;
+  let data = {
+    coinID: Coin.ID,
+    userID: $userPerms.id,
+    title: "",
+    price: Coin.worth,
+    minBid: 0,
+    description: "",
+    expiration: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
   }
-  if(isCorrectInput) Post($Token.token, "auctions", data);
-  else alert('A bemeneti adatok hiányosak vagy nem megfelelőek!');
-}
-
+  let err1
+  function AUCTION_UPLOAD(){
+    if(filledForm()){ 
+      Post($Token.token, "auctions", data).then(/*res=> router.goto("/auctions/"+ res.insertId)*/);
+    }
+    else err1.showError();
+  }
+  function filledForm():boolean{
+    return data.title!="" &&data.title!=undefined && data.price!=undefined  && data.minBid>0 && data.description!=""&&data.description!=undefined;
+  }
+  export function loadmodal(loadable) {
+    Coin = loadable;
+    data = {
+    coinID: Coin.ID,
+    userID: $userPerms.id,
+    title: "",
+    price: Coin.worth,
+    minBid: 0,
+    description: "",
+    expiration: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
+  }
+  }
 </script>
 
-<div class="modal" tabindex="-1" id="auctionupload">
+<div class="modal fade" tabindex="-1" id="auctionupload">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -32,47 +45,42 @@ function AUCTION_UPLOAD(){
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
             <form class="modal-form ">
-                <div class="form-group">
+                <div class="mb-3">
                   <label for="coin">Aukcióra bocsátandó érme</label>
-                  <input type="text" class="form-control" id="coin" aria-describedby="emailHelp" placeholder="" required>
+                  <input type="text" class="form-control" bind:value={Coin.name} id="coin" disabled>
                 </div>
-                
-                <div class="col-md-4 mb-3 mx-w">
+                <div class="mb-3">
+                  <label for="coin" >Aukció címe</label>
+                  <input type="text" class="form-control" bind:value={data.title} id="coin">
+                </div>
+                <div class="mb-3">
                     <label for="auction_start_value">Aukció kezdő értéke</label>
                     <div class="input-group mx-w">
-                        <input type="number" class="form-control" id="auction_start_value" placeholder="" aria-describedby="inputGroupPrepend2" required>
-                        <div class="input-group-prepend">
-                          <span class="input-group-text bg-orange" id="inputGroupPrepend2">Ft</span>
-                        </div>
+                        <input type="number" class="form-control" min={Coin.worth} bind:value={data.price}>
+                        <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
-
-                <div class="col-md-4 mb-3 mx-w">
+                <div class="mb-3">
                     <label for="auction-licit">Aukció licitlépcsője</label>
                     <div class="input-group mx-w">
-                        <input type="number" class="form-control" id="auction_licit" placeholder="" aria-describedby="inputGroupPrepend2" required>
-                        <div class="input-group-prepend">
-                          <span class="input-group-text bg-orange" id="inputGroupPrepend2">Ft</span>
-                        </div>
+                        <input type="number" class="form-control" min="0" bind:value={data.minBid}>
+                        <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
-
-                <div class="col-md-4 mb-3 mx-w">
+                <div class="mb-3">
                     <label for="auction_start_value">Aukció leírása</label>
-                    <textarea name="" id="des" cols="30" class="mx-w" rows="10"></textarea>
+                    <textarea class="form-control" bind:value={data.description}></textarea>
                 </div>
-
-                <div class="col-md-4 mb-3 mx-w">
+                <div class="mb-3">
                   <label for="end_date">Aukció vég dátuma: </label>
-                  <div class="input-group mx-w">
-                      <input type="date" class="form-control" min={Date.now()} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
-                  </div>
+                  <input type="date" class="form-control" min={data.expiration} on:change={()=>{console.log(data)}} bind:value={data.expiration} id="end_date" placeholder="" aria-describedby="inputGroupPrepend2" required>
                 </div>
               </form>
         </div>
         <div class="modal-footer">
-          <button type="button" id="CREATE_AUCTION_BTN" on:click={AUCTION_UPLOAD} class="btn btn-primary bg-orange">Létrehozás</button>
+          <button type="button" on:click={()=>{AUCTION_UPLOAD()}} class="btn bg-orange">Létrehozás</button>
         </div>
       </div>
     </div>
@@ -80,11 +88,15 @@ function AUCTION_UPLOAD(){
   
   <style lang="sass">
         .bg-orange
-            background-color: #ea9e60
-        .mx-w
-            width: 100%
-        #des
-            resize: none
+          background-color: #ea9e60
+        .btn
+          border: 0
+        .btn:active
+          background-color: #ea9e60af
+          box-shadow: 0 0 0 0.2rem #ea9e604f
         textarea
           height: 15vh
+        .modal-header
+          background-color: #f59445
+          background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
   </style>

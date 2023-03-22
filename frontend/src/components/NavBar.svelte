@@ -1,15 +1,12 @@
 <script lang="ts">
     import {active} from 'tinro';
-    import type {User} from '../classes/User';
     import {userPerms, Routes} from '../stores';
-    import {GetUserData} from '../services/dbUser';
     import { GetPerms } from '../services/permissionGetter';
     function LogOut():void{
       sessionStorage.removeItem('petakhu');
       GetPerms().then(res=>{
         userPerms.update(d=>res);
       });
-      console.log('Bruh');
     }
 </script>
 <style lang="sass">
@@ -19,7 +16,7 @@
     {#if $userPerms}
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Peták.hu</a>
+          <a class="navbar-brand" href="/">Peták.hu</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>

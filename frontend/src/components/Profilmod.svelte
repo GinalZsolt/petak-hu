@@ -5,11 +5,11 @@
     import { userPerms, Token } from "../stores";
     import { Patch } from "../services/dbQueries";
     import sha256 from "crypto-js/sha256"
-    import { UploadImage } from "../services/fileService";
+    import { DeleteImage, UploadImage } from "../services/fileService";
+    let dt
     let data:any={}
     onMount(async()=>{
         GetUserData($userPerms.id,$Token.token).then(res=>{
-            let dt:any={}
             console.log(res)
             dt=res[0]
             console.log(dt)
@@ -17,8 +17,8 @@
             data.name=dt.name
             data.email=dt.email
             data.fullname=dt.fullname
-            data.address=dt.address
-            data.phone=dt.phone
+            data.address=dt.address.address==null?undefined:data.address
+            data.phone=dt.phone==null?undefined:data.phone
         })
     })
 
@@ -52,7 +52,7 @@
                 }
                 else
                 {
-                    if(data.phone!=undefined||data.phone!=""){
+                    if(data.phone!=undefined&&data.phone!=""){
                         if (!data.phone.match(/[+][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/)) {
                             err5.showError()
                         }
@@ -67,6 +67,7 @@
                         }
                         let upload = new FormData();
                         if(pfp!=undefined)  {
+                            DeleteImage($Token.token,dt.imagefile)
                             upload.append('image', pfp[0]);
                             await UploadImage($Token.token,upload).then(res=>{
                                 userdata.imagefile = res.filename
@@ -88,6 +89,7 @@
                         }
                         let upload = new FormData();
                         if(pfp!=undefined)  {
+                            DeleteImage($Token.token,dt.imagefile)
                             upload.append('image', pfp[0]);
                             await UploadImage($Token.token,upload).then(res=>{
                                 userdata.imagefile = res.filename
@@ -118,17 +120,20 @@
         border: 1px solid black
     em
         color: red
+    main
+        display: flex
+        justify-content: center
 </style>
 
 <!-- Content -->
 <main>
     <div id="modform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Profil Módosítása</h2>
-        <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt",error:true}}/>
-        <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik",error:true}}/>
-        <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó",error:true}}/>
-        <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás",error:false}}/>
-        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám nem megfelelő! (+36301234567)",error:true}}/>
+        <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
+        <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik!",error:true}}/>
+        <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó!",error:true}}/>
+        <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás!",error:false}}/>
+        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám formátuma nem megfelelő!",error:true}}/>
         <form>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
@@ -145,6 +150,7 @@
             <div class="mb-3">
                 <label for="pass1" class="form-label">Jelszó <em>*</em></label>
                 <input type="password" bind:value={pass1} class="form-control" id="pass1" name="pass1">
+                <div id="minpass" class="form-text">Min. 8 karakter, kis és nagybetű, szám</div>
             </div><div class="mb-3">
                 <label for="pass2" class="form-label">Jelszó Megerősítése<em>*</em></label>
                 <input type="password" bind:value={pass2} class="form-control" id="pass2" name="pass2">
@@ -156,6 +162,7 @@
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telefon</label>
                 <input type="text" bind:value={data.phone} class="form-control" id="phone" name="phone">
+                <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
             </div>
             <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
             <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">

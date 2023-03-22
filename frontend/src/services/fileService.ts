@@ -19,8 +19,13 @@ async function UploadImage(token:string, data:FormData):Promise<FileInfo>{
         }
     }).then(res=>res.data).catch(err=>err.response);
 }
-
-async function UploadImages(token:string, data:FormData):Promise<FileInfo>{
+async function DeleteImage(token:string, filename:string){
+    return axios.delete('http://localhost:8080/api/file/single/'+filename, {headers:{'Authorization': "JWT " + token}}).then(res=>res.data).then(err=>err.response.data);
+}
+async function UploadImages(token:string, data:FormData):Promise<{
+    head: FileInfo[],
+    tail:FileInfo[]
+}>{
     return axios.post('http://localhost:8080/api/file/multiple', data, {
         headers:{
             'Content-Type':'multipart/form-data',
@@ -28,4 +33,4 @@ async function UploadImages(token:string, data:FormData):Promise<FileInfo>{
         }
     }).then(res=>res.data).catch(err=>err.response);
 }
-export {UploadImage, UploadImages}
+export {UploadImage, UploadImages, DeleteImage}

@@ -15,24 +15,28 @@ export const Routes:Readable<URL[]> =  readable([
     url:"/",
     name:"Főoldal",
     minPermission:1,
-    component:Dashboard
+    component:'../components/Dashboard.svelte',
+    showInNavbar: true
  },
  {
     url:'/auctions',
     name:'Aukciók',
     minPermission:0,
-    component:Auctions
+    component: '../components/Auctions.svelte',
+    showInNavbar: true
  },
  {
     url:'/admin',
     name:'Admin',
     minPermission:2,
-    component:Admin
+    component: '../components/Admin.svelte',
+    showInNavbar: true
  },
  {
     url:'/forums',
     name:'Fórumok',
     minPermission:1,
-    component:Forum
+    component: '../components/Forum/Forum.svelte',
+    showInNavbar: true
  }
 ]) as Readable<URL[]>;

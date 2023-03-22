@@ -1,58 +1,123 @@
 <script lang="ts">
-    import { Delete, Patch, Get } from "../../services/dbQueries";
+    import { Delete, Patch, Get, Post } from "../../services/dbQueries";
     import {userPerms, Token} from './../../stores';
     import type { Coin } from "../../interfaces/Coin";
     import { onMount } from "svelte";
     import type { TagInterface } from "../../interfaces/Tags";
+	import { createEventDispatcher } from 'svelte';
+  import { UploadImages } from "../../services/fileService";
+    export let Coin:Coin | undefined;
+    export let tags: Array<TagInterface>=[];
 
-    let tagdel:boolean=true;
-    export let Coin:Coin;
-    let newtag:TagInterface={
-        description:"",
-        name:"",
-        color:"",
-        Category:"",
-        CoinID:Coin.ID
-    };
-    let category:any=[];
+    let headfile: FileList,
+        tailfile: FileList,
+        tagdel:boolean=true,
+        newtag:TagInterface={
+            description:"",
+            name:"",
+            color:"",
+            Category:"",
+            coinID:Coin.ID
+        },
+        category:any=[];
 
-    let tags:TagInterface[]=[];
 
-    async function DelCoin(ID){
-        await Delete($Token.token, "coins", "ID", `${ID}`).then(r=>console.log(r));
+    async function DelCoin(ID){     //TODO
+        let auc:boolean = await isInAuctions(ID);
+        if(!auc){
+            let del_data:any= await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> res=res);
+            if(del_data.length>0) delDescs(del_data, ID);
+            await await Delete($Token.token, "coins", "ID", `${ID}`).then((res)=> console.log(res));;
+            updatecoins();
+        }
+    }
+
+    async function delDescs(del_data:Array<any>, ID:Number) {
+        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
+        for (let i = 0; i < del_data.length; i++) {
+            await Delete($Token.token, "tagdescriptions", "ID", del_data[i].descID);
+        }
+    }
+
+    async function isInAuctions(coinID:Number) {
+        let data: any|undefined = await Get($Token.token, "auctions", "coinID", `${coinID}`);
+        return data.length>0 ? true : false;
     }
 
     async function UpdateCoin(ID){
-       await Patch($Token.token, "coins", "ID", ID, Coin).then(r=>console.log(r));
+        let files = new FormData();
+        if (headfile.length>0 && tailfile.length>0){
+            files.append('head', headfile[0]);
+            files.append('tail', tailfile[0]);  
+            UploadImages($Token.token, files).then(res=>{
+                Coin.headfile = res.head[0].filename, Coin.tailfile = res.tail[0].filename
+            });
+            Patch($Token.token, "coins", "ID", ID, Coin).then((rs)=>console.log(rs));
+        }
+        //updatecoins();
     }
-    
 
     async function GetCategories(){
-        return await await Get($Token.token, "tagcategories");
+        await await Get($Token.token, "tagcategories").then((res)=> {category=res; category = category});
     }
 
-    function addTag(){
-        let tag:TagInterface={
+    async function addTag(){
+        if(newtag.Category=="" 
+        || newtag.Category==undefined 
+        ||newtag.Category==null 
+        || newtag.description=="" ) alert("A cimke hozzáadásához ki kell töltenie minen mezőt.")
+        else{
+            let tag:TagInterface={
             Category:category[Number(newtag.Category)-1].name,
             description:newtag.description,
-            CoinID:Coin.ID,
+            coinID:Coin.ID,
             name:Coin.name, 
             color:category[Number(newtag.Category)-1].color
-        };
-        tags.push(tag);
+            };
+            await tagdesup(tag);
+            await GetTags(Coin);
+        }
+    }
+
+    async function GetTags(Coin:Coin) {
+        await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> tags=res);
         tags=tags;
     }
 
-    function DeleteTag(del){
-        tags.splice(tags.findIndex(e=>e.name==del.name&&e.description==del.description),1)
-        tags=tags
+    async function tagdesup(tag: TagInterface) {
+        let desID:Number;       
+        await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
+        tagup(tag, desID);
     }
 
-    onMount(async()=>{
-        category = await GetCategories();
-        category=category;
-    });
+    async function tagup(tag: TagInterface, desID: Number) {
+        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID});
+    }
 
+    function gettagID(categoryname: String){
+        for (let i = 0; i < category.length; i++) {
+            if(category[i].name ==  categoryname) return category[i].ID;
+        }
+        return 0;
+    }
+
+    async function DeleteTag(del){
+        let desc_ID:any = await await Get($Token.token, "cointags", "ID", del.ID).then((res)=> res);
+        await Delete($Token.token, "cointags", "ID", del.ID);
+        await await Delete($Token.token, "tagdescriptions", "ID", desc_ID[0].descID);
+        GetTags(Coin);
+    }
+
+
+	const dispatch = createEventDispatcher();
+    function updatecoins() {
+        dispatch('updatecoins', {});
+	}
+
+    onMount(async()=>{
+        await GetCategories();
+        category = category;
+    });
 </script>
 <style lang="sass">
     button
@@ -72,6 +137,9 @@
         border-radius:0.5rem
         padding: 5px
         border: 1px solid black
+    .modal-header
+        background-color: #f59445
+        background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
 </style>
 
 
@@ -104,9 +172,9 @@
                         <select bind:value={newtag.Category} class="form-select" name="tagtype" id="tagtype">
                             <option selected value={null}></option>
                             {#if category!=undefined}
-                                {#each category as tagtype}
+                                 {#each category as tagtype}
                                     <option value={tagtype.ID}>{tagtype.name}</option>
-                                {/each}
+                                {/each} 
                             {/if}
                         </select>
                     </div>
@@ -117,25 +185,28 @@
                     <button type="button" on:click={addTag} class="btn col-3">Hozzáadás</button>
                 </div>  
                 <div class="tag-container d-flex flex-wrap mb-3">
-                    {#each tags as tag}
-                        <div style={"--color:"+tag.color} class="tag m-auto mb-1">
-                            <span>{tag.Category}</span>:<span>{tag.description}</span> 
-                            {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
-                        </div>
-                    {/each}
+                    {#if tags!=undefined || tags.length!=0}
+                        {#each tags as tag, i }
+                            <div style={"--color:"+tag.color} class="tag m-auto mb-1">
+                                <span>{tag.name}</span>:<span>{tag.description}</span> 
+                                {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
+                            </div>
+                        {/each} 
+                    {/if}
+                     
                 </div>
                 <div class=" mb-3">
                     <label for="fej">Fej:</label>
-                    <input class="form-control" bind:value={Coin.headfile} name="fej"  type="file" id="fej">
+                    <input class="form-control" bind:files={headfile} name="fej" accept="image/*" type="file" id="fej">
                 </div>
                 <div class="mb-3">
                     <label for="iras">Írás:</label>
-                    <input class="form-control" bind:value={Coin.tailfile} name="iras"  type="file" id="iras">
+                    <input class="form-control" bind:files={tailfile} name="iras" accept="image/*" type="file" id="iras">
                 </div>
             </form>
         </div>
         <div class="modal-footer d-flex justify-content-between">
-            <input type="button" class="btn btn-danger" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
+            <input type="button" class="btn btn-danger" data-bs-dismiss="modal" on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
             <button type="button" class="btn" on:click={()=>{UpdateCoin(Coin.ID)}}>Feltöltés</button>
         </div>
       </div>

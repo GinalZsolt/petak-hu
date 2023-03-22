@@ -1,7 +1,5 @@
 <main>
-    <div class="d-flex justify-content-between col-11 mx-auto flex-wrap">
-    </div>
-    <div class="col-11 mx-auto">
+    <div class="col-11 mx-auto" id="cards">
         <h1>Üdv, {user}!</h1>
         <div class="row">
             <div class="col-md-6 col-lg-4">
@@ -19,6 +17,12 @@
         </div>
     </div>
 </main>
+<style lang="sass">
+    main
+        display: flex
+        justify-content: center
+        align-items: center
+</style>
 <script lang="ts">
     import DashboardCard from "./subcomponents/DashboardCard.svelte";
     import { userPerms,Token} from "../stores";
