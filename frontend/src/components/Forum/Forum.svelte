@@ -4,7 +4,6 @@
     import type { Topic } from "../../interfaces/Forum";
     import PostUpload from "./subcomponents/PostUpload.svelte";
     let Forum = db.GetForums($Token.token);
-    let topics = [] as Topic[];
     let topicID = -1;
 </script>
 
@@ -74,8 +73,8 @@
             <h2 class="text-center mt-5">Kérem válasszon egy fórumtémát!</h2>
             {/if}
         </div>
+        <PostUpload Topics={Data} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
     {/await}
-    <PostUpload Topics={topics} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
 </main>
 
 <style lang="sass">
