@@ -161,7 +161,10 @@
       </div>
     </div>
   </div>
-  <AuctionUploadModal bind:this={auctionmodal} Coin={coin}/>
+  {#if $userPerms.id == coin.userID}
+    <AuctionUploadModal bind:this={auctionmodal} Coin={coin}/>
+    <CoinMod Coin={coin} />
+  {/if}
 {/if}
 
 <!--<CoinMod Coin={coin}/>-->

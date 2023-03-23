@@ -50,7 +50,7 @@
     </div>
 </a>
 {:else if coin}
-<div class="card" data-bs-target="#CoinMod" data-bs-toggle="modal" on:click={sendCoin} on:keypress={()=>{}}>
+<div class="card" data-bs-target="#coinmodal" data-bs-toggle="modal" on:click={sendCoin} on:keypress={()=>{}}>
     <div>
         <img src={`http://localhost:8080/img/${coin.headfile}`} alt="">
     </div>

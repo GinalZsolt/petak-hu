@@ -1,7 +1,7 @@
 export interface Topic {
     ID:number;
     name:string;
-    posts:Array<Post>;
+    posts?:Array<Post>;
 }
 export interface uploadData{
     description?:string,
