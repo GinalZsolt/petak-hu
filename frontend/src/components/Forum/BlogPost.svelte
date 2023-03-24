@@ -53,11 +53,6 @@
         margin-left: auto
     #backbtn
         border: 1px solid var(--bs-dark)
-    .input-group>button
-        border:1px solid black
-        background-color: #ea9e60
-        border-radius:0.25rem
-
 </style>
 <main>
     {#await Posts}

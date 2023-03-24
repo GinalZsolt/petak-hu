@@ -156,16 +156,6 @@
     width: 150px
     overflow: hidden
     border: 1px solid black
-  .btn
-    background-color: #f59445
-    border: 0
-  .btn:hover
-    background-color: #f59445e0
-    border: 0
-  .btn:active
-    background-color: #f59445
-    box-shadow: 0 0 0 0.2rem #f594457f
-    border: 0
   #catalogueBtn
     margin-top: 1rem
   #interactionbtn
