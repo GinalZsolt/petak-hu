@@ -133,8 +133,8 @@
         </div>
       </div>
       {/if}
-      {#if ProfileData.coins.length>0 && selectedcoin}
-      <CoinModal coin={selectedcoin}/>
+      {#if ProfileData.coins.length>0 && modcoin}
+      <CoinModal coin={modcoin}/>
       {/if}
     {/await}
     <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}/>
