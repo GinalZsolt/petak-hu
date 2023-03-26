@@ -80,14 +80,6 @@
 <style lang="sass">
     .input-group-text
       background-color: #e99d60
-    .btn
-      background-color: #e99d60
-      border: 0
-    .btn:hover
-      background-color: #e99d60bf
-    .btn:active
-      background-color: #e99d609f
-      box-shadow: 0 0 0.25rem #e99d60
     .cn
       margin-bottom: 1rem
     .link-primary

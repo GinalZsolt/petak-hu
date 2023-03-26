@@ -3,7 +3,12 @@
     import { Token } from "../../stores";
     import type { Topic } from "../../interfaces/Forum";
     import PostUpload from "./subcomponents/PostUpload.svelte";
+    import { onMount } from "svelte";
     let Forum = db.GetForums($Token.token);
+    let Topics:Topic[] = [];
+    onMount(async ()=>{
+        Topics = await db.GetForums($Token.token);
+    })
     let topicID = -1;
 </script>
 
@@ -73,8 +78,8 @@
             <h2 class="text-center mt-5">Kérem válasszon egy fórumtémát!</h2>
             {/if}
         </div>
-        <PostUpload Topics={Data} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
     {/await}
+    <PostUpload Topics={Topics} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
 </main>
 
 <style lang="sass">
@@ -88,12 +93,5 @@
         width: initial
     .link-primary
         cursor: pointer
-    .btn-add
-        background-color: #ffcc95
-        border: 0
-    .btn-add:hover
-        background-color: #ffcc95fd
-    .btn-add:active
-        background-color: #ffcc95
         box-shadow: 0 0 0 0.25rem (#ffcc957f)
 </style>
