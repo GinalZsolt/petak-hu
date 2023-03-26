@@ -10,9 +10,11 @@
     import CoinMod from "./subcomponents/CoinMod.svelte";
     import type { TagInterface } from "../interfaces/Tags";
     import { GetCoin } from "../services/dbCoin";
+    import CoinModal from "./subcomponents/coinModal.svelte";
+    import type { Coin } from "../interfaces/Coin";
     let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
-
+    let modal:CoinModal;
     let err1
     let err2
 
@@ -26,7 +28,7 @@
       err2.showError()
     }
   }
-
+  let selectedcoin: Coin;
   let modcoin: Coin ={
         ID: 0,
         name:"",
@@ -99,17 +101,17 @@
       <div class="coins mb-3">
           <div class="d-flex flex-row justify-content-between">
             {#if ProfileData.coins[0]}
-              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} on:click={()=>{selectedcoin = ProfileData.coins[0]}}/>
             {:else}
               <ProfileCard/>
             {/if}
             {#if ProfileData.coins[1]}
-              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[1]}/>
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[1]} on:click={()=>{selectedcoin = ProfileData.coins[1]}}/>
             {:else}
               <ProfileCard />
             {/if}
             {#if ProfileData.coins[2]}
-              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[2]} />
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[2]} on:click={()=>{selectedcoin = ProfileData.coins[2]}} />
             {:else}
               <ProfileCard />
             {/if}
@@ -131,8 +133,11 @@
         </div>
       </div>
       {/if}
+      {#if ProfileData.coins.length>0 && modcoin}
+      <CoinModal coin={modcoin}/>
+      {/if}
     {/await}
-    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}></CoinMod>
+    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}/>
 </main>
 
 
@@ -151,16 +156,6 @@
     width: 150px
     overflow: hidden
     border: 1px solid black
-  .btn
-    background-color: #f59445
-    border: 0
-  .btn:hover
-    background-color: #f59445e0
-    border: 0
-  .btn:active
-    background-color: #f59445
-    box-shadow: 0 0 0 0.2rem #f594457f
-    border: 0
   #catalogueBtn
     margin-top: 1rem
   #interactionbtn

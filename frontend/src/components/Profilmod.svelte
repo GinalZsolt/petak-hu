@@ -3,108 +3,83 @@
     import ErrorAlert from './subcomponents/ErrorAlert.svelte';
     import { GetUserData } from "../services/dbUser";
     import { userPerms, Token } from "../stores";
-    import { Patch } from "../services/dbQueries";
+    import { Delete, Patch, Post } from "../services/dbQueries";
     import sha256 from "crypto-js/sha256"
     import { DeleteImage, UploadImage } from "../services/fileService";
-    let dt
-    let data:any={}
+    import type { User } from "../classes/User";
     onMount(async()=>{
-        GetUserData($userPerms.id,$Token.token).then(res=>{
-            console.log(res)
-            dt=res[0]
-            console.log(dt)
-            console.log(data)
-            data.name=dt.name
-            data.email=dt.email
-            data.fullname=dt.fullname
-            data.address=dt.address.address==null?undefined:data.address
-            data.phone=dt.phone==null?undefined:data.phone
-        })
+        user = (await GetUserData($userPerms.id, $Token.token))[0];
     })
-
-    let err1
-    let err2
-    let err3
-    let err4
-    let err5
+    let err;
+    let errormessage = {
+        text: "",
+        id: "",
+        error: false
+    };
+    let user: User;
     let pass1:string=""
     let pass2:string=""
-    let pfp
-
-    function missing(){
-        return data.name==undefined||data.name==""||data.fullname==undefined||data.fullname==""||pass1==undefined||pass1==""||pass2==undefined||pass2==""
+    let pfp:FileList;
+    function missing(data:User){
+        return data.name==undefined
+             ||data.name==""
+             ||data.fullname==undefined
+             ||data.fullname==""
+             ||pass1==undefined
+             ||pass1==""
+             ||pass2==undefined
+             ||pass2==""
     }
-
-    async function Update(){
-        if(missing()){
-            err1.showError()
-        }
-        else
-        {
-            if(pass1!=pass2){
-                err2.showError()
-            }  
-            else
-            {
-                if(!pass1.match((/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/)))
+    function setError(id:string, text:string, error:boolean){
+        errormessage = {
+            id: id,
+            error: error,
+            text: text
+        };
+        err.showError();
+    }
+    function Update(data:User){
+        switch (true){
+            case missing(data): 
+                setError('nofields', 'Nincs minden kötelező mező kitöltve!', true);
+                break;
+            case pass1!=pass2:
+                setError('badpass', 'A jelszavak nem egyeznek!', true);
+                break;
+            case !pass1.match((/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/)):
+                setError('badsecurity', 'A jelszó nem elég biztonságos!', true);
+                break;
+            case data.phone!=undefined && data.phone != "":
+                if (!data.phone.match(/[+][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/))
                 {
-                    err3.showError()
+                    setError('badphone', 'A telefonszám nem felel meg a formátumnak!', true);
+                    break;
                 }
-                else
-                {
-                    if(data.phone!=undefined&&data.phone!=""){
-                        if (!data.phone.match(/[+][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/)) {
-                            err5.showError()
-                        }
-                        else{
-                            let userdata={
-                            name:data.name,
-                            fullname:data.fullname,
-                            phone:(data.phone==undefined||data.phone=="")?null:data.phone,
-                            imagefile:null,
-                            address:(data.address==undefined||data.address=="")?null:data.address,
-                            passwd:sha256(pass1).toString()
-                        }
-                        let upload = new FormData();
-                        if(pfp!=undefined)  {
-                            DeleteImage($Token.token,dt.imagefile)
-                            upload.append('image', pfp[0]);
-                            await UploadImage($Token.token,upload).then(res=>{
-                                userdata.imagefile = res.filename
-                            })
-                        }
-                        await Patch($Token.token,"users","ID",$userPerms.id,userdata).then(res=>{
-                            err4.showError()
-                        })
-                        }
-                    }
-                    else{
-                        let userdata={
-                            name:data.name,
-                            fullname:data.fullname,
-                            phone:(data.phone==undefined||data.phone=="")?null:data.phone,
-                            imagefile:null,
-                            address:(data.address==undefined||data.address=="")?null:data.address,
-                            passwd:sha256(pass1).toString()
-                        }
-                        let upload = new FormData();
-                        if(pfp!=undefined)  {
-                            DeleteImage($Token.token,dt.imagefile)
-                            upload.append('image', pfp[0]);
-                            await UploadImage($Token.token,upload).then(res=>{
-                                userdata.imagefile = res.filename
-                            })
-                        }
-                        await Patch($Token.token,"users","ID",$userPerms.id,userdata).then(res=>{
-                            err4.showError()
-                        })
-                    }
+                else {
+                    TryUpdate(data);
+                    break;
                 }
-            }
+            default: 
+                TryUpdate(data);
+                break;
         }
     }
-
-
+    async function TryUpdate(data:User){
+        if (pfp && pfp.length>0){
+            await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);
+            let formdata = new FormData();
+            formdata.append('image', pfp[0]);
+            let upload = await UploadImage($Token.token, formdata);
+            data.imagefile = upload.filename;
+            console.log(data);
+        }
+        Patch($Token.token, 'users', 'ID', $userPerms.id, data).then(()=>{
+            setError('success','Sikeres profilmódosítás', false)
+        })
+        .catch(()=>{
+            setError('servererror','Szerverhiba történt, kérem szóljon a fejlesztőknek!', true);
+        })
+    }
 </script>
 <style lang="sass">
     #modform
@@ -112,12 +87,6 @@
         border: 1px solid black
         border-radius:0.25rem
         background-color: #ffcc95
-    button  
-        background: #ea9e60
-        border: 1px solid black
-    button:hover
-        background: #ea9e60
-        border: 1px solid black
     em
         color: red
     main
@@ -127,25 +96,22 @@
 
 <!-- Content -->
 <main>
+    {#if user}
     <div id="modform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Profil Módosítása</h2>
-        <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
-        <ErrorAlert bind:this={err2} Error={{id:"nomatch",text:"A két jelszó nem egyezik!",error:true}}/>
-        <ErrorAlert bind:this={err3} Error={{id:"badpass",text:"Nem elég erős a jelszó!",error:true}}/>
-        <ErrorAlert bind:this={err4} Error={{id:"success",text:"Sikeres módosítás!",error:false}}/>
-        <ErrorAlert bind:this={err5} Error={{id:"badphone",text:"A telefonszám formátuma nem megfelelő!",error:true}}/>
+        <ErrorAlert bind:this={err} Error={errormessage}/>
         <form>
             <div class="mb-3">
                 <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
-                <input type="text" bind:value={data.name} class="form-control" id="username" name="username" >
+                <input type="text" bind:value={user.name} class="form-control" id="username" name="username" >
             </div>
             <div class="mb-3">
                 <label for="fullname" class="form-label">Teljes név <em>*</em> </label>
-                <input type="text" bind:value={data.fullname} class="form-control" id="fullname" name="fullname" >
+                <input type="text" bind:value={user.fullname} class="form-control" id="fullname" name="fullname" >
             </div>
               <div class="mb-3">
                 <label for="username" class="form-label">Email cím <em>*</em> </label>
-                <input type="email" disabled bind:value={data.email} class="form-control" id="email" name="email" >
+                <input type="email" disabled bind:value={user.email} class="form-control" id="email" name="email" >
             </div>
             <div class="mb-3">
                 <label for="pass1" class="form-label">Jelszó <em>*</em></label>
@@ -157,16 +123,17 @@
             </div>
             <div class="mb-3">
                 <label for="cim" class="form-label">Cím</label>
-                <input type="text" bind:value={data.address} class="form-control" id="address" name="address">
+                <input type="text" bind:value={user.address} class="form-control" id="address" name="address">
             </div>
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telefon</label>
-                <input type="text" bind:value={data.phone} class="form-control" id="phone" name="phone">
+                <input type="text" bind:value={user.phone} class="form-control" id="phone" name="phone">
                 <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
             </div>
             <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
             <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">
-            <button type="button" class="btn" on:click={()=>{Update()}}>Megerősítés</button>
+            <button type="button" class="btn" on:click={()=>{Update(user)}}>Megerősítés</button>
           </form>
     </div>
+    {/if}
 </main>

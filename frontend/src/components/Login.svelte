@@ -45,12 +45,6 @@
     border: 1px solid black
     border-radius:0.25rem
     background-color: #ffcc95
-button
-    background: #ea9e60
-    border: 1px solid black
-button:hover
-    background: #ea9e60
-    border: 1px solid black
 main
     display: flex
     flex-flow: column

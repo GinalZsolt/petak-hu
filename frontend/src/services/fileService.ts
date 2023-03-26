@@ -20,7 +20,7 @@ async function UploadImage(token:string, data:FormData):Promise<FileInfo>{
     }).then(res=>res.data).catch(err=>err.response);
 }
 async function DeleteImage(token:string, filename:string){
-    return axios.delete('http://localhost:8080/api/file/single/'+filename, {headers:{'Authorization': "JWT " + token}}).then(res=>res.data).then(err=>err.response.data);
+    return axios.delete('http://localhost:8080/api/file/single/'+filename, {headers:{'Authorization': "JWT " + token}}).then(res=>res.data).catch(err=>err);
 }
 async function UploadImages(token:string, data:FormData):Promise<{
     head: FileInfo[],

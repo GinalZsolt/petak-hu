@@ -3,8 +3,12 @@
     import { Token } from "../../stores";
     import type { Topic } from "../../interfaces/Forum";
     import PostUpload from "./subcomponents/PostUpload.svelte";
+    import { onMount } from "svelte";
     let Forum = db.GetForums($Token.token);
-    let topics = [] as Topic[];
+    let Topics:Topic[] = [];
+    onMount(async ()=>{
+        Topics = await db.GetForums($Token.token);
+    })
     let topicID = -1;
 </script>
 
@@ -75,7 +79,7 @@
             {/if}
         </div>
     {/await}
-    <PostUpload Topics={topics} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
+    <PostUpload Topics={Topics} data={{topicID: topicID}} on:upload={()=>{Forum = db.GetForums($Token.token) }} />
 </main>
 
 <style lang="sass">
@@ -89,12 +93,5 @@
         width: initial
     .link-primary
         cursor: pointer
-    .btn-add
-        background-color: #ffcc95
-        border: 0
-    .btn-add:hover
-        background-color: #ffcc95fd
-    .btn-add:active
-        background-color: #ffcc95
         box-shadow: 0 0 0 0.25rem (#ffcc957f)
 </style>
