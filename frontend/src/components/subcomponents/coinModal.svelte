@@ -19,10 +19,12 @@
     let auction = await GetAllAuctions($Token.token);
     let user = await GetUserProfile($userPerms.id, $Token.token);
     return await Promise.all([auction, user]).then((res) => {
+      let auction = res[0].find(e=>e.coinID==coinID);
       return {can:(
         res[1].user.address != null &&
         res[1].user.phone != null &&
-        res[0].find((e) => e.coinID == coinID) == undefined &&
+        auction == undefined &&
+        auction ? new Date(auction.expiration) > new Date() : true &&
         res[1].user.phone!="null"&&
         res[1].user.address!="null"
       ), 
@@ -102,33 +104,40 @@
             {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
+                {#await CheckIfCanAuction(coin.ID) then result}
+                {#if result.can}
                 <button
                   type="button"
                   class="btn"
                   data-bs-target="#CoinMod"
                   data-bs-toggle="modal">Módosítás</button
                 >
-                {#await CheckIfCanAuction(coin.ID) then result}
-                  {#if result.can}
-                    <button
-                      type="button"
+                <button
+                type="button"
                       class="btn"
                       on:click={()=>{auctionmodal.loadmodal(coin)}}
                       data-bs-target="#auctionupload"
                       data-bs-toggle="modal">Aukció</button
                     >
                   {:else if result.reason == "noaddress"}
-                    <button
-                      type="button"
+                  <button
+                  type="button"
                       class="btn"
                       data-bs-target="#noaddress"
                       data-bs-toggle="collapse">Aukció</button
-                    >
+                      >
                     {:else}
                     <button
                       type="button"
                       class="btn"
                       disabled
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal">Módosítás</button
+                    >
+                    <button
+                    type="button"
+                    class="btn"
+                    disabled
                       data-bs-target="#noaddress"
                       data-bs-toggle="collapse">Aukció</button
                     >
