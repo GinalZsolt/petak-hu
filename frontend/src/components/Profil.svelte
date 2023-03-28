@@ -137,7 +137,6 @@
       <CoinModal coin={modcoin}/>
       {/if}
     {/await}
-    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}/>
 </main>
 
 
