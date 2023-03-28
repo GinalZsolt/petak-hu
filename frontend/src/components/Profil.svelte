@@ -138,7 +138,6 @@
       <CoinModal coin={modcoin}/>
       {/if}
     {/await}
-    <CoinMod Coin={modcoin}/>
 </main>
 
 

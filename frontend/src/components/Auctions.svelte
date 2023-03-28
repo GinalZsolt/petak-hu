@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { AuctionPageAuctions } from "../services/dbAuction";
+  import { AuctionPageAuctions, GetAllAuctions } from "../services/dbAuction";
   import { Token } from "../stores";
   import AuctionCard from "./subcomponents/AuctionCard.svelte";
-  import {fade, fly} from 'svelte/transition';
+  import {fade} from 'svelte/transition';
+  import MediaQuery from "./subcomponents/MediaQuery.svelte";
   let searchText: string = "";
 </script>
 
@@ -32,31 +33,50 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel" in:fade='{{duration:140}}'>
         <div class="carousel-inner">
-          {#await AuctionPageAuctions($Token.token)}
-            <div class="spinner-border"></div>
-            {:then Data}
-              {#each Data as array, i}
-              <div class={"carousel-item" + (i == 0 ? " active" : "")}>
-                <div class="d-flex">
-                    {#if array[0]}  
-                      <AuctionCard Auction={array[0]}/>
+          <MediaQuery query="(min-width: 768px)" let:matches>
+            {#if matches}
+              {#await AuctionPageAuctions($Token.token)}
+                <div class="spinner-border"></div>
+                {:then Data}
+                  {#each Data as array, i}
+                  <div class={"carousel-item" + (i == 0 ? " active" : "")}>
+                    <div class="d-flex">
+                      {#if array[0]}  
+                        <AuctionCard Auction={array[0]}/>
                       {:else}
-                      <div class="flexCard"></div>
-                    {/if}
-                    {#if array[1]}  
+                        <div class="flexCard"></div>
+                      {/if}
+                      {#if array[1]}  
                       <AuctionCard Auction={array[1]}/>
                       {:else}
                       <div class="flexCard"></div>
-                    {/if}
-                    {#if array[2]}  
+                      {/if}
+                      {#if array[2]}  
                       <AuctionCard Auction={array[2]}/>
                       {:else}
                       <div class="flexCard"></div>
-                    {/if}
-                </div>
-              </div>
-              {/each}
-          {/await}
+                      {/if}
+                    </div>
+                  </div>
+                  {/each}
+              {/await}
+            {/if}
+            {#if !matches}
+              {#await GetAllAuctions($Token.Token) then Data}
+                  {#each Data as auction, i}
+                    <div class={"carousel-item" + (i == 0 ? " active" : "")}>
+                      <div class="d-flex">
+                        {#if auction}  
+                          <AuctionCard Auction={auction}/>
+                        {:else}
+                          <div class="flexCard"></div>
+                        {/if}
+                      </div>
+                    </div>
+                  {/each}
+              {/await}
+            {/if}
+          </MediaQuery>
         </div>
       </div>
       <button
@@ -65,6 +85,8 @@
       data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>
+    
+      
     {:else}
     <div id="searchresults">
       {#await AuctionPageAuctions($Token.token)}
