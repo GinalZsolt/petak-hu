@@ -37,7 +37,8 @@
         headfile: "",
         tailfile: "",    
         userID: 0,
-        uploadDate: ""
+        uploadDate: "",
+        tags: []
   };
 
   let tags: Array<TagInterface>=[]; 
@@ -137,7 +138,7 @@
       <CoinModal coin={modcoin}/>
       {/if}
     {/await}
-    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}/>
+    <CoinMod Coin={modcoin}/>
 </main>
 
 

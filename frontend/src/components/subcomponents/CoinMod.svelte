@@ -1,268 +1,105 @@
 <script lang="ts">
-    import { Delete, Patch, Get, Post } from "../../services/dbQueries";
-    import {userPerms, Token} from './../../stores';
     import type { Coin } from "../../interfaces/Coin";
-    import { onMount } from "svelte";
-    import type { TagInterface } from "../../interfaces/Tags";
-	import { createEventDispatcher } from 'svelte';
-    import { DeleteImage, UploadImage, UploadImages } from "../../services/fileService";
-    import ErrorAlert from "./ErrorAlert.svelte";
-    export let Coin:Coin | undefined;
-    export let tags: Array<TagInterface>=[];
-    let Error = {
-        text: "",
-        id: "",
-        error: false,
+    import type { Category, TagInterface } from "../../interfaces/Tags";
+    import { Get } from "../../services/dbQueries";
+    import {Token} from '../../stores';
+    export let Coin:Coin;
+    let headfile:FileList;
+    let tailfile:FileList;
+    let categoriesPromise = Get($Token.token, 'tagcategories') as Promise<Category[]>;
+    let toBeDeleted:TagInterface[] = [];
+    let newID:number;
+    function ResetTags(){
+        Coin.tags = [...Coin.tags, ...toBeDeleted];
+        toBeDeleted = [];
+        toBeDeleted = toBeDeleted;
     }
-    let deleted = false;
-    let errorSvelte:ErrorAlert;
-    let headfile: FileList,
-        tailfile: FileList,
-        tagdel:boolean=true,
-        newtag:TagInterface={
-            description:"",
-            name:"",
-            color:"",
-            Category:"",
-            coinID:Coin.ID
-        },
-        category:any=[];
+    function AddTag(){
 
-
-    async function DelCoin(ID){     //TODO
-        let auc:boolean = await isInAuctions(ID);
-        if(!auc){
-            let del_data:any = await Get($Token.token, "cointags", "coinID", `${ID}`).then((res)=> res=res);
-            if (del_data.length>0) await delDescs(del_data, ID);
-            await Delete($Token.token, "coins", "ID", `${ID}`).then(()=>deleted=true).catch(err=>{Error={
-                text: "Rendszerhiba történt!",
-                id:"systemerror",
-                error:true
-            }; 
-            errorSvelte.showError();});
-            updatecoins();
-        }
-        else {
-            Error = {
-                text: "Aukcióra bocsátott érmét nem törölhet!",
-                error: true,
-                id: "onauction"
-            }
-            errorSvelte.showError();
-        }
     }
-
-    async function delDescs(del_data:Array<any>, ID:Number) {
-        await Delete($Token.token, "cointags", "coinID", `${ID}`).then((res)=> console.log(res));
-        Promise.all(del_data.map(e=>Delete($Token.token, "tagdescriptions","ID",e.descID))).then(res=>console.log(res));
+    function CommenceMod(){
+        console.log(Coin);
     }
-
-    async function isInAuctions(coinID:Number) {
-        let data: any|undefined = await Get($Token.token, "auctions", "coinID", `${coinID}`);
-        return data.length>0 ? true : false;
+    function DeleteTag(tag:TagInterface, index:number){
+        toBeDeleted = [...toBeDeleted, tag];
+        Coin.tags.splice(index, 1);
+        Coin.tags = Coin.tags;
+        console.log(toBeDeleted, Coin.tags);
     }
-    function CheckFill(){
-        return Coin.name!="" && Coin.description!="" && Coin.worth > -1;
-    }
-
-    async function UpdateCoin(ID){
-        if (CheckFill()){
-            if ( headfile!=undefined && headfile.length>0 ){
-                let files = new FormData();
-                await DeleteImage($Token.token, Coin.headfile);
-                files.append('image', headfile[0]);
-                await UploadImage($Token.token, files).then(res=>{
-                    Coin.headfile = res.filename;
-                });
-            }
-            if ( tailfile!=undefined && tailfile.length>0 )
-            {
-                let files = new FormData();
-                await DeleteImage($Token.token, Coin.tailfile);
-                files.append('image', tailfile[0]);
-                await UploadImage($Token.token, files).then(res=>{
-                    Coin.tailfile = res.filename;
-                });
-            }
-            TryUpdate(ID);
-        }
-        else {
-            Error = {
-                text:"Kérem töltsön ki minden kötelező mezőt!",
-                error: true,
-                id: "badinput"
-            }
-            errorSvelte.showError();
-        }
-    }
-    function TryUpdate(ID:number){
-        Patch($Token.token, "coins", "ID", ID, Coin).then((rs)=>console.log(rs)).then(()=>{
-            Error = {
-                error: false,
-                id:"success",
-                text: "Sikeres frissítés!"
-            }
-            errorSvelte.showError()
-            updatecoins();
-        }).catch(()=>{
-            Error={
-                error: true,
-                id:"servererror",
-                text: "Szerverhiba történt! Kérem szóljon a fejlesztőknek!"
-            }
-        });
-    }
-    async function GetCategories(){
-        await await Get($Token.token, "tagcategories").then((res)=> {category=res; category = category});
-    }
-
-    async function addTag(){
-        if(newtag.Category=="" 
-        || newtag.Category==undefined 
-        || newtag.Category==null 
-        || newtag.description=="" ) alert("A cimke hozzáadásához ki kell töltenie minen mezőt.")
-        else{
-            let tag:TagInterface={
-            Category:category[Number(newtag.Category)-1].name,
-            description:newtag.description,
-            coinID:Coin.ID,
-            name:Coin.name, 
-            color:category[Number(newtag.Category)-1].color
-            };
-            await tagdesup(tag);
-            await GetTags(Coin);
-        }
-    }
-
-    async function GetTags(Coin:Coin) {
-        await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> tags=res);
-        tags=tags;
-    }
-
-    async function tagdesup(tag: TagInterface) {
-        let desID:Number;       
-        await await Post($Token.token, "tagdescriptions", {description: tag.description}).then((res)=>desID=res.insertId);
-        tagup(tag, desID);
-    }
-
-    async function tagup(tag: TagInterface, desID: Number) {
-        await await Post($Token.token, "cointags", {coinID: Coin.ID, nameID: gettagID(tag.Category), descID: desID});
-    }
-
-    function gettagID(categoryname: String){
-        for (let i = 0; i < category.length; i++) {
-            if(category[i].name ==  categoryname) return category[i].ID;
-        }
-        return 0;
-    }
-
-    async function DeleteTag(del){
-        let desc_ID:any = await await Get($Token.token, "cointags", "ID", del.ID).then((res)=> res);
-        await Delete($Token.token, "cointags", "ID", del.ID);
-        await await Delete($Token.token, "tagdescriptions", "ID", desc_ID[0].descID);
-        GetTags(Coin);
-    }
-
-
-	const dispatch = createEventDispatcher();
-    function updatecoins() {
-        dispatch('updatecoins', {});
-	}
-
-    onMount(async()=>{
-        await GetCategories();
-        category = category;
-    });
 </script>
 <style lang="sass">
-    button
-        background: #ea9e60
-        border: 1px solid black
-    button:hover
-        background: #ea9e60
-        border: 1px solid black
-    textarea
-        resize: none
-    .tag-creator
-        border: 2px solid black
-        border-radius:0.25rem
-        padding: 7px
+    .btn-danger
+        background: var(--bs-danger) !important
     .tag
-        background: var(--color)
-        border-radius:0.5rem
-        padding: 5px
-        border: 1px solid black
-    .modal-header
-        background-color: #f59445
-        background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))  
+        background-color: var(--bg)
+        padding: 0.25rem
+        border-radius: 0.25rem
+    #addtag
+        background: none
+        border: 0
+    #tags
+        display: flex        
+        flex-flow: row wrap
+        justify-content: flex-start
+        .tag
+            margin-left: 0.25rem
 </style>
 
-
-<!-- Modal -->
-<div class="modal fade" id="CoinMod" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+<div class="modal fade" id="CoinMod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Érme módosítása</h1>
-          <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <h1 class="modal-title fs-5">{Coin.name} | Módosítás</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form>
-                <ErrorAlert bind:this={errorSvelte} {Error} />
-                <div class="mb-3">
-                    <label for="name" class="form-label">Érme neve</label>
-                    <input type="text" disabled={deleted} bind:value={Coin.name} class="form-control" id="name" name="name" >
+            <div class="mb-3">
+                <label for="name" class="form-label">Név</label>
+                <input type="text" class="form-control" name="name" bind:value={Coin.name}>
+            </div>
+            <div class="mb-3">
+                <label for="worth" class="form-label">Becsült érték</label>
+                <input type="number" min="0" step="5" class="form-control" name="worth" bind:value={Coin.worth}>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Leírás</label>
+                <textarea name="description" class="form-control" bind:value={Coin.description}></textarea>
+            </div>
+            <hr>
+            <h4>Címkék</h4>
+            
+            <select name="tagtype" class="form-select" bind:value={newID}>
+                {#await categoriesPromise then categories}
+                    {#each categories as category}
+                        <option value={category.ID}>{category.name}</option>
+                    {/each}
+                {/await}
+            </select>
+            <input type="text" name="tagname" class="form-control">
+
+            <input type="button" class="btn" value="Hozzáadás" on:click={AddTag}>
+            <input type="button" class="btn" value="Reset" on:click={ResetTags}>
+            <div id="tags">
+                {#each Coin.tags as tag, i}
+                <div class="tag" style={`--bg:${tag.color}`}>
+                    <span>{tag.name}: {tag.description}</span>
+                    <button id="addtag" on:click={()=>DeleteTag(tag, i)}><i class="bi bi-x-lg"></i></button>
                 </div>
-                <div class="mb-3">
-                    <label for="description">Leírás</label>
-                    <textarea class="form-control" disabled={deleted} bind:value={Coin.description} id="description" rows="5"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="price" class="form-label">Érme névleges értéke</label>
-                    <input type="number" disabled={deleted} bind:value={Coin.worth} class="form-control" id="price" name="price" >
-                </div>
-                <div class="tag-creator row mb-3 col-12 mx-auto" >
-                    <div class="col-5">
-                        <label for="tagtype" class="form-label">Címke kategóriája</label>
-                        <select bind:value={newtag.Category} class="form-select" name="tagtype" disabled={deleted} id="tagtype">
-                            <option selected value={null}></option>
-                            {#if category!=undefined}
-                                 {#each category as tagtype}
-                                    <option value={tagtype.ID}>{tagtype.name}</option>
-                                {/each} 
-                            {/if}
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <label for="tagcontent" class="form-label">Címke tartalma</label>
-                        <input disabled={deleted} type="text" bind:value={newtag.description} class="form-control" id="tagcontent" name="tagcontent" >
-                    </div>
-                    <button type="button" on:click={addTag} disabled={deleted} class="btn col-3">Hozzáadás</button>
-                </div>  
-                <div class="tag-container d-flex flex-wrap mb-3">
-                    {#if tags!=undefined || tags.length!=0}
-                        {#each tags as tag, i }
-                            <div style={"--color:"+tag.color} class="tag m-auto mb-1">
-                                <span>{tag.name}</span>:<span>{tag.description}</span> 
-                                {#if tagdel}<input type="button" class="btn-close" on:click={()=>{DeleteTag(tag)}}>{/if} 
-                            </div>
-                        {/each} 
-                    {/if}
-                     
-                </div>
-                <div class=" mb-3">
-                    <label for="fej">Fej:</label>
-                    <input class="form-control" bind:files={headfile} disabled={deleted} name="fej" accept="image/*" type="file" id="fej">
-                </div>
-                <div class="mb-3">
-                    <label for="iras">Írás:</label>
-                    <input class="form-control" bind:files={tailfile} disabled={deleted} name="iras" accept="image/*" type="file" id="iras">
-                </div>
-            </form>
+                {/each}
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="headfile" class="form-label">Fej képe</label>
+                <input type="file" class="form-control" name="headfile" bind:files={headfile}>
+            </div>
+            <div class="mb-3">
+                <label for="tailfile" class="form-label">Írás képe</label>
+                <input type="file" class="form-control" name="headfile" bind:files={tailfile}>
+            </div>
         </div>
-        <div class="modal-footer d-flex justify-content-between">
-            <input type="button" class="btn btn-danger" disabled={deleted} on:click={()=>{DelCoin(Coin.ID)}} value="Törlés">
-            <button type="button" class="btn" disabled={deleted} on:click={()=>{UpdateCoin(Coin.ID)}}>Módosítás</button>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger">Törlés</button>
+            <button type="button" class="btn btn-secondary" on:click={CommenceMod}>Módosítás</button>
         </div>
       </div>
     </div>
