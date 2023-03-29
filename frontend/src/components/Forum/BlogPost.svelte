@@ -86,9 +86,9 @@
                 </div>
                 <p>{Data[0].description}</p>
             </div>
-            <div>
+            <div class="col-3">
                 {#if Data[0].imagefile}
-                <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="img-fluid" alt="kép">
+                    <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="w-100 img-fluid" alt="kép">
                 {/if}
             </div>
             {#if $userPerms.id==Data.userID}
