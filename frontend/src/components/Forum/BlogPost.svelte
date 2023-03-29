@@ -89,22 +89,12 @@
                 </div>
                 <p>{Data[0].description}</p>
             </div>
-            <div>
+            <div class="col-3">
                 {#if Data[0].imagefile}
-                <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="img-fluid" alt="kép">
+                    <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="w-100 img-fluid" alt="kép">
                 {/if}
             </div>
-            {#if $userPerms.id==Data.userID}
-            <div class="dropdown d-flex flex-row-reverse">
-                <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><button class="dropdown-item">Lezárás</button></li>
-                    <li><button class="dropdown-item">Törlés</button></li>
-                </ul>
-            </div>
-            {/if}
+         
         </div>
         {#if !Data[0].isClosed && !Data[0].isDeleted}
             <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
