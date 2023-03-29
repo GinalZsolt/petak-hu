@@ -49,26 +49,31 @@ async function UploadCoin(Coin, token: string) {
         }
     }).then(results => results.data.insertId)
 }
-
-async function UploadTag(tag, token: string) {
-    console.log(tag)
-    await axios.post(BackendURL + "/api/tagdescriptions", { description: tag.descID }, {
+interface tagupload{
+    description:string;
+    coinID:number;
+    nameID:number;
+    descID?:number;
+}
+async function UploadTag(tag:tagupload, token: string) {
+    return await axios.post(BackendURL+'/api/tagdescriptions', {
+        description: tag.description
+    }, {
         headers: {
-            'Authorization': 'JWT ' + token
+            'Authorization': 'JWT '+token
         }
-    }
-    ).then(
-        async (res) => {
-            tag.descID = res.data.insertId
-            console.log(tag)
-            await axios.post(BackendURL + "/api/cointags", tag, {
-                headers: {
-                    'Authorization': 'JWT ' + token
-                }
+    }).then(res=>{
+        tag.descID = res.data.insertId;
+        return axios.post(BackendURL+'/api/cointags', {
+            coinID: tag.coinID, 
+            nameID: tag.nameID,
+            descID: tag.descID
+        }, {
+            headers:{
+                'Authorization': 'JWT '+token
             }
-            )
-        }
-    )
+        }).then(res=>res.data);
+    })
 }
 
 async function GetUserCoins(token,UID):Promise<Coin[]> {
