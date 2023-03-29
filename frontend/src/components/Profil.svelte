@@ -62,6 +62,7 @@
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
+      {console.log(ProfileData)}
       <BanModal User={ProfileData.user} />
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
@@ -134,10 +135,8 @@
         </div>
       </div>
       {/if}
-      {#if ProfileData.coins.length>0 && modcoin}
-      <CoinModal coin={modcoin}/>
-      {/if}
     {/await}
+    <CoinModal on:mod={()=>{profile = GetUserProfile(ID, $Token.token)}} coin={modcoin}/>
 </main>
 
 

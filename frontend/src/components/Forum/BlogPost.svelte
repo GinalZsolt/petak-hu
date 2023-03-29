@@ -3,6 +3,7 @@
     import {db} from '../../services/dbForum';
     import {Token, userPerms} from '../../stores';
     import { router } from "tinro";
+    import { GetUserData } from "../../services/dbUser";
     let ID:number = Number(router.meta().params.id);
     let Comments = db.GetPostsComments($Token.token, ID);
     let Posts = db.GetBlogpost($Token.token, ID);
@@ -82,7 +83,9 @@
             <div>
                 <h2>{Data[0].title}</h2>
                 <div id="authorinfo">
-                    <span>{Data[0].userID} - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {#await GetUserData(Data[0].userID, $Token.token) then user}
+                    <span><a href={"/profile/"+Data[0].userID}>{user[0].name}</a> - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {/await}
                 </div>
                 <p>{Data[0].description}</p>
             </div>

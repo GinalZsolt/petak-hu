@@ -18,12 +18,12 @@
     let tagdel:boolean=true;
     let data:any={}
     let newtag:TagInterface={
-        ID:undefined,
-        CoinID: undefined,
+        ID:0,
+        coinID: 0,
         description: "",
         name: "",
         color:"",
-        Category:""
+        categoryID: 0
     };
     let tags:TagInterface[]=[]
 
@@ -41,19 +41,18 @@
     }
  
     function addTag(){
-        if (newtag.Category==null||newtag.description==undefined||newtag.description=="") {
+        if (newtag.categoryID==0||newtag.description=="") {
             err2.showError()
         }
         else{
             tags = [...tags,{
-                ID:Number(newtag.Category),
-                CoinID:null,
+                coinID:null,
                 description:newtag.description,
-                name:getname(newtag.Category),
-                color:getcolor(newtag.Category)
-            } as TagInterface]
+                name:getname(newtag.categoryID),
+                color:getcolor(newtag.categoryID)
+            } as TagInterface];
             newtag.description="";
-            newtag.Category=null;
+            newtag.categoryID=null;
         }
     }
 

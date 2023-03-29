@@ -4,11 +4,13 @@
   export let coin: Coin;
   import CoinMod from "./CoinMod.svelte";
   import AuctionUploadModal from "./AuctionUploadModal.svelte";
-  import { GetCoin } from "../../services/dbCoin";
   import { GetAllAuctions } from "../../services/dbAuction";
+  import {createEventDispatcher} from 'svelte';
   import { GetUserProfile } from "../../services/dbUser";
 
   let auctionmodal
+  let dispatcher = createEventDispatcher();
+
 
   async function CopyLink() {
     await navigator.clipboard.writeText(
@@ -162,8 +164,8 @@
     </div>
   </div>
   {#if $userPerms.id == coin.userID}
+    <CoinMod on:mod={()=>{dispatcher('mod')}} Coin={coin} />
     <AuctionUploadModal bind:this={auctionmodal} Coin={coin}/>
-    <CoinMod Coin={coin} />
   {/if}
 {/if}
 

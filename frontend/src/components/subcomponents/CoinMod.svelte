@@ -1,12 +1,14 @@
 <script lang="ts">
     import type { Coin } from "../../interfaces/Coin";
     import type { Category, TagInterface } from "../../interfaces/Tags";
-    import { UploadCoin, UploadTag } from "../../services/dbCoin";
+    import { GetCoin, UploadCoin, UploadTag } from "../../services/dbCoin";
     import { Delete, Get, Patch, Post } from "../../services/dbQueries";
     import { UploadImage } from "../../services/fileService";
     import {Token} from '../../stores';
     import ErrorAlert from "./ErrorAlert.svelte";
+    import {createEventDispatcher} from 'svelte';
     export let Coin:Coin;
+    let dispatcher = createEventDispatcher();
     let headfile:FileList;
     let tailfile:FileList;
     let categoriesPromise = Get($Token.token, 'tagcategories') as Promise<Category[]>;
@@ -20,7 +22,10 @@
         error: false
     }
     let errorsvelte:ErrorAlert;
-
+    function CanMod(){
+        return Coin.description=="" || Coin.name=="" ||
+               Coin.worth<=0
+    }
     function ResetTags(){
         toBeDeleted = [];
         toBeDeleted = toBeDeleted;
@@ -36,34 +41,46 @@
             name: cat.name,
             categoryID: cat.ID,
         }]
-        console.log(newTags);
     }
     async function CommenceMod(){
-        await Promise.all(toBeDeleted.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID))).then(res=>res);
-        await Promise.all(newTags.map(e=>UploadTag({coinID: e.coinID, description: e.description, nameID:e.categoryID}, $Token.token))).then(res=>res);
-        let potheadfile: undefined|string = undefined;
-        let pottailfile: undefined|string = undefined;
-        if (headfile && headfile.length>0){
-            let form = new FormData();
-            form.append('image', headfile[0]);
-            potheadfile = await UploadImage($Token.token, form).then(res=>res.filename);
+        if (CanMod()){
+            seterror('empty', 'Nincs minden kötelező adat megadva!', true);
         }
-        if (tailfile && tailfile.length>0){
-            let form = new FormData();
-            form.append('image', tailfile[0]);
-            pottailfile = await UploadImage($Token.token, form).then(res=>res.filename);
-        }
-        let update = await Patch($Token.token, 'coins', 'ID', Coin.ID, {
-            name:Coin.name,
-            worth:Coin.worth,
-            description:Coin.description,
-            headfile: potheadfile,
-            tailfile: pottailfile
-        }).then(res=>res);
-        if (update.affectedRows>0){
-            seterror('success', 'Sikeres módosítás', false);
+        else {
+            await Promise.all(toBeDeleted.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID))).then(res=>res);
+            await Promise.all(newTags.map(e=>UploadTag({coinID: e.coinID, description: e.description, nameID:e.categoryID}, $Token.token))).then(res=>res);
+            let potheadfile: undefined|string = undefined;
+            let pottailfile: undefined|string = undefined;
+            if (headfile && headfile.length>0){
+                let form = new FormData();
+                form.append('image', headfile[0]);
+                potheadfile = await UploadImage($Token.token, form).then(res=>res.filename);
+            }
+            if (tailfile && tailfile.length>0){
+                let form = new FormData();
+                form.append('image', tailfile[0]);
+                pottailfile = await UploadImage($Token.token, form).then(res=>res.filename);
+            }
+            let update = await Patch($Token.token, 'coins', 'ID', Coin.ID, {
+                name:Coin.name,
+                worth:Coin.worth,
+                description:Coin.description,
+                headfile: potheadfile,
+                tailfile: pottailfile
+            }).then(res=>res);
+            if (update.affectedRows>0){
+                console.log(update);
+                seterror('success', 'Sikeres módosítás', false);
+                tagdescription = "";
+                ResetTags();
+                dispatcher('mod');
+            }
         }
     }
+    async function CommenceDelete(){
+        await Promise.all(Coin.tags.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID)))
+    }
+
 
     function seterror(iD:string, message:string, isError:boolean){
         Error = {
@@ -73,8 +90,6 @@
         }
         errorsvelte.showError();
     }
-
-
     function DeleteNewTag(index:number){
         newTags.splice(index, 1);
         newTags = newTags;
@@ -162,7 +177,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger">Törlés</button>
+            <button type="button" data-bs-dismiss class="btn btn-danger" on:click={CommenceDelete}>Törlés</button>
             <button type="button" class="btn btn-secondary" on:click={CommenceMod}>Módosítás</button>
         </div>
       </div>
