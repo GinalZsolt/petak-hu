@@ -13,7 +13,6 @@
     let tagtypes:TagType[];
     onMount(async()=>{
         tagtypes=await GetTagTypes($Token.token)
-        console.log(tagtypes);
     })
     let tagdel:boolean=true;
     let data:any={}
@@ -23,7 +22,7 @@
         description: "",
         name: "",
         color:"",
-        categoryID: 0
+        categoryID: null
     };
     let tags:TagInterface[]=[]
 
@@ -49,8 +48,10 @@
                 coinID:null,
                 description:newtag.description,
                 name:getname(newtag.categoryID),
-                color:getcolor(newtag.categoryID)
+                color:getcolor(newtag.categoryID),
+                categoryID: newtag.categoryID
             } as TagInterface];
+            console.log(tags);
             newtag.description="";
             newtag.categoryID=null;
         }
@@ -69,7 +70,7 @@
             let images = new FormData()
             images.append("head",data.heads[0])
             images.append("tail",data.tails[0])
-            let uploadedimages:any = await UploadImages($Token.token,images)
+            let uploadedimages = await UploadImages($Token.token,images)
             let Coin ={
                 name:data.name,
                 worth:data.price,
@@ -79,15 +80,17 @@
                 tailfile:uploadedimages.tail[0].filename
             }
             let coinID = await UploadCoin(Coin,$Token.token).then(res=>res)
-            console.log(tags);
             tags.forEach(element => {
                 let uploadableTag={
                     coinID:coinID,
-                    nameID:element.ID,
+                    nameID:element.categoryID,
                     descID:element.description
                 }
-                console.log(uploadableTag)
-                UploadTag(uploadableTag,$Token.token)
+                UploadTag({
+                    coinID: uploadableTag.coinID,
+                    nameID: uploadableTag.nameID, 
+                    description: uploadableTag.descID
+                },$Token.token);
             });
             data={}
             newtagClear();
@@ -105,7 +108,7 @@
         newtag.color="";
         newtag.description="";
         newtag.name="";
-        newtag.Category="";
+        newtag.description="";
     }
 </script>
 <style lang="sass">
@@ -161,8 +164,8 @@
 
                     <div class="col-5">
                         <label for="tagtype" class="form-label">Címke kategóriája</label>
-                        <select bind:value={newtag.Category} class="form-select" name="tagtype" id="tagtype">
-                            <option selected value={null}></option>
+                        <select bind:value={newtag.categoryID} class="form-select" name="tagtype" id="tagtype">
+                            <option selected value={null}>Válasszon...</option>
                             {#if tagtypes}
                                 {#each tagtypes as tagtype}
                                     <option value={tagtype.ID}>{tagtype.name}</option>

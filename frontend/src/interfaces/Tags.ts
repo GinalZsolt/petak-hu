@@ -1,6 +1,7 @@
 export interface TagInterface{
     ID?:number;
     coinID:number;
+    descID?:number;
     description:string;
     name:string;
     color:string;

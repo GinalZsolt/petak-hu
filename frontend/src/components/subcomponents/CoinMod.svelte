@@ -3,7 +3,7 @@
     import type { Category, TagInterface } from "../../interfaces/Tags";
     import { GetCoin, UploadCoin, UploadTag } from "../../services/dbCoin";
     import { Delete, Get, Patch, Post } from "../../services/dbQueries";
-    import { UploadImage } from "../../services/fileService";
+    import { DeleteImage, UploadImage } from "../../services/fileService";
     import {Token} from '../../stores';
     import ErrorAlert from "./ErrorAlert.svelte";
     import {createEventDispatcher} from 'svelte';
@@ -47,16 +47,44 @@
             seterror('empty', 'Nincs minden kötelező adat megadva!', true);
         }
         else {
-            await Promise.all(toBeDeleted.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID))).then(res=>res);
-            await Promise.all(newTags.map(e=>UploadTag({coinID: e.coinID, description: e.description, nameID:e.categoryID}, $Token.token))).then(res=>res);
+            await Promise.all(toBeDeleted.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID))).then(res=>{
+                let deletedindexes = toBeDeleted.map(e=>e.ID);
+                let indexes = Coin.tags.map(e=>e.ID);
+                deletedindexes.forEach(e=>{
+                    Coin.tags.splice(indexes.indexOf(e),1);
+                })
+                Coin.tags = Coin.tags;
+                toBeDeleted = [];
+                toBeDeleted = toBeDeleted;
+            });
+            await Promise.all(newTags.map(e=>UploadTag({coinID: e.coinID, description: e.description, nameID:e.categoryID}, $Token.token))).then(res=>{
+                for (let i = 0; i < res.length; i++) {
+                    Coin.tags.push(
+                        {
+                            ID: res[i].id,
+                            coinID: Coin.ID,
+                            color: newTags[i].color,
+                            description: newTags[i].description,
+                            name: newTags[i].name,
+                            categoryID: newTags[i].categoryID,
+                            descID: res[i].descID
+                        }
+                    )
+                }
+            });
+            newTags = [];
+            newTags = newTags;
+            Coin.tags = Coin.tags;
             let potheadfile: undefined|string = undefined;
             let pottailfile: undefined|string = undefined;
             if (headfile && headfile.length>0){
                 let form = new FormData();
+                DeleteImage($Token.token, Coin.headfile);
                 form.append('image', headfile[0]);
                 potheadfile = await UploadImage($Token.token, form).then(res=>res.filename);
             }
             if (tailfile && tailfile.length>0){
+                DeleteImage($Token.token, Coin.tailfile);
                 let form = new FormData();
                 form.append('image', tailfile[0]);
                 pottailfile = await UploadImage($Token.token, form).then(res=>res.filename);
@@ -69,7 +97,6 @@
                 tailfile: pottailfile
             }).then(res=>res);
             if (update.affectedRows>0){
-                console.log(update);
                 seterror('success', 'Sikeres módosítás', false);
                 tagdescription = "";
                 ResetTags();
@@ -78,7 +105,12 @@
         }
     }
     async function CommenceDelete(){
-        await Promise.all(Coin.tags.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID)))
+        await Promise.all(
+            [...Coin.tags.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID)),
+             ...Coin.tags.map(e=>Delete($Token.token, 'tagdescriptions', 'ID', e.descID))])
+             .then(res=>console.log(res));
+        await Delete($Token.token, 'coins', 'ID', Coin.ID).then(res=>console.log(res));
+        dispatcher('mod');
     }
 
 
@@ -177,7 +209,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" data-bs-dismiss class="btn btn-danger" on:click={CommenceDelete}>Törlés</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-danger" on:click={CommenceDelete}>Törlés</button>
             <button type="button" class="btn btn-secondary" on:click={CommenceMod}>Módosítás</button>
         </div>
       </div>

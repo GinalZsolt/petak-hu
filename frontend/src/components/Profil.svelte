@@ -62,7 +62,6 @@
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
-      {console.log(ProfileData)}
       <BanModal User={ProfileData.user} />
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
