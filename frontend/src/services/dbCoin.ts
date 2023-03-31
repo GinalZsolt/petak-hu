@@ -29,10 +29,12 @@ async function GetCoin(id:number, token:string):Promise<Coin>{
             tags: res[1].map(e=>{
                 return {
                     ID: e.ID,
+                    descID: e.descID,
                     coinID: res[0].ID,
                     description: e.description,
                     name: e.name,
                     color: e.color,
+                    
                 }
             })
         }
@@ -49,26 +51,34 @@ async function UploadCoin(Coin, token: string) {
         }
     }).then(results => results.data.insertId)
 }
-
-async function UploadTag(tag, token: string) {
-    console.log(tag)
-    await axios.post(BackendURL + "/api/tagdescriptions", { description: tag.descID }, {
+interface tagupload{
+    description:string;
+    coinID:number;
+    nameID:number;
+    descID?:number;
+}
+async function UploadTag(tag:tagupload, token: string): Promise<{id:number, descID: number}> {
+    return await axios.post(BackendURL+'/api/tagdescriptions', {
+        description: tag.description
+    }, {
         headers: {
-            'Authorization': 'JWT ' + token
+            'Authorization': 'JWT '+token
         }
-    }
-    ).then(
-        async (res) => {
-            tag.descID = res.data.insertId
-            console.log(tag)
-            await axios.post(BackendURL + "/api/cointags", tag, {
-                headers: {
-                    'Authorization': 'JWT ' + token
-                }
+    }).then(res1=>{
+        tag.descID = res1.data.insertId;
+        return axios.post(BackendURL+'/api/cointags', {
+            coinID: tag.coinID, 
+            nameID: tag.nameID,
+            descID: tag.descID
+        }, {
+            headers:{
+                'Authorization': 'JWT '+token
             }
-            )
-        }
-    )
+        }).then(res2=>{return {
+            descID: res1.data.insertId,
+            id: res2.data.insertId
+        }});
+    })
 }
 
 async function GetUserCoins(token,UID):Promise<Coin[]> {
@@ -82,6 +92,7 @@ async function GetUserCoins(token,UID):Promise<Coin[]> {
                     return {
                         ID: h.ID,
                         coinID: h.coinID,
+                        descID: h.descID,
                         description: h.description,
                         name: h.name,
                         color: h.color

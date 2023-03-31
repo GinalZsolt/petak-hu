@@ -5,6 +5,7 @@ import {Token} from '../stores';
 import type { Profile } from "../interfaces/Profile";
 import type { Auction } from "../interfaces/Auction";
 import type { Coin } from "../interfaces/Coin";
+import type { TagInterface } from "../interfaces/Tags";
 
 interface Moderations{
     ID:number,
@@ -35,8 +36,10 @@ async function GetUserProfile(id:number, token:string):Promise<Profile>{
     let user = await Get(token, 'users', 'ID', id) as Promise<User[]>;
     let auctions = await Get(token, 'auctions', 'userID', id) as Promise<Auction[]>;
     let coins = await Get(token, 'coins', 'userID', id) as Promise<Coin[]>;
+    let tags = await Get(token, 'tags') as Promise<TagInterface[]>;
 
-    return Promise.all([user, auctions, coins]).then(res=>{
+    return Promise.all([user, auctions, coins, tags]).then(async (res)=>{
+        
         return {
             user: {
                 ...res[0][0]
@@ -63,7 +66,8 @@ async function GetUserProfile(id:number, token:string):Promise<Profile>{
                     name: e.name,
                     uploadDate: e.uploadDate,
                     userID: e.userID,
-                    worth: e.worth
+                    worth: e.worth,
+                    tags: res[3].filter(z=>z.coinID==e.ID)
                 } as Coin
             })
         } as Profile

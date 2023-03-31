@@ -3,6 +3,7 @@
     import {db} from '../../services/dbForum';
     import {Token, userPerms} from '../../stores';
     import { router } from "tinro";
+    import { GetUserData } from "../../services/dbUser";
     let ID:number = Number(router.meta().params.id);
     let Comments = db.GetPostsComments($Token.token, ID);
     let Posts = db.GetBlogpost($Token.token, ID);
@@ -82,26 +83,18 @@
             <div>
                 <h2>{Data[0].title}</h2>
                 <div id="authorinfo">
-                    <span>{Data[0].userID} - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {#await GetUserData(Data[0].userID, $Token.token) then user}
+                    <span><a href={"/profile/"+Data[0].userID}>{user[0].name}</a> - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {/await}
                 </div>
                 <p>{Data[0].description}</p>
             </div>
-            <div>
+            <div class="col-3">
                 {#if Data[0].imagefile}
-                <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="img-fluid" alt="kép">
+                    <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="w-100 img-fluid" alt="kép">
                 {/if}
             </div>
-            {#if $userPerms.id==Data.userID}
-            <div class="dropdown d-flex flex-row-reverse">
-                <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><button class="dropdown-item">Lezárás</button></li>
-                    <li><button class="dropdown-item">Törlés</button></li>
-                </ul>
-            </div>
-            {/if}
+         
         </div>
         {#if !Data[0].isClosed && !Data[0].isDeleted}
             <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
