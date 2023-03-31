@@ -1,6 +1,6 @@
 <main>
-    <div class="col-11 mx-auto" id="cards">
-        <h1>Üdv, {user}!</h1>
+    <div class="col-11 mx-auto mt-3" id="cards">
+        <h1>Üdv, {$userPerms.username}!</h1>
         <div class="row">
             <div class="col-md-6 col-lg-4">
                 <DashboardCard CardData={cardata1} />
@@ -25,15 +25,7 @@
 </style>
 <script lang="ts">
     import DashboardCard from "./subcomponents/DashboardCard.svelte";
-    import { userPerms,Token} from "../stores";
-    import { GetUserData } from "../services/dbUser";
-    import { onMount } from "svelte";
-    let user = "";
-    onMount(async ()=>{
-        await GetUserData($userPerms.id,$Token.token).then((res)=>{
-            user=res[0].name
-        })
-    })
+    import { userPerms } from "../stores";
     let cardata1:any={
     title:"Profilom",
     icon: 'person-circle',

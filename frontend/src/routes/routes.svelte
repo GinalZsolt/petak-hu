@@ -18,13 +18,13 @@
             <Route path={route.url}><Lazyloading component={import(route.component)}/></Route>
         {/if}
     {/each}
-    <Route fallback redirect="/login"/>
+    <Route fallback redirect="/"/>
     {#if $userPerms.permission==0}
         <Route path="/login"><Lazyloading component={()=>import('../components/Login.svelte')}/></Route>
         <Route path="/register"><Lazyloading component={()=>import('../components/Registration.svelte')}/></Route>
     {:else}
-        <Route path="/login" redirect="/" />
-        <Route path="/register" redirect="/" />
+        <Route path="/login" redirect="/dashboard" />
+        <Route path="/register" redirect="/dashboad" />
     {/if}
 </Route>
 {/if}

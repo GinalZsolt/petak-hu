@@ -6,7 +6,14 @@ export let Token = writable(sessionStorage.getItem('petakhu')?JSON.parse(session
 export let BackendURL = "http://localhost:8080";
 export const Routes:Readable<URL[]> =  readable([
  {
-    url:"/",
+   url:'/',
+   name:'Promóciós oldal',
+   minPermission: 0,
+   component:'../components/Promo.svelte',
+   showInNavbar: false
+ },
+   {
+    url:"/dashboard",
     name:"Főoldal",
     minPermission:1,
     component:'../components/Dashboard.svelte',
