@@ -15,45 +15,46 @@
   import { GetCoin } from "../services/dbCoin";
   import CoinModal from "./subcomponents/coinModal.svelte";
   import { router } from "tinro";
-  import { GetUserData } from "../services/dbUser";
   let ID = Number(router.meta().params.id);
   let coin:Coin;
-  let auction: Auction;
-  let user = {
-    name: "",
-    url: ""
-  }
+  let auction: Auction|boolean;
   let bidders: Bidder[] = [];
   let originalPrice: number;
   let room = "auction-" + ID;
   let actbtn:HTMLInputElement;
   let btn:HTMLButtonElement;
-
+  const socket = io("ws://localhost:8080");
   onMount(async () => {
-    bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date)<new Date(b.date));
     auction = await GetAuctionData($Token.token, ID);
-    originalPrice = await (await GetAuctionData($Token.token, ID)).price;
-    coin = (await GetCoin(auction.coinID, $Token.token));
-    if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false && bidders.length>0){
-      CloseAuctionAndSendMail($Token.token, ID, {
-        auctionID: auction.ID, 
-        userID: bidders[0].userID,
-        auctionPoster:{
-          email:auction.user.email, 
-          fullname: auction.user.fullname,
-          phone: auction.user.phone
-        },
-        auctionTitle:auction.title
-      })
+    if (typeof auction == "boolean"){
+      router.goto('/auctions');
+    }
+    else{
+      bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime());
+      originalPrice = await (await GetAuctionData($Token.token, ID)).price;
+      coin = (await GetCoin(auction.coinID, $Token.token));
+      
+      if (new Date(auction.expiration).getTime() < new Date().getTime() && auction.notified==false && bidders.length>0){
+        CloseAuctionAndSendMail($Token.token, ID, {
+          auctionID: auction.ID, 
+          userID: bidders[0].userID,
+          auctionPoster:{
+            email:auction.user.email, 
+            fullname: auction.user.fullname,
+            phone: auction.user.phone
+          },
+          auctionTitle:auction.title
+        })
+      }
     }
   });
 
-  const socket = io("ws://localhost:8080");
+  
   socket.emit("roomJoin", "auction-" + ID);
   socket.on("newPrice", async (data) => {
     auction.price = data;
     originalPrice = data;
-    bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date)<new Date(b.date));
+    bidders = (await GetBidders($Token.token, ID)).sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime());
     if (!isLatestOrOwn(auction.userID)){
       actbtn.disabled = false;
       btn.disabled = false;

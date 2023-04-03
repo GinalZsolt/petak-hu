@@ -14,7 +14,7 @@
 
   async function CopyLink() {
     await navigator.clipboard.writeText(
-      "http://localhost:8080/profile/" + $userPerms.id
+      "http://localhost:5173/profile/" + coin.userID
     );
   }
   async function CheckIfCanAuction(coinID: number): Promise<{reason:string, can:boolean}> {
@@ -40,7 +40,7 @@
 
 {#if coin != undefined}
   <div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">{coin.name}</h2>
@@ -142,7 +142,7 @@
             <div>
               <button type="button" class="btn" data-bs-dismiss="modal">OK</button
               >
-              <button class="btn"><i class="bi bi-share" /></button>
+              <button class="btn" on:click={CopyLink}><i class="bi bi-share" /></button>
             </div>
           </div>
           {#await CheckIfCanAuction(coin.ID) then result}

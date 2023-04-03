@@ -22,11 +22,17 @@ async function GetAuctions(token:string, userID:number):Promise<Auction[]>{
 async function GetAllAuctions(token:string):Promise<Auction[]>{
     return await Get(token, 'auctions');
 }
-async function GetAuctionData(token:string, id:number):Promise<Auction>{
+async function GetAuctionData(token:string, id:number):Promise<Auction|boolean>{
     let auction = await Get(token, 'auctions', 'ID', id).then(res=>res[0]) as Promise<Auction>;
     let users = await Get(token, 'users').then(res=>res) as Promise<User[]>;
     return await Promise.all([auction, users]).then(res=>{
-        let user = res[1].find(e=>e.ID==res[0].userID);
+        let user;
+        try{
+            user = res[1].find(e=>e.ID==res[0].userID);
+        }
+        catch {
+            return false;
+        }
         return {
             ...res[0],
             user: {

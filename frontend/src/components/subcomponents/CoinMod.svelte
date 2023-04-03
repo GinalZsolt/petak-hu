@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { Coin } from "../../interfaces/Coin";
     import type { Category, TagInterface } from "../../interfaces/Tags";
-    import { GetCoin, UploadCoin, UploadTag } from "../../services/dbCoin";
-    import { Delete, Get, Patch, Post } from "../../services/dbQueries";
+    import { UploadTag } from "../../services/dbCoin";
+    import { Delete, Get, Patch } from "../../services/dbQueries";
     import { DeleteImage, UploadImage } from "../../services/fileService";
     import {Token} from '../../stores';
     import ErrorAlert from "./ErrorAlert.svelte";
@@ -126,7 +126,7 @@
         newTags.splice(index, 1);
         newTags = newTags;
     }
-    function DeleteTag(tag:TagInterface, index:number){
+    function DeleteTag(tag:TagInterface){
         toBeDeleted = [...toBeDeleted, tag];
     }
 </script>
@@ -148,8 +148,8 @@
             margin-left: 0.25rem
 </style>
 
-<div class="modal fade" id="CoinMod" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="CoinMod" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5">{Coin.name} | Módosítás</h1>
@@ -173,14 +173,22 @@
             <h4>Címkék</h4>
             
             {#await categoriesPromise then categories}
-            <select name="tagtype" class="form-select" bind:value={newID}>
-                    {#each categories as category}
-                        <option value={category.ID}>{category.name}</option>
-                    {/each}
-            </select>
-            <input type="text" name="tagname" bind:value={tagdescription} class="form-control">
-            <input type="button" class="btn" value="Hozzáadás" on:click={()=>AddTag(categories.find(e=>e.ID==newID))}>
-            <input type="button" class="btn" value="Reset" on:click={ResetTags}>
+            <div class="mb-3">
+                <label for="tagtype" class="form-label">Címke Fajtája</label>
+                <select name="tagtype" class="form-select" bind:value={newID}>
+                        {#each categories as category}
+                            <option value={category.ID}>{category.name}</option>
+                        {/each}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="tagname" class="form-label">Címke leírása</label>
+                <input type="text" name="tagname" bind:value={tagdescription} class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="button" class="btn" value="Hozzáadás" on:click={()=>AddTag(categories.find(e=>e.ID==newID))}>
+                <input type="button" class="btn" value="Reset" on:click={ResetTags}>
+            </div>
             {/await}
             <div id="tags">
                 {#each Coin.tags as tag, i}

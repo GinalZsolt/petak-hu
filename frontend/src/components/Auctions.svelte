@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AuctionPageAuctions, GetAllAuctions } from "../services/dbAuction";
-  import { Token } from "../stores";
+  import { Token, userPerms } from "../stores";
   import AuctionCard from "./subcomponents/AuctionCard.svelte";
   import {fade} from 'svelte/transition';
   import MediaQuery from "./subcomponents/MediaQuery.svelte";
@@ -8,6 +8,10 @@
 </script>
 
 <main>
+  {#await AuctionPageAuctions($Token.token)}
+  <div class="spinner-border"></div>
+  {:then Data}
+  {#if Data.length>0}
   <div class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
     <div class="input-group mb-3">
       <span class="input-group-text border-dark"
@@ -35,9 +39,8 @@
         <div class="carousel-inner">
           <MediaQuery query="(min-width: 768px)" let:matches>
             {#if matches}
-              {#await AuctionPageAuctions($Token.token)}
                 <div class="spinner-border"></div>
-                {:then Data}
+                
                   {#each Data as array, i}
                   <div class={"carousel-item" + (i == 0 ? " active" : "")}>
                     <div class="d-flex">
@@ -59,7 +62,7 @@
                     </div>
                   </div>
                   {/each}
-              {/await}
+              
             {/if}
             {#if !matches}
               {#await GetAllAuctions($Token.Token) then Data}
@@ -101,6 +104,15 @@
     </div>
     {/if}
   </div>
+  {:else}
+  <div class="mt-5">
+    <h2>Még nincs aukció feltöltve!</h2>
+    {#if $userPerms.permission>0}
+      <h3>A <a href={`/catalogue/${$userPerms.id}`}>katalógusában</a> aukcióra bocsáthat érmét!</h3>
+    {/if}
+  </div>
+  {/if}
+  {/await}
 </main>
 
 <style lang="sass">
@@ -116,11 +128,8 @@
         background-color: #00000011
     .flexCard
       width:33%
-    $searchbarColor: #ffcc95
-    .input-group-text
-        background-color: $searchbarColor
     .carousel
-        background-color: #000
+      background-color: #000
     .startBtn, .endBtn
       transition: opacity 0.3s ease-out
     .startBtn
