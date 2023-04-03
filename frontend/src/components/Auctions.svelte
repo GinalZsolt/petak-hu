@@ -109,6 +109,8 @@
     <h2>Még nincs aukció feltöltve!</h2>
     {#if $userPerms.permission>0}
       <h3>A <a href={`/catalogue/${$userPerms.id}`}>katalógusában</a> aukcióra bocsáthat érmét!</h3>
+    {:else}
+      <h3><a href="/register">Regisztráljon</a> és vegye fel maga az elsőt!</h3>
     {/if}
   </div>
   {/if}
