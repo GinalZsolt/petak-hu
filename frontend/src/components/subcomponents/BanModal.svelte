@@ -6,19 +6,28 @@
   import ErrorAlert from "./ErrorAlert.svelte";
 
   export let User:any={}
-
-  let err1
-  let err2
-  let err3
+  let err:ErrorAlert;
+  let Error = {
+    text: "",
+    id: "",
+    error: false
+  }
   let alreadybanned
-
-  async function Ban(){
+  function ErrorShow(text:string, id:string, error:boolean){
+    Error = {
+      text: text,
+      id: id,
+      error: error
+    }
+    err.showError();
+  }
+  function Ban(){
     if (User.datum==undefined){
-      err1.showError()
+      ErrorShow("Kérem adjon dátumot!", "nodate", true);
     }
     else{
-      await Post($Token.token,"moderations",{userID:User.ID,banTime:User.datum}).then((res) => {
-        err2.showError()
+      Post($Token.token,"moderations",{userID:User.ID,banTime:User.datum}).then((res) => {
+        ErrorShow("Sikeres kitiltás!", "success", false);
         alreadybanned=true
       })
     }
@@ -28,8 +37,8 @@
     await GetBanned($Token.token).then(
      (res)=>{
       res.forEach(element => {
-      if (element.userID==User.ID){
-        err3.showError()
+      if (element.userID==User.ID && new Date().getTime() < new Date(element.banTime).getTime()){
+        ErrorShow("Ez a felhasználó már ki van tiltva!", "alreadybanned", true);
         alreadybanned=true
       }
     });
@@ -54,9 +63,7 @@
         <input type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
       </div>
       <div class="modal-body">
-        <ErrorAlert bind:this={err1} Error={{id:"nodate",text:"Nem adtál meg dátumot!",error:true}}/>
-        <ErrorAlert bind:this={err2} Error={{id:"success",text:"Sikeresen kitiltva!",error:false}}/>
-        <ErrorAlert bind:this={err3} Error={{id:"banned",text:"A felhasználó már ki van tiltva!",error:true}}/>
+        <ErrorAlert bind:this={err} {Error} />
             <form action="">
               <div class="mb-3">
                 <label for="username" class="form-label">Felhasználó név</label>

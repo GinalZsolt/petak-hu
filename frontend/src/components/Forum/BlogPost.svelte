@@ -32,7 +32,7 @@
     }
 </script>
 <style lang="sass">
-    #backbtn, #newcomment, #post, #newcomment button
+    #post, #newcomment
         background-color: #ffcc95
     #newcomment
         border:1px solid black
@@ -52,13 +52,21 @@
     #post_image
         width:50%
         margin-left: auto
-    #backbtn
-        border: 1px solid var(--bs-dark)
+    .btn-danger
+        background-color: var(--bs-danger)
+    .btn-success
+        background-color: var(--bs-success)
 </style>
 <main>
     {#await Posts}
         <div class="spinner-border m-auto"></div>
     {:then Data}
+        {#if !Data[0]}
+        <div class="nopost text-center mt-5">
+            <h2>Ilyen fórumbejegyzés nincs!</h2>
+            <h3><a class="link-danger" href="/forums"><i class="bi bi-arrow-left"></i> Vissza</a></h3>
+        </div>
+        {:else}
         {#if Data[0].isDeleted}
             <div class="mt-3 alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}    
@@ -111,5 +119,6 @@
                     <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
                 {/each}
         {/await}
+        {/if}
     {/await}
 </main>

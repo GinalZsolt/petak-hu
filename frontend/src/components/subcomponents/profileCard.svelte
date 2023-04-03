@@ -32,7 +32,7 @@
         width: 100%
         position: absolute
         top: calc(100% - 1.5rem)
-        background-color: #aaaaaa7f
+        background-color: #000000af
         color: white
 </style>
 
