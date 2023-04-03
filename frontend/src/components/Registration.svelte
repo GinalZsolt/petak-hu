@@ -61,9 +61,12 @@
         display: flex
         flex-flow: column
         justify-content: center
+    .card-body
+        max-height: 70vh
+        overflow: auto
 </style>
 <main>
-    <form class="card mx-auto col-lg-6 col-md-8 col-11">
+    <form class="card mx-auto col-lg-6 col-md-9 col-11">
         <h3 class="card-header card-title">Regisztráció</h3>
         <div class="card-body">
             <h4>Fiókadatok</h4>
@@ -89,6 +92,7 @@
                 <label for="passwdagain">Jelszó megerősítése<span class="text-danger">*</span></label>
                 <input type="password" bind:value={pass2} name="passwdagain" class="form-control">
             </div>
+            <span class="fw-bold text-danger">A csillaggal jelölt mezők kijelölése kötelező!</span>
             <hr>
             <h4>Kapcsolati információk</h4>
             <div class="mb-3">
@@ -100,10 +104,10 @@
                 <label for="address">Cím</label>
                 <input type="text" bind:value={User.address} name="address" class="form-control">
             </div>
-            <span class="fw-bold text-danger">A csillaggal jelölt mezők kijelölése kötelező!</span>
         </div>
         <div class="card-footer">
             <button type="button" class="btn btn-success" on:click={Register} >Regisztrálok</button>
+            
         </div>
     </form>
 </main>

@@ -3,7 +3,7 @@
     import ErrorAlert from './subcomponents/ErrorAlert.svelte';
     import { GetUserData } from "../services/dbUser";
     import { userPerms, Token } from "../stores";
-    import { Delete, Patch, Post } from "../services/dbQueries";
+    import { Patch } from "../services/dbQueries";
     import sha256 from "crypto-js/sha256"
     import { DeleteImage, UploadImage } from "../services/fileService";
     import type { User } from "../classes/User";
@@ -82,58 +82,66 @@
     }
 </script>
 <style lang="sass">
-    #modform
-        padding: 20px
-        border: 1px solid black
-        border-radius:0.25rem
-        background-color: #ffcc95
+    $bg-card: #ffcc95
+    .card-header
+        background-color: $bg-card
     em
         color: red
-    main
-        display: flex
-        justify-content: center
+    form
+        max-height: 70vh
+        overflow: auto
 </style>
 
 <!-- Content -->
 <main>
     {#if user}
-    <div id="modform" class="col-lg-6 col-md-8 col-11 mx-auto">
-        <h2>Profil Módosítása</h2>
-        <ErrorAlert bind:this={err} Error={errormessage}/>
-        <form>
-            <div class="mb-3">
-                <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
-                <input type="text" bind:value={user.name} class="form-control" id="username" name="username" >
-            </div>
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Teljes név <em>*</em> </label>
-                <input type="text" bind:value={user.fullname} class="form-control" id="fullname" name="fullname" >
-            </div>
-              <div class="mb-3">
-                <label for="username" class="form-label">Email cím <em>*</em> </label>
-                <input type="email" disabled bind:value={user.email} class="form-control" id="email" name="email" >
-            </div>
-            <div class="mb-3">
-                <label for="pass1" class="form-label">Jelszó <em>*</em></label>
-                <input type="password" bind:value={pass1} class="form-control" id="pass1" name="pass1">
-                <div id="minpass" class="form-text">Min. 8 karakter, kis és nagybetű, szám</div>
-            </div><div class="mb-3">
-                <label for="pass2" class="form-label">Jelszó Megerősítése<em>*</em></label>
-                <input type="password" bind:value={pass2} class="form-control" id="pass2" name="pass2">
-            </div>
-            <div class="mb-3">
-                <label for="cim" class="form-label">Cím</label>
-                <input type="text" bind:value={user.address} class="form-control" id="address" name="address">
-            </div>
-            <div class="mb-3">
-                <label for="telefon" class="form-label">Telefon</label>
-                <input type="text" bind:value={user.phone} class="form-control" id="phone" name="phone">
-                <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
-            </div>
-            <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
-            <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">
+    <div class="mt-3 col-lg-6 col-md-8 col-11 mx-auto card">
+        <h2 class="card-header">Profil Módosítása</h2>
+        <div class="card-body">
+            <ErrorAlert bind:this={err} Error={errormessage}/>
+            <form>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Felhasználónév <em>*</em> </label>
+                    <input type="text" bind:value={user.name} class="form-control" id="username" name="username" >
+                </div>
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Teljes név <em>*</em> </label>
+                    <input type="text" bind:value={user.fullname} class="form-control" id="fullname" name="fullname" >
+                </div>
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Email cím <em>*</em> </label>
+                    <input type="email" disabled bind:value={user.email} class="form-control" id="email" name="email" >
+                </div>
+                <div class="mb-3">
+                    <label for="pass1" class="form-label">Jelszó <em>*</em></label>
+                    <input type="password" bind:value={pass1} class="form-control" id="pass1" name="pass1">
+                    <div id="minpass" class="form-text">Min. 8 karakter, kis és nagybetű, szám</div>
+                </div><div class="mb-3">
+                    <label for="pass2" class="form-label">Jelszó Megerősítése<em>*</em></label>
+                    <input type="password" bind:value={pass2} class="form-control" id="pass2" name="pass2">
+                </div>
+                <div class="mb-3">
+                    <label for="file" class="form-label">Profilkép</label>
+                    <input bind:files={pfp} accept="image/*" class="form-control mb-3" name="file"  type="file" id="file">
+                </div>
+                <p class="text-muted">A <em>*</em>-gal jelölt mezők kitöltése kötelező!</p>
+                <hr>
+                <div class="mb-3">
+                    <label for="cim" class="form-label">Cím</label>
+                    <input type="text" bind:value={user.address} class="form-control" id="address" name="address">
+                </div>
+                <div class="mb-3">
+                    <label for="telefon" class="form-label">Telefon</label>
+                    <input type="text" bind:value={user.phone} class="form-control" id="phone" name="phone">
+                    <div id="phonehelp" class="form-text">Nemzetközi forma (+36301234567)</div>
+                </div>
+                
+                
+            </form>
+        </div>
+        <div class="card-footer">
             <button type="button" class="btn" on:click={()=>{Update(user)}}>Megerősítés</button>
-          </form>
+        </div>
     </div>
     {/if}
 </main>
