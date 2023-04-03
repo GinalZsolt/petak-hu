@@ -105,7 +105,7 @@
     {/if}
   </div>
   {:else}
-  <div class="mt-5">
+  <div class="mt-5 text-center">
     <h2>Még nincs aukció feltöltve!</h2>
     {#if $userPerms.permission>0}
       <h3>A <a href={`/catalogue/${$userPerms.id}`}>katalógusában</a> aukcióra bocsáthat érmét!</h3>
