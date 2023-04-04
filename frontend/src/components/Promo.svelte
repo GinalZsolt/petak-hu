@@ -12,8 +12,8 @@
     </div>
     <div>
         <div class="row">
-            <p class="my-auto col-12 col-md-8">A Peták.hu egy gyújtői és aukciós oldal, melyet elsősorban a Magyar Éremgyűjtők Egyesületének tagjai számára fejlesztettünk ki. Ide minden gyűjtő feltöltheti érméit, kereshet köztük, elküldheti katalógusát ismerőseinek illetve a már meglévő érméit aukcióra bocsáthatja.  </p>
             <img class="col-12 col-md-4 img-thumbnail" src="MÉE.jpg" alt="">
+            <p class="my-auto col-12 col-md-8">A Peták.hu egy gyújtői és aukciós oldal, melyet elsősorban a Magyar Éremgyűjtők Egyesületének tagjai számára fejlesztettünk ki. Ide minden gyűjtő feltöltheti érméit, kereshet köztük, elküldheti katalógusát ismerőseinek illetve a már meglévő érméit aukcióra bocsáthatja.  </p>
         </div>
         <div class="row">
             <p class="my-auto col-12 col-md-8">Az oldal könnyen kezelhető, akár telefonról is, ennek köszönhetően bármikor hozzáférhet katalógusához. Ebben segítséget nyújt az oldal tetején elhelyezett kereső sáv, melyben az érme neve és címkéi alapján is kereshet. Innen a katalógusból tudja feltöltött érméit módosítani, aukcióra bocsátani illetve törölni.</p>
