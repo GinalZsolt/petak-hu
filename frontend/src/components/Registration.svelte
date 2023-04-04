@@ -13,6 +13,10 @@
     let pass2:string=""
 
     function badData(string:string){
+        if (string)
+        {
+            string = string.trim();
+        }
         return string==undefined||string==""
     }
     function SetError(id:string, message:string, isError:boolean){

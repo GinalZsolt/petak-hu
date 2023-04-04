@@ -39,6 +39,8 @@
     }
   }
   function filledForm():boolean{
+    data.title = data.title.trim();
+    data.description = data.description.trim();
     return data.title!="" &&data.title!=undefined
         && data.price!=undefined
         && data.minBid>0

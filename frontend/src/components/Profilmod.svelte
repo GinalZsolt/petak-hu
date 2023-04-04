@@ -21,6 +21,15 @@
     let pass2:string=""
     let pfp:FileList;
     function missing(data:User){
+        if (data.address){
+            data.address = data.address.trim();
+        }
+        if (data.fullname){
+            data.fullname = data.fullname.trim();
+        }
+        if (data.name){
+            data.name = data.name.trim();
+        }
         return data.name==undefined
              ||data.name==""
              ||data.fullname==undefined
@@ -70,9 +79,9 @@
             let formdata = new FormData();
             formdata.append('image', pfp[0]);
             upload = await UploadImage($Token.token, formdata);
-        }
-        if (upload.status == 500){
-            setError('fileerror', 'A fájl nem megfelelő (mérete túl nagy [>5MiB], vagy nem kép)!',true);
+            if (upload.status == 500){
+                setError('fileerror', 'A fájl nem megfelelő (mérete túl nagy [>5MiB], vagy nem kép)!',true);
+            }
         }
         else{
             await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);

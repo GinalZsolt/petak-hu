@@ -33,16 +33,27 @@
         newTags = newTags;
     }
     function AddTag(cat:Category){
-        newTags = [...newTags, {
-            ID: Coin.tags.length*10,
-            coinID: Coin.ID,
-            color: cat.color,
-            description: tagdescription, 
-            name: cat.name,
-            categoryID: cat.ID,
-        }]
+        tagdescription = tagdescription.trim();
+        if (tagdescription!=""){
+            newTags = [...newTags, {
+                ID: Coin.tags.length*10,
+                coinID: Coin.ID,
+                color: cat.color,
+                description: tagdescription, 
+                name: cat.name,
+                categoryID: cat.ID,
+            }]
+        }
+        else{
+            seterror('nodesc','Nem töltötte ki a leírást', true);
+        }
+    }
+    function TrimAll(){
+        Coin.description = Coin.description.trim();
+        Coin.name = Coin.name.trim();
     }
     async function CommenceMod(){
+        TrimAll();
         if (CanMod()){
             seterror('empty', 'Nincs minden kötelező adat megadva!', true);
         }

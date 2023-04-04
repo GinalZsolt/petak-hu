@@ -20,6 +20,7 @@
         db.ClosePost($Token.token, ID).then(()=>{Posts = db.GetBlogpost($Token.token, ID)});
     }
     function SendComment(){
+        newMessage = newMessage.trim();
         if (newMessage!=undefined && newMessage!=""){
             db.UploadComment($Token.token, {
                 message: newMessage,

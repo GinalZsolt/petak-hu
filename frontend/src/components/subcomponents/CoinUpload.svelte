@@ -40,6 +40,7 @@
     }
  
     function addTag(){
+        newtag.description = newtag.description.trim();
         if (newtag.categoryID==0||newtag.description=="") {
             err2.showError()
         }
@@ -62,10 +63,18 @@
         data.price==undefined||
         data.heads==undefined||
         data.tails==undefined||
-        data.description==undefined
+        data.description==undefined||
+        data.name==""||
+        data.price<=0||
+        data.description==""
     }
-
+    function TrimAll(){
+        data.name = data.name.trim();
+        data.description = data.description.trim();
+        newtag.description = newtag.description.trim();
+    }
     async function CoinUp(){
+        TrimAll();
         if (!missing()) {
             let images = new FormData()
             images.append("head",data.heads[0])
