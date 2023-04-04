@@ -43,6 +43,7 @@
     data.description = data.description.trim();
     return data.title!="" &&data.title!=undefined
         && data.price!=undefined
+        && data.price>0
         && data.minBid>0
         && data.description!="" && data.description!=undefined
         && new Date(data.expiration).getTime() > new Date().getTime();
@@ -82,7 +83,7 @@
                 <div class="mb-3">
                     <label for="auction_start_value">Aukció kezdő értéke</label>
                     <div class="input-group mx-w">
-                        <input type="number" class="form-control" min={Coin.worth} bind:value={data.price}>
+                        <input type="number" class="form-control" placeholder={Coin.worth.toString()} min="0" bind:value={data.price}>
                         <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
