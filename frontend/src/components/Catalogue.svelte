@@ -1,12 +1,11 @@
 <script lang="ts">
-    import CoinCard from "./subcomponents/CoinCard.svelte";
-    import type { Coin } from "../interfaces/Coin";
-    import CoinModal from "./subcomponents/coinModal.svelte";
-    import {Token, userPerms} from './../stores';
-    import {Get} from '../services/dbQueries';
-    import { onMount } from "svelte";
-    import { GetUserData } from "../services/dbUser";
-    import { router } from "tinro";
+  import CoinCard from "./subcomponents/CoinCard.svelte";
+  import type { Coin } from "../interfaces/Coin";
+  import CoinModal from "./subcomponents/coinModal.svelte";
+  import {Token, userPerms} from './../stores';
+  import { onMount } from "svelte";
+  import { GetUserData } from "../services/dbUser";
+  import { router } from "tinro";
   import CoinUpload from "./subcomponents/CoinUpload.svelte";
   import { GetUserCoins } from "../services/dbCoin";
     let ID = Number(router.meta().params.id);
@@ -24,8 +23,11 @@
     }
     onMount(async()=>{
       await GetUserData(ID,$Token.token).then((res)=>{
-        profile.name=res[0].name
-      })
+        if (res[0]){
+          profile.name=res[0].name
+        }
+        else router.goto('/dashboard');
+      }).catch(()=>router.goto('/dashboard'));
       await getCoinList();
       modal.loadmodal(profile.coin_list[0])
       console.log(profile.coin_list);

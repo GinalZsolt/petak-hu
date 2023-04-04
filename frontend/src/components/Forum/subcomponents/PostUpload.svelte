@@ -22,7 +22,7 @@
                 upload.append('image', data.file[0]);
                 await (UploadImage($Token.token, upload)).then(dt=>{
                     if (dt.status){
-                        ShowError("A Fájl rossz!", "danger");
+                        ShowError("A Fájl nem megfelelő (mérete túl nagy [>5 MiB], vagy nem kép)!", "danger");
                     }
                     else{
                         db.UploadPost($Token.token, {

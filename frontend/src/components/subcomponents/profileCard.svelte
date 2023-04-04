@@ -34,6 +34,11 @@
         top: calc(100% - 1.5rem)
         background-color: #000000af
         color: white
+    @media screen and (max-width: 576px) 
+        .card
+            width: calc(100% - 1.25rem)
+            margin-bottom: 1.25rem
+        
 </style>
 
 
@@ -56,8 +61,7 @@
     </div>
     <div class="bottomText">
         <span>{auction ? auction.title : coin.name}</span>
-
-        </div>
+    </div>
     </div>
     {:else}
 <div class="empty"></div>

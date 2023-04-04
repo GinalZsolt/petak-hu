@@ -65,20 +65,27 @@
         }
     }
     async function TryUpdate(data:User){
+        let upload;
         if (pfp && pfp.length>0){
-            await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);
             let formdata = new FormData();
             formdata.append('image', pfp[0]);
-            let upload = await UploadImage($Token.token, formdata);
-            data.imagefile = upload.filename;
-            console.log(data);
+            upload = await UploadImage($Token.token, formdata);
         }
-        Patch($Token.token, 'users', 'ID', $userPerms.id, data).then(()=>{
-            setError('success','Sikeres profilmódosítás', false)
-        })
-        .catch(()=>{
-            setError('servererror','Szerverhiba történt, kérem szóljon a fejlesztőknek!', true);
-        })
+        if (upload.status == 500){
+            setError('fileerror', 'A fájl nem megfelelő (mérete túl nagy [>5MiB], vagy nem kép)!',true);
+        }
+        else{
+            await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);
+            data.imagefile = upload.filename
+            user.passwd = sha256(pass1).toString();
+            console.log(data);
+            Patch($Token.token, 'users', 'ID', $userPerms.id, data).then(()=>{
+                setError('success','Sikeres profilmódosítás', false)
+            })
+            .catch(()=>{
+                setError('servererror','Szerverhiba történt, kérem szóljon a fejlesztőknek!', true);
+            })
+        }
     }
 </script>
 <style lang="sass">

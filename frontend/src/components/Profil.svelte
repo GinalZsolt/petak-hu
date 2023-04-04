@@ -62,6 +62,9 @@
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
+    {#if ProfileData.user.ID == undefined}
+    {router.goto('/dashboard')}
+    {/if}
       <BanModal User={ProfileData.user} />
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
@@ -100,7 +103,7 @@
         {/if}
       </div>
       <div class="coins mb-3">
-          <div class="d-flex flex-row justify-content-between">
+          <div class="d-flex flex-column flex-sm-row justify-content-between">
             {#if ProfileData.coins[0]}
               <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} on:click={()=>{selectedcoin = ProfileData.coins[0]}}/>
             {:else}
@@ -127,13 +130,27 @@
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
       <div class="auctions mb-3">
-        <div class="d-flex flex-row justify-content-between">
-        {#each ProfileData.auctions as auction, i}
-          <ProfileCard auction={auction} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
-        {/each}
+        <div class="d-flex flex-column flex-sm-row flex-wrap justify-content-between">
+          {#if ProfileData.auctions[0]}
+            <ProfileCard auction={ProfileData.auctions[0]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[0].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[1]}
+            <ProfileCard auction={ProfileData.auctions[1]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[1].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[2]}
+            <ProfileCard auction={ProfileData.auctions[2]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[2].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
         </div>
       </div>
       {/if}
+      {:catch}
+      {router.goto("/dashboard")}
     {/await}
     <CoinModal on:mod={()=>{profile = GetUserProfile(ID, $Token.token)}} coin={modcoin}/>
 </main>
@@ -150,12 +167,16 @@
     height: 100%
     object-fit: cover
   .profileimage
-    height: 150px
-    width: 150px
+    height: 100px
+    width: 100px
     overflow: hidden
     border: 1px solid black
   #catalogueBtn
     margin-top: 1rem
   #interactionbtn
     height: 100%
+  @media screen and (max-width:576px)
+    .auctions, .coins
+      max-height: calc(175px + 2.5rem)
+      overflow: auto
 </style>
