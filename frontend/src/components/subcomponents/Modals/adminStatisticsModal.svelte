@@ -1,8 +1,6 @@
 <script lang="ts">
     import type { ModalData } from "../../../interfaces/Admin";
-    import type { Statistics } from "../../../services/dbStatistics";
-    import Chart from "./chart.svelte";
-    import type { Banned } from "../../../services/dbUser";
+    import Chart from "../Admin/chart.svelte";
     export let Data:ModalData
     
 </script>

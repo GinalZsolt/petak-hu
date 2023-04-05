@@ -37,7 +37,7 @@ async function Patch(token:string, table:string, field:string, value:string|numb
         }
     }).then(res=>res.data).catch(err=>err.response);
 }
-async function Delete(token:string, table:string, field:string, value:string):Promise<ExecAnswer>{
+async function Delete(token:string, table:string, field:string, value:string|number):Promise<ExecAnswer>{
     return await axios.delete(backendUrl+QueryStringGenerator(table, field, value), {
         headers:{
             'Authorization':'JWT '+token

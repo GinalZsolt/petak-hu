@@ -1,8 +1,7 @@
 <script lang="ts">
     import { each } from "svelte/internal";
     import type { ModalData } from "../../../interfaces/Admin";
-    import type { Statistics } from "../../../services/dbStatistics";
-    import { GetBanned, type Banned } from "../../../services/dbUser";
+    import { GetBanned } from "../../../services/dbUser";
     import moment from "moment";
     import { Delete } from "../../../services/dbQueries";
     import { Token } from "../../../stores";
@@ -66,9 +65,13 @@
                                     <td>{moment(person.startdate).format("YYYY-MM-DD")}</td>
                                     <td>{moment(person.banTime).format("YYYY-MM-DD")}</td>
                                     <td class="text-center">
+                                      {#if new Date().getTime() < new Date(person.banTime).getTime()}
                                       <button class="btn btn-warning" on:click={()=>{unBan(person.ID)}}>
                                         <i class="bi bi-person-check-fill"></i>
                                       </button>
+                                      {:else}
+                                      <h6 class="text-success">Vége</h6>
+                                      {/if}
                                     </td>
                                 </tr>
                             {/each}

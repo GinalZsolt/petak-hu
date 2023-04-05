@@ -1,4 +1,4 @@
-import type { User } from "../classes/User";
+import type { User } from "./User";
 import type { Auction } from "./Auction";
 import type { Coin } from "./Coin";
 

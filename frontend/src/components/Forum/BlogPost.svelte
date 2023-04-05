@@ -3,6 +3,7 @@
     import {db} from '../../services/dbForum';
     import {Token, userPerms} from '../../stores';
     import { router } from "tinro";
+    import { GetUserData } from "../../services/dbUser";
     let ID:number = Number(router.meta().params.id);
     let Comments = db.GetPostsComments($Token.token, ID);
     let Posts = db.GetBlogpost($Token.token, ID);
@@ -19,6 +20,7 @@
         db.ClosePost($Token.token, ID).then(()=>{Posts = db.GetBlogpost($Token.token, ID)});
     }
     function SendComment(){
+        newMessage = newMessage.trim();
         if (newMessage!=undefined && newMessage!=""){
             db.UploadComment($Token.token, {
                 message: newMessage,
@@ -31,7 +33,7 @@
     }
 </script>
 <style lang="sass">
-    #backbtn, #newcomment, #post, #newcomment button
+    #post, #newcomment
         background-color: #ffcc95
     #newcomment
         border:1px solid black
@@ -51,13 +53,21 @@
     #post_image
         width:50%
         margin-left: auto
-    #backbtn
-        border: 1px solid var(--bs-dark)
+    .btn-danger
+        background-color: var(--bs-danger)
+    .btn-success
+        background-color: var(--bs-success)
 </style>
 <main>
     {#await Posts}
         <div class="spinner-border m-auto"></div>
     {:then Data}
+        {#if !Data[0]}
+        <div class="nopost text-center mt-5">
+            <h2>Ilyen fórumbejegyzés nincs!</h2>
+            <h3><a class="link-danger" href="/forums"><i class="bi bi-arrow-left"></i> Vissza</a></h3>
+        </div>
+        {:else}
         {#if Data[0].isDeleted}
             <div class="mt-3 alert alert-dismissible alert-warning col-lg-8 col-md-8 col-11 mx-auto"><i class="bi bi-exclamation-circle"></i> Ez a poszt törölve lett! <i class="bi bi-x-lg" data-bs-dismiss="alert"></i></div>
         {/if}    
@@ -82,26 +92,18 @@
             <div>
                 <h2>{Data[0].title}</h2>
                 <div id="authorinfo">
-                    <span>{Data[0].userID} - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {#await GetUserData(Data[0].userID, $Token.token) then user}
+                    <span><a href={"/profile/"+Data[0].userID}>{user[0].name}</a> - {new Intl.DateTimeFormat('hu-HU').format(new Date(Data[0].date))}</span>
+                    {/await}
                 </div>
                 <p>{Data[0].description}</p>
             </div>
-            <div>
+            <div class="col-3">
                 {#if Data[0].imagefile}
-                <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="img-fluid" alt="kép">
+                    <img src="http://localhost:8080/img/{Data[0].imagefile}" id="post_image" class="w-100 img-fluid" alt="kép">
                 {/if}
             </div>
-            {#if $userPerms.id==Data.userID}
-            <div class="dropdown d-flex flex-row-reverse">
-                <a class="btn btn-secondary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><button class="dropdown-item">Lezárás</button></li>
-                    <li><button class="dropdown-item">Törlés</button></li>
-                </ul>
-            </div>
-            {/if}
+         
         </div>
         {#if !Data[0].isClosed && !Data[0].isDeleted}
             <div id="newcomment" class=" col-lg-8 col-md-8 col-11 mx-auto mt-3">
@@ -118,5 +120,6 @@
                     <CommentSvelte Data={{username:comment.username,date:comment.date,text:comment.message, userID:comment.userID}}/>
                 {/each}
         {/await}
+        {/if}
     {/await}
 </main>

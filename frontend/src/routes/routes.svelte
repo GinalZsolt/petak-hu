@@ -18,21 +18,13 @@
             <Route path={route.url}><Lazyloading component={import(route.component)}/></Route>
         {/if}
     {/each}
-    <!--Paraméterezett Útvonalak-->
-    <Route path="/auctions/:id"><Lazyloading component={()=>import('../components/AuctionPage.svelte')}/></Route>
-    <Route path="/forums/:id"><Lazyloading component={()=>import('../components/Forum/BlogPost.svelte')}/></Route>
-    <Route path="/profile/:id"><Lazyloading component={()=>import('../components/Profil.svelte')}/></Route>
-    <Route path="/profilemod"><Lazyloading component={()=>import('../components/Profilmod.svelte')}/></Route>
-    <Route path="/catalogue/:id"><Lazyloading component={()=>import('../components/Catalogue.svelte')}/></Route>
-    <Route fallback redirect="/login"/>
-        {#if $userPerms.permission==0}
+    <Route fallback redirect="/"/>
+    {#if $userPerms.permission==0}
         <Route path="/login"><Lazyloading component={()=>import('../components/Login.svelte')}/></Route>
         <Route path="/register"><Lazyloading component={()=>import('../components/Registration.svelte')}/></Route>
-        {:else}
-        <Route path="/login" redirect="/" />
-        <Route path="/register" redirect="/" />
+    {:else}
+        <Route path="/login" redirect="/dashboard" />
+        <Route path="/register" redirect="/dashboad" />
     {/if}
 </Route>
-{:else}
-    <div class="spinner-grow" role="status" id="MainPageLoader"></div>
 {/if}

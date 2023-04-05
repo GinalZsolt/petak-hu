@@ -1,18 +1,20 @@
 <script lang="ts">
-  import type { Coin } from "../../interfaces/Coin";
-  import { userPerms, Token } from "../../stores";
+  import type { Coin } from "../../../interfaces/Coin";
+  import { userPerms, Token } from "../../../stores";
   export let coin: Coin;
   import CoinMod from "./CoinMod.svelte";
   import AuctionUploadModal from "./AuctionUploadModal.svelte";
-  import { GetCoin } from "../../services/dbCoin";
-  import { GetAllAuctions } from "../../services/dbAuction";
-  import { GetUserProfile } from "../../services/dbUser";
+  import { GetAllAuctions } from "../../../services/dbAuction";
+  import {createEventDispatcher} from 'svelte';
+  import { GetUserProfile } from "../../../services/dbUser";
 
   let auctionmodal
+  let dispatcher = createEventDispatcher();
+
 
   async function CopyLink() {
     await navigator.clipboard.writeText(
-      "http://localhost:8080/profile/" + $userPerms.id
+      "http://localhost:5173/profile/" + coin.userID
     );
   }
   async function CheckIfCanAuction(coinID: number): Promise<{reason:string, can:boolean}> {
@@ -40,7 +42,7 @@
 
 {#if coin != undefined}
   <div class="modal fade" tabindex="-1" role="dialog" id="coinmodal">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">{coin.name}</h2>
@@ -104,42 +106,48 @@
             {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
+                
                 {#await CheckIfCanAuction(coin.ID) then result}
-                {#if result.can}
-                <button
-                  type="button"
-                  class="btn"
-                  data-bs-target="#CoinMod"
-                  data-bs-toggle="modal">Módosítás</button
-                >
-                <button
-                type="button"
+                  {#if result.can}
+                    <button
+                      type="button"
                       class="btn"
                       on:click={()=>{auctionmodal.loadmodal(coin)}}
                       data-bs-target="#auctionupload"
                       data-bs-toggle="modal">Aukció</button
                     >
-                  {:else if result.reason == "noaddress"}
-                  <button
-                  type="button"
-                      class="btn"
-                      data-bs-target="#noaddress"
-                      data-bs-toggle="collapse">Aukció</button
-                      >
-                    {:else}
                     <button
                       type="button"
                       class="btn"
-                      disabled
                       data-bs-target="#CoinMod"
                       data-bs-toggle="modal">Módosítás</button
                     >
+                    {:else if result.reason == "noaddress"}
+                    <button
+                    type="button"
+                    class="btn"
+                    data-bs-target="#noaddress"
+                    data-bs-toggle="collapse">Aukció</button
+                    >
+                    <button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal">Módosítás</button
+                    >
+                    {:else}
                     <button
                     type="button"
                     class="btn"
                     disabled
-                      data-bs-target="#noaddress"
-                      data-bs-toggle="collapse">Aukció</button
+                    data-bs-target="#noaddress"
+                    data-bs-toggle="collapse">Aukció</button
+                    >
+                    <button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal" disabled={true}>Módosítás</button
                     >
                   {/if}
                 {/await}
@@ -149,7 +157,7 @@
             <div>
               <button type="button" class="btn" data-bs-dismiss="modal">OK</button
               >
-              <button class="btn"><i class="bi bi-share" /></button>
+              <button class="btn" on:click={CopyLink}><i class="bi bi-share" /></button>
             </div>
           </div>
           {#await CheckIfCanAuction(coin.ID) then result}
@@ -171,8 +179,8 @@
     </div>
   </div>
   {#if $userPerms.id == coin.userID}
+    <CoinMod on:mod={()=>{dispatcher('mod')}} Coin={coin} />
     <AuctionUploadModal bind:this={auctionmodal} Coin={coin}/>
-    <CoinMod Coin={coin} />
   {/if}
 {/if}
 

@@ -4,7 +4,7 @@
 
 <a href={CardData.href}
     ><div
-        class="dashboard-card m-3"
+        class="dashboard-card mb-3"
         style:--color1={CardData.fromColor}
         style:--color2={CardData.toColor}
     >

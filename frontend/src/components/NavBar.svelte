@@ -27,7 +27,7 @@
                       <li class="nav-item"><a href="/register" class="nav-link" use:active exact>Regisztráció</a></li>
               {/if}
                 {#each $Routes as route}
-                    {#if $userPerms.permission>=route.minPermission}
+                    {#if $userPerms.permission>=route.minPermission && route.showInNavbar == true}
                         <li class="nav-item">
                             <a class="nav-link" href={route.url} use:active exact>{route.name}</a>
                         </li>

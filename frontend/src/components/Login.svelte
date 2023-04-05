@@ -4,39 +4,54 @@
     import {Token, userPerms} from "../stores"
     import { GetPerms } from "../services/permissionGetter";
     import sha256 from 'crypto-js/sha256';
+
+
     let data:any = {}
-    let err1
-    let err2
-    let err3
-    async function login(){
+    let error;
+    let errormsg = {
+        text: "",
+        id: "",
+        error: false
+    }
+
+    function setError(id:string, text:string, _error:boolean){
+        errormsg.id = id;
+        errormsg.text = text;
+        errormsg.error = _error;
+        error.showError();
+    }
+    function setToken(response){
+        sessionStorage.setItem('petakhu', JSON.stringify({token:response.data.token})); 
+        Token.update(token=>token = response.data);
+            GetPerms($Token.token).then(data=>{
+                userPerms.update(()=>data);
+        });
+    }
+    function login(){
         if(data.email==undefined||data.passwd==undefined || data.email == "" || data.passwd == "")
         {
-            err2.showError();
+            setError('emptyfields', 'Nem töltött ki minden mezőt!', true);
         }
         else
         {
             let logindata={"email":data.email,"passwd":sha256(data.passwd).toString() }
-            console.log(logindata)
-            axios.post("http://localhost:8080/api/users/login",logindata).then(res=>
-            {
-                sessionStorage.setItem('petakhu', JSON.stringify({token:res.data.token})); 
-                Token.update(token=>token = res.data);
-                GetPerms($Token.token).then(data=>{
-                    userPerms.update(perms=>data);
+            axios
+            .post("http://localhost:8080/api/users/login",logindata)
+                .then(res=>{
+                    setToken(res);
                 })
-            }).catch(err=>{
-                switch (err.response.status){
-                    case 400:
-                        err1.showError();
-                        break;
-                    case 403:
-                        err3.showError();
-                        break;
-                }
-            })
+                .catch(err=>{
+                    switch (err.response.status){
+                        case 400:
+                            setError('badcreds', 'Rossz adatok!', true);
+                            break;
+                        case 403:
+                            setError('banned', 'Sajnos ki van tiltva!', true);
+                            break;
+                        }
+                });
         }
     }
-   
 </script>
 
 <style lang="sass">
@@ -55,9 +70,7 @@ main
 <main>
     <div id="loginform" class="col-lg-6 col-md-8 col-11 mx-auto">
         <h2>Bejelentkezés</h2>
-             <ErrorAlert bind:this={err1} Error={{id:"badlogin",text:"Hibás bejelentkezési adatok!",error:true}}/>
-             <ErrorAlert bind:this={err2} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt! ",error:true}}/>
-             <ErrorAlert bind:this={err3} Error={{id:"banneduser",text:"Ez a felhasználó ki lett tiltva!",error:true}}/>
+             <ErrorAlert bind:this={error} Error={errormsg}/>
         <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email cím</label>

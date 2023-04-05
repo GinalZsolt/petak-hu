@@ -1,18 +1,22 @@
 <script lang="ts">
-  import { AuctionPageAuctions } from "../services/dbAuction";
-  import { Token } from "../stores";
-  import AuctionCard from "./subcomponents/AuctionCard.svelte";
-  import {fade, fly} from 'svelte/transition';
+  import { AuctionPageAuctions, GetAllAuctions } from "../services/dbAuction";
+  import { Token, userPerms } from "../stores";
+  import AuctionCard from "./subcomponents/Cards/AuctionCard.svelte";
+  import {fade} from 'svelte/transition';
+  import MediaQuery from "./subcomponents/MediaQuery.svelte";
   let searchText: string = "";
 </script>
 
 <main>
+  {#await AuctionPageAuctions($Token.token)}
+  <div class="spinner-border"></div>
+  {:then Data}
+  {#if Data.length>0}
   <div class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
     <div class="input-group mb-3">
       <span class="input-group-text border-dark"
         ><i class="bi bi-search" /></span
       >
-
       <input
         type="text"
         class="form-control border-dark"
@@ -32,31 +36,49 @@
       >
       <div id="top" class="carousel slide w-100" data-bs-ride="carousel" in:fade='{{duration:140}}'>
         <div class="carousel-inner">
-          {#await AuctionPageAuctions($Token.token)}
-            <div class="spinner-border"></div>
-            {:then Data}
-              {#each Data as array, i}
-              <div class={"carousel-item" + (i == 0 ? " active" : "")}>
-                <div class="d-flex">
-                    {#if array[0]}  
-                      <AuctionCard Auction={array[0]}/>
+          <MediaQuery query="(min-width: 768px)" let:matches>
+            {#if matches}
+                <div class="spinner-border"></div>
+                
+                  {#each Data as array, i}
+                  <div class={"carousel-item" + (i == 0 ? " active" : "")}>
+                    <div class="d-flex">
+                      {#if array[0]}  
+                        <AuctionCard Auction={array[0]}/>
                       {:else}
-                      <div class="flexCard"></div>
-                    {/if}
-                    {#if array[1]}  
+                        <div class="flexCard"></div>
+                      {/if}
+                      {#if array[1]}  
                       <AuctionCard Auction={array[1]}/>
                       {:else}
                       <div class="flexCard"></div>
-                    {/if}
-                    {#if array[2]}  
+                      {/if}
+                      {#if array[2]}  
                       <AuctionCard Auction={array[2]}/>
                       {:else}
                       <div class="flexCard"></div>
-                    {/if}
-                </div>
-              </div>
-              {/each}
-          {/await}
+                      {/if}
+                    </div>
+                  </div>
+                  {/each}
+              
+            {/if}
+            {#if !matches}
+              {#await GetAllAuctions($Token.Token) then Data}
+                  {#each Data as auction, i}
+                    <div class={"carousel-item" + (i == 0 ? " active" : "")}>
+                      <div class="d-flex">
+                        {#if auction}  
+                          <AuctionCard Auction={auction}/>
+                        {:else}
+                          <div class="flexCard"></div>
+                        {/if}
+                      </div>
+                    </div>
+                  {/each}
+              {/await}
+            {/if}
+          </MediaQuery>
         </div>
       </div>
       <button
@@ -65,6 +87,8 @@
       data-bs-slide="next"><i class="bi bi-arrow-right" /></button
       >
     </div>
+    
+      
     {:else}
     <div id="searchresults">
       {#await AuctionPageAuctions($Token.token)}
@@ -79,6 +103,17 @@
     </div>
     {/if}
   </div>
+  {:else}
+  <div class="mt-5 text-center">
+    <h2>Még nincs aukció feltöltve!</h2>
+    {#if $userPerms.permission>0}
+      <h3>A <a href={`/catalogue/${$userPerms.id}`}>katalógusában</a> aukcióra bocsáthat érmét!</h3>
+    {:else}
+      <h3><a href="/register">Regisztráljon</a> és vegye fel maga az elsőt!</h3>
+    {/if}
+  </div>
+  {/if}
+  {/await}
 </main>
 
 <style lang="sass">
@@ -94,11 +129,8 @@
         background-color: #00000011
     .flexCard
       width:33%
-    $searchbarColor: #ffcc95
-    .input-group-text
-        background-color: $searchbarColor
     .carousel
-        background-color: #000
+      background-color: #000
     .startBtn, .endBtn
       transition: opacity 0.3s ease-out
     .startBtn

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import {userPerms, Token} from '../../stores';
-  import {Post} from '../../services/dbQueries';
-  import type { Coin } from '../../interfaces/Coin';
-  import ErrorAlert from './ErrorAlert.svelte';
+  import {userPerms, Token} from '../../../stores';
+  import {Post} from '../../../services/dbQueries';
+  import type { Coin } from '../../../interfaces/Coin';
+  import ErrorAlert from '../ErrorAlert.svelte';
   export let Coin:Coin;
   let data = {
     coinID: Coin.ID,
@@ -13,15 +13,40 @@
     description: "",
     expiration: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
   }
-  let err1
+  let uploaded = false;
+  let err:ErrorAlert;
+  let Error = {
+    text:"",
+    id:"",
+    error:false
+  }
+  function ErrorShow(text:string, id:string, error:boolean){
+    Error = {
+      text: text,
+      id: id,
+      error: error
+    }
+    err.showError();
+  }
   function AUCTION_UPLOAD(){
     if(filledForm()){ 
-      Post($Token.token, "auctions", data).then(/*res=> router.goto("/auctions/"+ res.insertId)*/);
+      Post($Token.token, "auctions", data)
+        .then(()=>{ErrorShow("Sikeres aukciófeltöltés!", "success", false); uploaded = true;})
+        .catch(()=>ErrorShow("Szerver oldali hiba történt. Kérjük próbálja meg később!", "success", true));
     }
-    else err1.showError();
+    else {
+      ErrorShow("Nincs minden mező kitöltve!", "emptyfields", true);
+    }
   }
   function filledForm():boolean{
-    return data.title!="" &&data.title!=undefined && data.price!=undefined  && data.minBid>0 && data.description!=""&&data.description!=undefined;
+    data.title = data.title.trim();
+    data.description = data.description.trim();
+    return data.title!="" &&data.title!=undefined
+        && data.price!=undefined
+        && data.price>0
+        && data.minBid>0
+        && data.description!="" && data.description!=undefined
+        && new Date(data.expiration).getTime() > new Date().getTime();
   }
   export function loadmodal(loadable) {
     Coin = loadable;
@@ -38,14 +63,14 @@
 </script>
 
 <div class="modal fade" tabindex="-1" id="auctionupload">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Új aukció létrehozása</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <ErrorAlert bind:this={err1} Error={{id:"emptyfields",text:"Nem töltöttél ki minden mezőt!",error:true}}/>
+          <ErrorAlert bind:this={err} {Error}/>
             <form class="modal-form ">
                 <div class="mb-3">
                   <label for="coin">Aukcióra bocsátandó érme</label>
@@ -58,7 +83,7 @@
                 <div class="mb-3">
                     <label for="auction_start_value">Aukció kezdő értéke</label>
                     <div class="input-group mx-w">
-                        <input type="number" class="form-control" min={Coin.worth} bind:value={data.price}>
+                        <input type="number" class="form-control" placeholder={Coin.worth.toString()} min="0" bind:value={data.price}>
                         <span class="input-group-text bg-orange" >Ft</span>
                     </div>
                 </div>
@@ -80,7 +105,7 @@
               </form>
         </div>
         <div class="modal-footer">
-          <button type="button" on:click={()=>{AUCTION_UPLOAD()}} class="btn bg-orange">Létrehozás</button>
+          <button type="button" disabled='{uploaded}' on:click={()=>{AUCTION_UPLOAD()}} class="btn bg-orange">Létrehozás</button>
         </div>
       </div>
     </div>

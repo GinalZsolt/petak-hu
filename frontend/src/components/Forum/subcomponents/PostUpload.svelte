@@ -22,7 +22,7 @@
                 upload.append('image', data.file[0]);
                 await (UploadImage($Token.token, upload)).then(dt=>{
                     if (dt.status){
-                        ShowError("A Fájl rossz!", "danger");
+                        ShowError("A Fájl nem megfelelő (mérete túl nagy [>5 MiB], vagy nem kép)!", "danger");
                     }
                     else{
                         db.UploadPost($Token.token, {
@@ -65,6 +65,8 @@
         gotError = false;
     }
     function filledForm(){
+        data.description = data.description.trim();
+        data.title = data.title.trim();
         return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
     }
 </script>

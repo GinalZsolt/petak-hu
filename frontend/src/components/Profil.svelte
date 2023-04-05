@@ -1,16 +1,16 @@
 <script lang="ts">
     import { GetUserProfile } from "../services/dbUser";
     import { Token,userPerms } from '../stores';
-    import ProfileCard from "./subcomponents/profileCard.svelte";
+    import ProfileCard from "./subcomponents/Cards/profileCard.svelte";
     import {Patch, Get} from "../services/dbQueries";
-    import BanModal from "./subcomponents/BanModal.svelte";
+    import BanModal from "./subcomponents/Modals/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-    import CoinUpload from "./subcomponents/CoinUpload.svelte";
+    import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
     import { router } from "tinro";
-    import CoinMod from "./subcomponents/CoinMod.svelte";
+    import CoinMod from "./subcomponents/Modals/CoinMod.svelte";
     import type { TagInterface } from "../interfaces/Tags";
     import { GetCoin } from "../services/dbCoin";
-    import CoinModal from "./subcomponents/coinModal.svelte";
+    import CoinModal from "./subcomponents/Modals/coinModal.svelte";
     import type { Coin } from "../interfaces/Coin";
     let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
@@ -37,7 +37,8 @@
         headfile: "",
         tailfile: "",    
         userID: 0,
-        uploadDate: ""
+        uploadDate: "",
+        tags: []
   };
 
   let tags: Array<TagInterface>=[]; 
@@ -61,6 +62,9 @@
     {#await profile}
     <div class="spinner-border"></div>
     {:then ProfileData}
+    {#if ProfileData.user.ID == undefined}
+    {router.goto('/dashboard')}
+    {/if}
       <BanModal User={ProfileData.user} />
       <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
       <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
@@ -99,7 +103,7 @@
         {/if}
       </div>
       <div class="coins mb-3">
-          <div class="d-flex flex-row justify-content-between">
+          <div class="d-flex flex-column flex-sm-row justify-content-between">
             {#if ProfileData.coins[0]}
               <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} on:click={()=>{selectedcoin = ProfileData.coins[0]}}/>
             {:else}
@@ -126,18 +130,29 @@
       {#if ProfileData.auctions.length>0}
       <h3>{ProfileData.user.name} aukciói</h3>
       <div class="auctions mb-3">
-        <div class="d-flex flex-row justify-content-between">
-        {#each ProfileData.auctions as auction, i}
-          <ProfileCard auction={auction} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[i].coinID)} />
-        {/each}
+        <div class="d-flex flex-column flex-sm-row flex-wrap justify-content-between">
+          {#if ProfileData.auctions[0]}
+            <ProfileCard auction={ProfileData.auctions[0]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[0].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[1]}
+            <ProfileCard auction={ProfileData.auctions[1]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[1].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[2]}
+            <ProfileCard auction={ProfileData.auctions[2]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[2].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
         </div>
       </div>
       {/if}
-      {#if ProfileData.coins.length>0 && modcoin}
-      <CoinModal coin={modcoin}/>
-      {/if}
+      {:catch}
+      {router.goto("/dashboard")}
     {/await}
-    <CoinMod on:updatecoins={handleCoinModUpdate} tags={tags} Coin={modcoin}/>
+    <CoinModal on:mod={()=>{profile = GetUserProfile(ID, $Token.token)}} coin={modcoin}/>
 </main>
 
 
@@ -152,12 +167,16 @@
     height: 100%
     object-fit: cover
   .profileimage
-    height: 150px
-    width: 150px
+    height: 100px
+    width: 100px
     overflow: hidden
     border: 1px solid black
   #catalogueBtn
     margin-top: 1rem
   #interactionbtn
     height: 100%
+  @media screen and (max-width:576px)
+    .auctions, .coins
+      max-height: calc(175px + 2.5rem)
+      overflow: auto
 </style>
