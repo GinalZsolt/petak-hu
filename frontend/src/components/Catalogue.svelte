@@ -74,7 +74,7 @@
         {/each}
     </div>
     {/if}
-    <CoinModal bind:this={modal} coin={selectedcoin}/>
+    <CoinModal bind:this={modal} on:mod={()=>getCoinList()} coin={selectedcoin}/>
     <CoinUpload on:success={async()=>{await getCoinList()}}/>
   </div>
 </main>

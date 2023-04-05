@@ -104,12 +104,7 @@
             {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
-                <button
-                  type="button"
-                  class="btn"
-                  data-bs-target="#CoinMod"
-                  data-bs-toggle="modal">Módosítás</button
-                >
+                
                 {#await CheckIfCanAuction(coin.ID) then result}
                   {#if result.can}
                     <button
@@ -119,20 +114,38 @@
                       data-bs-target="#auctionupload"
                       data-bs-toggle="modal">Aukció</button
                     >
-                  {:else if result.reason == "noaddress"}
                     <button
                       type="button"
                       class="btn"
-                      data-bs-target="#noaddress"
-                      data-bs-toggle="collapse">Aukció</button
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal">Módosítás</button
+                    >
+                    {:else if result.reason == "noaddress"}
+                    <button
+                    type="button"
+                    class="btn"
+                    data-bs-target="#noaddress"
+                    data-bs-toggle="collapse">Aukció</button
+                    >
+                    <button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal">Módosítás</button
                     >
                     {:else}
                     <button
+                    type="button"
+                    class="btn"
+                    disabled
+                    data-bs-target="#noaddress"
+                    data-bs-toggle="collapse">Aukció</button
+                    >
+                    <button
                       type="button"
                       class="btn"
-                      disabled
-                      data-bs-target="#noaddress"
-                      data-bs-toggle="collapse">Aukció</button
+                      data-bs-target="#CoinMod"
+                      data-bs-toggle="modal" disabled={true}>Módosítás</button
                     >
                   {/if}
                 {/await}
