@@ -22,8 +22,8 @@
     err.showError();
   }
   function Ban(){
-    if (User.datum==undefined){
-      ErrorShow("Kérem adjon dátumot!", "nodate", true);
+    if (User.datum==undefined || new Date(User.datum).getTime()<new Date().getTime()){
+      ErrorShow("Kérem adjon egy érvényes dátumot!", "nodate", true);
     }
     else{
       Post($Token.token,"moderations",{userID:User.ID,banTime:User.datum}).then((res) => {
