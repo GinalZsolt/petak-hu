@@ -1,8 +1,6 @@
 <main>
-    <div class="d-flex justify-content-between col-11 mx-auto flex-wrap">
-    </div>
-    <div class="col-11 mx-auto">
-        <h1>Üdv, {user}!</h1>
+    <div class="col-11 mx-auto mt-3" id="cards">
+        <h1>Üdv, {$userPerms.username}!</h1>
         <div class="row">
             <div class="col-md-6 col-lg-4">
                 <DashboardCard CardData={cardata1} />
@@ -19,20 +17,26 @@
         </div>
     </div>
 </main>
+<style lang="sass">
+    main
+        display: flex
+        justify-content: center
+        align-items: center
+</style>
 <script lang="ts">
-    import DashboardCard from "./subcomponents/DashboardCard.svelte";
-    let user = "János";
+    import DashboardCard from "./subcomponents/Cards/DashboardCard.svelte";
+    import { userPerms } from "../stores";
     let cardata1:any={
-    title:"Chat",
-    icon: 'chat',
-    href: '/chat',
+    title:"Profilom",
+    icon: 'person-circle',
+    href: '/profile/'+$userPerms.id,
     fromColor: '#0040ff',
     toColor: '#00248f'
     }
     let cardata4:any={
     title:"Katalógus",
     icon: 'database',
-    href: '/catalogue',
+    href: '/catalogue/'+ $userPerms.id,
     fromColor: '#ff0000',
     toColor: '#8f0000'
     }

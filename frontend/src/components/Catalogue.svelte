@@ -1,90 +1,91 @@
 <script lang="ts">
+  import CoinCard from "./subcomponents/Cards/CoinCard.svelte";
+  import type { Coin } from "../interfaces/Coin";
+  import CoinModal from "./subcomponents/Modals/coinModal.svelte";
+  import {Token, userPerms} from './../stores';
+  import { onMount } from "svelte";
+  import { GetUserData } from "../services/dbUser";
+  import { router } from "tinro";
+  import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
+  import { GetUserCoins } from "../services/dbCoin";
+    let ID = Number(router.meta().params.id);
+    let modal
+    let searchtext:string=""
     let profile={
-        picture: "/test.png",
-        name: "test",
-        email: "test@test.com",
-        coin_list: ["test, test2", "test3"],
-        auction_list: ["test", "test2"]
+        name:"",
+        coin_list:[] as Coin[],
     }
-    import { Auction } from "../classes/Auction";
-    import { Coin } from "../classes/Coin";
-    import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
-    import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
-    import CoinModal from "./subcomponents/coinModal.svelte";
-    let searchText: string = "";
-    let testAuction: Auction = new Auction({
-    ID: 0,
-    price: 11,
-    title: "Lorem",
-    minBid: 50,
-    description: "Lorem ipsum dolor sit amet",
-    expiration: new Date(),
-  });
-  testAuction.coin = new Coin({
-    ID: 0,
-    worth: 11,
-    name: "Zseton",
-    description: "Zseton leírás",
-    headfile: "test.png",
-    tailfile: "test.png",
-  });
-    function mediaQuery(pixels:number):boolean{
-    const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
-    return mediaquery.matches;
-  }
-  let test_array = [testAuction, testAuction, testAuction, testAuction];
+    let selectedcoin:Coin
+    
+    async function getCoinList() {
+      profile.coin_list = await GetUserCoins($Token.token, ID);
+      selectedcoin=profile.coin_list[0]
+    }
+    onMount(async()=>{
+      await GetUserData(ID,$Token.token).then((res)=>{
+        if (res[0]){
+          profile.name=res[0].name
+        }
+        else router.goto('/dashboard');
+      }).catch(()=>router.goto('/dashboard'));
+      await getCoinList();
+      modal.loadmodal(profile.coin_list[0])
+      console.log(profile.coin_list);
+    })
+    function PickCoin(picked){
+      modal.loadmodal(picked)
+      console.log(picked)
+    }
 </script>
 
 <main>
-    <div class="d-flex">
-        <button class="btn border-dark me-2"><i class="bi bi-arrow-left w-auto" /></button>
-        <h4>{profile.name} katalógus</h4>
+  <div id="catalogue" class="col-lg-9 col-md-10 col-11 mx-auto mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4><a  class="btn border-dark" href="/"><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
+      {#if ID == $userPerms.id}
+      <button data-bs-target="#CoinUpload" data-bs-toggle="modal" class="btn"><i class="bi bi-plus-lg"></i></button>
+      {/if}
     </div>
-    <nav class="navbar bg-light">
-        <form class="container-fluid">
-          <div class="input-group  border border-dark rounded">
-            <button class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></button>
-            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-          </div>
-        </form>
-    </nav>
+    {#if profile.coin_list}
+    {#if profile.coin_list.length>0}
+    <div class="input-group  border rounded mt-3">
+      <span class="input-group-text border-dark"><i class="bi bi-search" /></span>
+      <input type="text" class="form-control border-dark" placeholder="Keresés..." bind:value={searchtext}>
+    </div>
+    {:else}
+    <div class="text-center my-5">
+      {#if $userPerms.id == ID}
+      <h2>Még nincs feltöltve érme a katalógusába!</h2>
+      <h3><span data-bs-target="#CoinUpload" data-bs-toggle="modal" class="link-primary">Töltsön fel</span> egyet!</h3>
+      {:else}
+      <h2>{profile.name} még nem töltött fel zsetonokat!</h2>
+      {/if}
+    </div>
+    {/if}
     <!--Érme katalógus-->
     <div class="cards row">
-      {#each test_array as coin}
-      <div class="col-lg-4 col-md-6 col-12 element">
-        <div class="card p-0">
-          <img src={"/"+coin.coin.images.tail} class="card-img-top image img-fluid mx-auto" alt="...">
-          <div class="card-body bg-grey">
-            <p class="card-text">{coin.coin.description}</p>
+        {#each profile.coin_list
+                  .filter(e=>
+                    e.tags.filter(h=>h.description.toLowerCase().includes(searchtext.toLowerCase())).length>0
+                    || e.name.toLowerCase().includes(searchtext.toLowerCase())) as coin}
+          <div class="col-lg-4 col-md-6 col-12 cn" on:click={()=>{PickCoin(coin)}} on:keypress={()=>{}}>
+            <CoinCard coin={coin} />
           </div>
-        </div>
-      </div>
-      {/each}
+        {/each}
     </div>
-
+    {/if}
+    <CoinModal bind:this={modal} on:mod={()=>getCoinList()} coin={selectedcoin}/>
+    <CoinUpload on:success={async()=>{await getCoinList()}}/>
+  </div>
 </main>
 
 <style lang="sass">
-    main
-        background-color: white
-        width: 80vw
-        height: 100vh
-        margin-left: 10vw
-    .btn
-        background-color: #e99d60
-        width: 5vw
-    h4
-      margin-top: 1vh
-    .w-auto
-      width: auto
-    .bg-grey
-      background-color: lightgrey 
-      padding: 0px
-      font-size: 14pt
-      text-align: center
-    .image 
-      height: auto
-      width: 20vw
-    .element
-      margin-bottom: 2%
+    .input-group-text
+      background-color: #e99d60
+    .cn
+      margin-bottom: 1rem
+    .link-primary
+      cursor: pointer
+    .input-group-text
+      background-color: #e99d60
 </style>

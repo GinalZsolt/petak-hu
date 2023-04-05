@@ -1,160 +1,182 @@
 <script lang="ts">
-    let profile={
-        picture: "/test.png",
-        name: "test",
-        email: "test@test.com",
-        coin_list: ["test, test2", "test3"],
-        auction_list: ["test", "test2"]
-    }
-  import { Auction } from "../classes/Auction";
-  import { Coin } from "../classes/Coin";
-  import AuctionSlideSm from "./subcomponents/AuctionSlide-sm.svelte";
-  import AuctionSlideMdLg from "./subcomponents/AuctionSlide-md-lg.svelte";
-  import CoinModal from "./subcomponents/coinModal.svelte";
-  import AuctionUploadModal from "./subcomponents/AuctionUploadModal.svelte";
+    import { GetUserProfile } from "../services/dbUser";
+    import { Token,userPerms } from '../stores';
+    import ProfileCard from "./subcomponents/Cards/profileCard.svelte";
+    import {Patch, Get} from "../services/dbQueries";
+    import BanModal from "./subcomponents/Modals/BanModal.svelte";
+    import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
+    import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
+    import { router } from "tinro";
+    import CoinMod from "./subcomponents/Modals/CoinMod.svelte";
+    import type { TagInterface } from "../interfaces/Tags";
+    import { GetCoin } from "../services/dbCoin";
+    import CoinModal from "./subcomponents/Modals/coinModal.svelte";
+    import type { Coin } from "../interfaces/Coin";
+    let ID = Number(router.meta().params.id);
+    let profile = GetUserProfile(ID, $Token.token);
+    let modal:CoinModal;
+    let err1
+    let err2
 
-  let searchText: string = "";
-    let testAuction: Auction = new Auction({
-    ID: 0,
-    price: 11,
-    title: "Lorem",
-    minBid: 50,
-    description: "Lorem ipsum dolor sit amet",
-    expiration: new Date(),
-  });
-  testAuction.coin = new Coin({
-    ID: 0,
-    worth: 11,
-    name: "Zseton",
-    description: "Zseton leírás",
-    headfile: "test.png",
-    tailfile: "test.png",
-  });
-    function mediaQuery(pixels:number):boolean{
-    const mediaquery:any = window.matchMedia(`(max-width:${pixels}px)`);
-    return mediaquery.matches;
+    function Promote(userperm:number){
+    if (userperm!=2) {
+      Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
+        err1.showError()
+      })
+    }
+    else{
+      err2.showError()
+    }
   }
+  let selectedcoin: Coin;
+  let modcoin: Coin ={
+        ID: 0,
+        name:"",
+        worth: 0,
+        description: "",
+        headfile: "",
+        tailfile: "",    
+        userID: 0,
+        uploadDate: "",
+        tags: []
+  };
+
+  let tags: Array<TagInterface>=[]; 
+  async function handleMessage(event) {
+    modcoin=event.detail.Coin;
+    await GetTags(modcoin);
+	}
+
+  async function handleCoinModUpdate(event) {
+    profile = GetUserProfile(ID, $Token.token)
+	}
+
+  async function GetTags(Coin:Coin) {
+      tags = await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> res);
+    }
 </script>
 
 <main>
-    <div id="profile">  <!-- profile -->
-        <div class="col-lg-9 d-flex flex-row tulajdonsagok">  
-            <div class="rounded-circle border-dark border overflow-hidden"><img class="img-fluid mx-auto flexstart" src={profile.picture} alt=""></div> <!-- profile picture-->
-            <div id="nevemail">
-                <p>{profile.name}</p> <!-- profile name -->
-                <p>{profile.email}</p> <!-- profile email -->
+  <CoinUpload on:success={()=>{profile = GetUserProfile(ID, $Token.token)}}/>
+  <div class="col-lg-7 col-md-9 col-11 mx-auto">
+    {#await profile}
+    <div class="spinner-border"></div>
+    {:then ProfileData}
+    {#if ProfileData.user.ID == undefined}
+    {router.goto('/dashboard')}
+    {/if}
+      <BanModal User={ProfileData.user} />
+      <ErrorAlert bind:this={err1} Error={{id:"promoted",text:"Sikeres Promoció!",error:false}}/>
+      <ErrorAlert bind:this={err2} Error={{id:"promoted",text:"Ez a felhasználó már admin!",error:true}}/>
+      <div class="profileheader mt-3">
+        <div class="d-flex flex-row flex-wrap justify-content-between align-items-end">
+          <div>
+            <div class="profileimage rounded-circle">
+              {#if ProfileData.user.imagefile!=null && ProfileData.user.imagefile!="null"}
+              <img src={'http://localhost:8080/img/'+ProfileData.user.imagefile} alt="" class="img-fluid">
+              {:else}
+              <img src="/tempProfile.jpg" alt="" class="img-fluid">
+              {/if}
             </div>
+            <h3 class="mb-0 mt-3">{ProfileData.user.name}</h3>
+            <h4 class="text-muted mb-0">{ProfileData.user.email}</h4>
+          </div>
+
+          {#if ID!=$userPerms.id&&$userPerms.permission==2}
+          <div class="dropdown">
+            <button class="btn" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi-three-dots"></i></button> <!-- options button -->
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#Ban">Kitiltás</button></li>
+              <li><button class="dropdown-item" on:click={()=>{Promote(ProfileData.user.permission)}}>Adminokhoz adás</button></li>
+            </ul>
+          </div>
+          {/if}
+
         </div>
-        <div id="buttons">
-            <button class="btn">chat</button> <!-- chat button -->
-            <button class="btn">°°°</button> <!-- options button -->
-        </div>
-    </div>
-    <h2>{profile.name} katalógus</h2>
-    <div        
-      class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
-    >                           <!-- katalogus -->
-      <button
-        class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
-        data-bs-target="#top"
-        data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
-      >
-      <div id="top" class="carousel slide w-100" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {#if mediaQuery(576)}
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            {:else if mediaQuery(768)}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
+      </div>
+      <hr>
+      {#if ProfileData.coins.length>0}
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h3>{ProfileData.user.name} zsetonjai</h3>
+        {#if ID===$userPerms.id}
+          <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+        {/if}
+      </div>
+      <div class="coins mb-3">
+          <div class="d-flex flex-column flex-sm-row justify-content-between">
+            {#if ProfileData.coins[0]}
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[0]} on:click={()=>{selectedcoin = ProfileData.coins[0]}}/>
             {:else}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
+              <ProfileCard/>
+            {/if}
+            {#if ProfileData.coins[1]}
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[1]} on:click={()=>{selectedcoin = ProfileData.coins[1]}}/>
+            {:else}
+              <ProfileCard />
+            {/if}
+            {#if ProfileData.coins[2]}
+              <ProfileCard on:modcoin={handleMessage} coin={ProfileData.coins[2]} on:click={()=>{selectedcoin = ProfileData.coins[2]}} />
+            {:else}
+              <ProfileCard />
+            {/if}
+          </div>
+          <a class="btn w-100" id="catalogueBtn" href={`/catalogue/${ProfileData.user.ID}`}>Teljes érmekatalógus megtekintése</a>
+      </div>
+      {:else}
+        {#if $userPerms.id == ID}
+          <div class="d-flex justify-content-end align-items-middle mb-1"><button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button></div>
+        {/if}
+      {/if}
+      {#if ProfileData.auctions.length>0}
+      <h3>{ProfileData.user.name} aukciói</h3>
+      <div class="auctions mb-3">
+        <div class="d-flex flex-column flex-sm-row flex-wrap justify-content-between">
+          {#if ProfileData.auctions[0]}
+            <ProfileCard auction={ProfileData.auctions[0]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[0].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[1]}
+            <ProfileCard auction={ProfileData.auctions[1]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[1].coinID)} />
+            {:else}
+            <ProfileCard />
+          {/if}
+          {#if ProfileData.auctions[2]}
+            <ProfileCard auction={ProfileData.auctions[2]} coin={ProfileData.coins.find(e=>e.ID==ProfileData.auctions[2].coinID)} />
+            {:else}
+            <ProfileCard />
           {/if}
         </div>
       </div>
-      <button
-        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
-        data-bs-target="#top"
-        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
-      >
-    </div> 
-    <h2>{profile.name} aukció</h2>
-    <div        
-      class="d-flex flex-row w-100 border-dark border rounded-start rounded-end mb-5"
-    >                           <!-- aukciók -->
-      <button
-        class="startBtn btn btn-primary rounded-0 rounded-start border-0 border-end border-dark fw-bold"
-        data-bs-target="#bottom"
-        data-bs-slide="prev"><i class="bi bi-arrow-left" /></button
-      >
-      <div id="bottom" class="carousel slide w-100" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {#if mediaQuery(576)}
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            <AuctionSlideSm Auction={testAuction} isFirst={true} />
-            {:else if mediaQuery(768)}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction]} isFirst={true} />
-            {:else}
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-            <AuctionSlideMdLg Auctions={[testAuction, testAuction, testAuction]} isFirst={true}/>
-          {/if}
-        </div>
-      </div>
-      <button
-        class="endBtn btn btn-primary rounded-0 rounded-end border-0 border-start border-dark fw-bold"
-        data-bs-target="#bottom"
-        data-bs-slide="next"><i class="bi bi-arrow-right" /></button
-      >
-    </div>  
-    <button data-bs-target="#auctionupload" data-bs-toggle="modal">SEGÍCCSÉG</button>
-    <AuctionUploadModal/>
+      {/if}
+      {:catch}
+      {router.goto("/dashboard")}
+    {/await}
+    <CoinModal on:mod={()=>{profile = GetUserProfile(ID, $Token.token)}} coin={modcoin}/>
 </main>
 
+
 <style lang="sass">
-    #profile
-        display: flex
-        flex-direction: row
-
-    #Profile_pic
-        width: 5vw
-        height: 5vw
-
-    .btn
-        background-color: #ea9e60
-    
-    .katalogus
-        margin: auto
-        height: 20vh
-        background-color: white
-        border: 1px solid black
-    
-    .katalogusok
-        margin: auto
-
-    .tulajdonsagok
-        display: flex   
-        align-items: center
-        margint-left: 0px
-
-    #nevemail
-        justify-self: center
-        padding-left: 2vw
-
-    main
-        margin-left: 10vw
-        margin-right: 10vw
-    
-    .flexstart
-        justify-content: flex-start
-    
-    #profile #buttons
-        justify-items: flex-end
-        display: flex
-        flex-direction: column
-        padding-left: 15vw
-
-    #profile #buttons button
-        margin-bottom: 2vh
+  h3, h4
+    cursor: default
+  .auctions, .coins
+    border: 1px solid black
+    padding: 1rem
+    border-radius: 0.25rem
+  .img-fluid
+    height: 100%
+    object-fit: cover
+  .profileimage
+    height: 100px
+    width: 100px
+    overflow: hidden
+    border: 1px solid black
+  #catalogueBtn
+    margin-top: 1rem
+  #interactionbtn
+    height: 100%
+  @media screen and (max-width:576px)
+    .auctions, .coins
+      max-height: calc(175px + 2.5rem)
+      overflow: auto
 </style>
