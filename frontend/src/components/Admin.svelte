@@ -4,9 +4,9 @@
     import type {ModalData} from '../interfaces/Admin';
     import { getCoinAmountStats, getCoinWorthStats } from "../services/dbStatistics";
     import AdminboardCard from "./subcomponents/Admin/AdminboardCard.svelte";
-    import AdminStatisticsModal from "./subcomponents/Admin/adminStatisticsModal.svelte";
+    import AdminStatisticsModal from "./subcomponents/Modals/adminStatisticsModal.svelte";
     import { GetBanned } from "../services/dbUser";
-    import AdminTableModal from "./subcomponents/Admin/adminTableModal.svelte";
+    import AdminTableModal from "./subcomponents/Modals/adminTableModal.svelte";
     import { GetAllAuctions } from "../services/dbAuction";
     let statisticsModalData:ModalData;
     let TableModalData:ModalData;

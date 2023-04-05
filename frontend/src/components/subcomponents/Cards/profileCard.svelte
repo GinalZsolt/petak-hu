@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { Auction } from "../../interfaces/Auction";
-    import type { Coin } from "../../interfaces/Coin";
+    import type { Auction } from "../../../interfaces/Auction";
+    import type { Coin } from "../../../interfaces/Coin";
     export let coin: Coin | undefined;
     export let auction: Auction | undefined;
 	import { createEventDispatcher } from 'svelte';

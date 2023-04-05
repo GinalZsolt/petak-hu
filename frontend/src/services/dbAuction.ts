@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User } from '../classes/User';
+import type { User } from '../interfaces/User';
 import type { Auction, Bidder } from '../interfaces/Auction';
 import {Get, Patch, Post} from './dbQueries';
 import { GetUserData } from './dbUser';

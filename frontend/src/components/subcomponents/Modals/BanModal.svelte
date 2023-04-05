@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Post } from "../../services/dbQueries";
-  import { GetBanned } from "../../services/dbUser";
-  import { Token } from "../../stores";
-  import ErrorAlert from "./ErrorAlert.svelte";
+  import { Post } from "../../../services/dbQueries";
+  import { GetBanned } from "../../../services/dbUser";
+  import { Token } from "../../../stores";
+  import ErrorAlert from "../ErrorAlert.svelte";
 
   export let User:any={}
   let err:ErrorAlert;

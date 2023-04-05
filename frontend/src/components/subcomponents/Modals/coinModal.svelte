@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { Coin } from "../../interfaces/Coin";
-  import { userPerms, Token } from "../../stores";
+  import type { Coin } from "../../../interfaces/Coin";
+  import { userPerms, Token } from "../../../stores";
   export let coin: Coin;
   import CoinMod from "./CoinMod.svelte";
   import AuctionUploadModal from "./AuctionUploadModal.svelte";
-  import { GetAllAuctions } from "../../services/dbAuction";
+  import { GetAllAuctions } from "../../../services/dbAuction";
   import {createEventDispatcher} from 'svelte';
-  import { GetUserProfile } from "../../services/dbUser";
+  import { GetUserProfile } from "../../../services/dbUser";
 
   let auctionmodal
   let dispatcher = createEventDispatcher();

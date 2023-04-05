@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { ModalData } from "../../../interfaces/Admin";
-    import Chart from "./chart.svelte";
+    import Chart from "../Admin/chart.svelte";
     export let Data:ModalData
     
 </script>

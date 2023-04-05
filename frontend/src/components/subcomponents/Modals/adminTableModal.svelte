@@ -1,8 +1,7 @@
 <script lang="ts">
     import { each } from "svelte/internal";
     import type { ModalData } from "../../../interfaces/Admin";
-    import type { Statistics } from "../../../services/dbStatistics";
-    import { GetBanned, type Banned } from "../../../services/dbUser";
+    import { GetBanned } from "../../../services/dbUser";
     import moment from "moment";
     import { Delete } from "../../../services/dbQueries";
     import { Token } from "../../../stores";

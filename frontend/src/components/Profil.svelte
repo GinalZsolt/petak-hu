@@ -1,16 +1,16 @@
 <script lang="ts">
     import { GetUserProfile } from "../services/dbUser";
     import { Token,userPerms } from '../stores';
-    import ProfileCard from "./subcomponents/profileCard.svelte";
+    import ProfileCard from "./subcomponents/Cards/profileCard.svelte";
     import {Patch, Get} from "../services/dbQueries";
-    import BanModal from "./subcomponents/BanModal.svelte";
+    import BanModal from "./subcomponents/Modals/BanModal.svelte";
     import ErrorAlert from "./subcomponents/ErrorAlert.svelte";
-    import CoinUpload from "./subcomponents/CoinUpload.svelte";
+    import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
     import { router } from "tinro";
-    import CoinMod from "./subcomponents/CoinMod.svelte";
+    import CoinMod from "./subcomponents/Modals/CoinMod.svelte";
     import type { TagInterface } from "../interfaces/Tags";
     import { GetCoin } from "../services/dbCoin";
-    import CoinModal from "./subcomponents/coinModal.svelte";
+    import CoinModal from "./subcomponents/Modals/coinModal.svelte";
     import type { Coin } from "../interfaces/Coin";
     let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);

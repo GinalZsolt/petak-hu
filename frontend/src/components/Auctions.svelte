@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AuctionPageAuctions, GetAllAuctions } from "../services/dbAuction";
   import { Token, userPerms } from "../stores";
-  import AuctionCard from "./subcomponents/AuctionCard.svelte";
+  import AuctionCard from "./subcomponents/Cards/AuctionCard.svelte";
   import {fade} from 'svelte/transition';
   import MediaQuery from "./subcomponents/MediaQuery.svelte";
   let searchText: string = "";
@@ -17,7 +17,6 @@
       <span class="input-group-text border-dark"
         ><i class="bi bi-search" /></span
       >
-
       <input
         type="text"
         class="form-control border-dark"

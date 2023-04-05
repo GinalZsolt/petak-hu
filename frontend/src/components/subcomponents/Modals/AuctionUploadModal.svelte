@@ -1,8 +1,8 @@
 <script lang="ts">
-  import {userPerms, Token} from '../../stores';
-  import {Post} from '../../services/dbQueries';
-  import type { Coin } from '../../interfaces/Coin';
-  import ErrorAlert from './ErrorAlert.svelte';
+  import {userPerms, Token} from '../../../stores';
+  import {Post} from '../../../services/dbQueries';
+  import type { Coin } from '../../../interfaces/Coin';
+  import ErrorAlert from '../ErrorAlert.svelte';
   export let Coin:Coin;
   let data = {
     coinID: Coin.ID,

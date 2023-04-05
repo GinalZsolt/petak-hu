@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { Coin } from "../../interfaces/Coin";
-    import type { Category, TagInterface } from "../../interfaces/Tags";
-    import { UploadTag } from "../../services/dbCoin";
-    import { Delete, Get, Patch } from "../../services/dbQueries";
-    import { DeleteImage, UploadImage } from "../../services/fileService";
-    import {Token} from '../../stores';
-    import ErrorAlert from "./ErrorAlert.svelte";
+    import type { Coin } from "../../../interfaces/Coin";
+    import type { Category, TagInterface } from "../../../interfaces/Tags";
+    import { UploadTag } from "../../../services/dbCoin";
+    import { Delete, Get, Patch } from "../../../services/dbQueries";
+    import { DeleteImage, UploadImage } from "../../../services/fileService";
+    import {Token} from '../../../stores';
+    import ErrorAlert from "../ErrorAlert.svelte";
     import {createEventDispatcher} from 'svelte';
     export let Coin:Coin;
     let dispatcher = createEventDispatcher();
@@ -64,7 +64,7 @@
                 deletedindexes.forEach(e=>{
                     Coin.tags.splice(indexes.indexOf(e),1);
                 })
-                Coin.tags = Coin.tags;
+                Coin.tags = [...Coin.tags];
                 toBeDeleted = [];
                 toBeDeleted = toBeDeleted;
             });
@@ -85,7 +85,7 @@
             });
             newTags = [];
             newTags = newTags;
-            Coin.tags = Coin.tags;
+            Coin.tags = [...Coin.tags];
             let potheadfile: undefined|string = undefined;
             let pottailfile: undefined|string = undefined;
             if (headfile && headfile.length>0){

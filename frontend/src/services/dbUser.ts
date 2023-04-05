@@ -1,4 +1,4 @@
-import type { User } from "../classes/User";
+import type { User } from "../interfaces/User";
 import axios from 'axios';
 import { Get } from "./dbQueries";
 import {Token} from '../stores';

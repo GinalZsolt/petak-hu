@@ -13,7 +13,7 @@
   import { fade } from "svelte/transition";
   import type { Coin } from "../interfaces/Coin";
   import { GetCoin } from "../services/dbCoin";
-  import CoinModal from "./subcomponents/coinModal.svelte";
+  import CoinModal from "./subcomponents/Modals/coinModal.svelte";
   import { router } from "tinro";
   let ID = Number(router.meta().params.id);
   let coin:Coin;

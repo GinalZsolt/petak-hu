@@ -1,11 +1,11 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte"
-    import type { TagInterface, TagType } from "../../interfaces/Tags";
-    import { GetTagTypes, UploadCoin, UploadTag } from "../../services/dbCoin";
-    import { Token } from "../../stores";
-    import { userPerms } from "../../stores";
-    import { UploadImages } from "../../services/fileService";
-    import ErrorAlert from "./ErrorAlert.svelte";
+    import type { TagInterface, TagType } from "../../../interfaces/Tags";
+    import { GetTagTypes, UploadCoin, UploadTag } from "../../../services/dbCoin";
+    import { Token } from "../../../stores";
+    import { userPerms } from "../../../stores";
+    import { UploadImages } from "../../../services/fileService";
+    import ErrorAlert from "../ErrorAlert.svelte";
     const dispatch = createEventDispatcher();
     let err1
     let err2

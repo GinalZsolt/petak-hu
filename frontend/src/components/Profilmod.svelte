@@ -6,7 +6,7 @@
     import { Patch } from "../services/dbQueries";
     import sha256 from "crypto-js/sha256"
     import { DeleteImage, UploadImage } from "../services/fileService";
-    import type { User } from "../classes/User";
+    import type { User } from "../interfaces/User";
     onMount(async()=>{
         user = (await GetUserData($userPerms.id, $Token.token))[0];
     })

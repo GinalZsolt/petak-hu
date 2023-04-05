@@ -1,12 +1,12 @@
 <script lang="ts">
-  import CoinCard from "./subcomponents/CoinCard.svelte";
+  import CoinCard from "./subcomponents/Cards/CoinCard.svelte";
   import type { Coin } from "../interfaces/Coin";
-  import CoinModal from "./subcomponents/coinModal.svelte";
+  import CoinModal from "./subcomponents/Modals/coinModal.svelte";
   import {Token, userPerms} from './../stores';
   import { onMount } from "svelte";
   import { GetUserData } from "../services/dbUser";
   import { router } from "tinro";
-  import CoinUpload from "./subcomponents/CoinUpload.svelte";
+  import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
   import { GetUserCoins } from "../services/dbCoin";
     let ID = Number(router.meta().params.id);
     let modal

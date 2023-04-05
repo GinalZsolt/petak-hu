@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Coin } from '../../interfaces/Coin';
+    import type { Coin } from '../../../interfaces/Coin';
     export let coin: Coin;
     console.log(coin)
 </script>

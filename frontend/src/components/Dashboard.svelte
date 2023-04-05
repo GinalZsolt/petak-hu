@@ -24,7 +24,7 @@
         align-items: center
 </style>
 <script lang="ts">
-    import DashboardCard from "./subcomponents/DashboardCard.svelte";
+    import DashboardCard from "./subcomponents/Cards/DashboardCard.svelte";
     import { userPerms } from "../stores";
     let cardata1:any={
     title:"Profilom",
