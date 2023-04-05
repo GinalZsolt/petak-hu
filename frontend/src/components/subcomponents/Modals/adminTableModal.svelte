@@ -101,7 +101,7 @@
                                 <td>{auction.title}</td>
                                 <td>{auction.price}</td>
                                 <td>{new Intl.DateTimeFormat("hu-HU").format(new Date(auction.expiration))}</td>
-                                <td class:text-danger='{new Date()>new Date(auction.expiration)}'>{new Date()>new Date(auction.expiration)?"Lezárva":"Folyamatban"}</td>
+                                <td class:text-danger='{new Date()>new Date(auction.expiration)}'>{new Date()>new Date(auction.expiration)? auction.notified ? "Lezárva, email küldve" : "Lezárva":"Folyamatban"}</td>
                               </tr>
                           {/each}
                       </tbody>

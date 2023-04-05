@@ -21,10 +21,12 @@
     let auction = await GetAllAuctions($Token.token);
     let user = await GetUserProfile($userPerms.id, $Token.token);
     return await Promise.all([auction, user]).then((res) => {
+      let auction = res[0].find(e=>e.coinID==coinID);
       return {can:(
         res[1].user.address != null &&
         res[1].user.phone != null &&
-        res[0].find((e) => e.coinID == coinID) == undefined &&
+        auction == undefined &&
+        auction ? new Date(auction.expiration) > new Date() : true &&
         res[1].user.phone!="null"&&
         res[1].user.address!="null"
       ), 
