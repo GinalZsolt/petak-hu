@@ -65,8 +65,12 @@
         gotError = false;
     }
     function filledForm(){
-        data.description = data.description.trim();
-        data.title = data.title.trim();
+        if (data.description){
+            data.description = data.description.trim();
+        }
+        if (data.title){
+            data.title = data.title.trim();
+        }
         return (data.description!=undefined&&data.title!=undefined&&data.topicID!=undefined) && (data.description!="" && data.title!=""&&(data.topicID>0&&data.topicID!=null));
     }
 </script>

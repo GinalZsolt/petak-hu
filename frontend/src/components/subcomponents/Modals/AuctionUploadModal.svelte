@@ -29,10 +29,15 @@
     err.showError();
   }
   function AUCTION_UPLOAD(){
-    if(filledForm()){ 
-      Post($Token.token, "auctions", data)
-        .then(()=>{ErrorShow("Sikeres aukciófeltöltés!", "success", false); uploaded = true;})
-        .catch(()=>ErrorShow("Szerver oldali hiba történt. Kérjük próbálja meg később!", "success", true));
+    if(filledForm()){
+      if (data.price<=0 || data.minBid<=0){
+        ErrorShow("Nem lehet kisebb, mint 1 az aukció kezdőára, licitlépcsője!", "small", true);
+      } 
+      else{
+        Post($Token.token, "auctions", data)
+          .then(()=>{ErrorShow("Sikeres aukciófeltöltés!", "success", false); uploaded = true;})
+          .catch(()=>ErrorShow("Szerver oldali hiba történt. Kérjük próbálja meg később!", "success", true));
+      }
     }
     else {
       ErrorShow("Nincs minden mező kitöltve!", "emptyfields", true);
@@ -43,8 +48,6 @@
     data.description = data.description.trim();
     return data.title!="" &&data.title!=undefined
         && data.price!=undefined
-        && data.price>0
-        && data.minBid>0
         && data.description!="" && data.description!=undefined
         && new Date(data.expiration).getTime() > new Date().getTime();
   }

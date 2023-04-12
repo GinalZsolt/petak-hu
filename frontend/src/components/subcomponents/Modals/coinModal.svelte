@@ -22,13 +22,28 @@
     let user = await GetUserProfile($userPerms.id, $Token.token);
     return await Promise.all([auction, user]).then((res) => {
       let auction = res[0].find(e=>e.coinID==coinID);
+    
+      console.log({can:(
+        res[1].user.address != null &&
+        res[1].user.phone != null &&
+        auction == undefined &&
+        auction ? new Date(auction.expiration) > new Date() : true &&
+        res[1].user.phone!="null" &&
+        res[1].user.address!="null" &&
+        res[1].user.address != "" &&
+        res[1].user.phone != ""
+      ), 
+        reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
+    })
       return {can:(
         res[1].user.address != null &&
         res[1].user.phone != null &&
         auction == undefined &&
         auction ? new Date(auction.expiration) > new Date() : true &&
-        res[1].user.phone!="null"&&
-        res[1].user.address!="null"
+        res[1].user.phone!="null" &&
+        res[1].user.address!="null" &&
+        res[1].user.address != "" &&
+        res[1].user.phone != ""
       ), 
         reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
     };

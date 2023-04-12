@@ -69,9 +69,15 @@
         data.description==""
     }
     function TrimAll(){
-        data.name = data.name.trim();
-        data.description = data.description.trim();
-        newtag.description = newtag.description.trim();
+        if (data.name){
+            data.name = data.name.trim();
+        }
+        if (data.description){
+            data.description = data.description.trim();
+        }
+        if (newtag.description){
+            newtag.description = newtag.description.trim();
+        }
     }
     async function CoinUp(){
         TrimAll();
