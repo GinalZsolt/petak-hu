@@ -7,6 +7,7 @@
   import { GetAllAuctions } from "../../../services/dbAuction";
   import {createEventDispatcher} from 'svelte';
   import { GetUserProfile } from "../../../services/dbUser";
+  import type { Auction } from "../../../interfaces/Auction";
 
   let auctionmodal
   let dispatcher = createEventDispatcher();
@@ -21,33 +22,27 @@
     let auction = await GetAllAuctions($Token.token);
     let user = await GetUserProfile($userPerms.id, $Token.token);
     return await Promise.all([auction, user]).then((res) => {
-      let auction = res[0].find(e=>e.coinID==coinID);
-    
-      console.log({can:(
-        res[1].user.address != null &&
-        res[1].user.phone != null &&
-        auction == undefined &&
-        auction ? new Date(auction.expiration) > new Date() : true &&
-        res[1].user.phone!="null" &&
-        res[1].user.address!="null" &&
-        res[1].user.address != "" &&
-        res[1].user.phone != ""
-      ), 
-        reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
-    })
-      return {can:(
-        res[1].user.address != null &&
-        res[1].user.phone != null &&
-        auction == undefined &&
-        auction ? new Date(auction.expiration) > new Date() : true &&
-        res[1].user.phone!="null" &&
-        res[1].user.address!="null" &&
-        res[1].user.address != "" &&
-        res[1].user.phone != ""
-      ), 
+      let auction = res[0].sort((a,b)=>new Date(a.expiration).getTime() + new Date(b.expiration).getTime())
+                          .find(e=>e.coinID==coinID);
+      return {
+        can:(
+          res[1].user.address != null &&
+          res[1].user.phone != null &&
+          res[1].user.phone!="null" &&
+          res[1].user.address!="null" &&
+          res[1].user.address != "" &&
+          res[1].user.phone != "" && 
+          CheckAuction(auction)
+        ), 
         reason:res[0].find((e) => e.coinID == coinID) == undefined ? "noaddress" : "alreadyonauction"
     };
     });
+  }
+  function CheckAuction(param: Auction):boolean{
+    if (!param) return true;
+    else {
+      return new Date(param.expiration).getTime()<new Date().getTime();
+    }
   }
   export function loadmodal(loadable) {
     coin = loadable;
@@ -121,9 +116,8 @@
             {#if $userPerms.id && coin.userID}
             {#if ($userPerms.id == coin.userID)}
               <div>
-                
                 {#await CheckIfCanAuction(coin.ID) then result}
-                  {#if result.can}
+                  {#if result.can == true}
                     <button
                       type="button"
                       class="btn"
@@ -137,12 +131,13 @@
                       data-bs-target="#CoinMod"
                       data-bs-toggle="modal">Módosítás</button
                     >
-                    {:else if result.reason == "noaddress"}
+                  {:else if !result.can && result.reason == "noaddress"}
                     <button
-                    type="button"
-                    class="btn"
-                    data-bs-target="#noaddress"
-                    data-bs-toggle="collapse">Aukció</button
+                      type="button"
+                      class="btn"
+                      data-bs-target="#noaddress"
+                      data-bs-toggle="collapse"
+                      >Aukció</button
                     >
                     <button
                       type="button"
@@ -150,19 +145,17 @@
                       data-bs-target="#CoinMod"
                       data-bs-toggle="modal">Módosítás</button
                     >
-                    {:else}
+                  {:else}
                     <button
-                    type="button"
-                    class="btn"
-                    disabled
-                    data-bs-target="#noaddress"
-                    data-bs-toggle="collapse">Aukció</button
+                      type="button"
+                      class="btn"
+                      disabled
+                      >Aukció</button
                     >
                     <button
                       type="button"
                       class="btn"
-                      data-bs-target="#CoinMod"
-                      data-bs-toggle="modal" disabled={true}>Módosítás</button
+                      disabled>Módosítás</button
                     >
                   {/if}
                 {/await}
@@ -176,7 +169,7 @@
             </div>
           </div>
           {#await CheckIfCanAuction(coin.ID) then result}
-            {#if !result.can && result.reason == "noaddress"}
+            {#if result.can == false && result.reason == "noaddress"}
             <div class="collapse w-100" id="noaddress">
               <div class="card bg-danger text-light fw-bold card-body">
                 <p class="mb-0">
