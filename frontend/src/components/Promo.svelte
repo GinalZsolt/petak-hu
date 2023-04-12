@@ -1,3 +1,6 @@
+<script lang="ts">
+    import {userPerms} from '../stores';
+</script>
 <style lang="sass">
     #heading
         height: 50vh
@@ -14,9 +17,11 @@
     <div id="heading" class=" row align-items-center">
         <div>
             <h1 class="text-center">Peták.hu</h1>
-            <div class="w-100">
-                <a href="/login" class="d-block w-50 mx-auto btn btn-success">Bejelentkezés <i class="bi bi-box-arrow-in-right"></i></a>
-            </div>
+            {#if $userPerms.permission==0}
+                <div class="w-100">
+                    <a href="/login" class="d-block w-50 mx-auto btn btn-success">Bejelentkezés <i class="bi bi-box-arrow-in-right"></i></a>
+                </div>
+            {/if}
         </div>
     </div>
     <div>

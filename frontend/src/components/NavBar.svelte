@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {active} from 'tinro';
+    import {active, router} from 'tinro';
     import {userPerms, Routes} from '../stores';
     import { GetPerms } from '../services/permissionGetter';
     function LogOut():void{
@@ -7,6 +7,10 @@
       GetPerms().then(res=>{
         userPerms.update(d=>res);
       });
+    }
+    function GoToMyProfile(){
+      router.goto('/dashboard');
+      router.goto('/profile/'+$userPerms.id);
     }
 </script>
 <style lang="sass">
@@ -46,7 +50,7 @@
                       <a href={"/profilemod/"} class="dropdown-item">Profil módosítása</a>
                     </li>
                     <li>
-                      <a href={"/catalogue/"+$userPerms.id} class="dropdown-item">Érmekatalógusom</a>
+                      <a href={"/catalogue/"+$userPerms.id} on:click={GoToMyProfile} class="dropdown-item">Érmekatalógusom</a>
                     </li> 
                     <li>
                       <hr class="dropdown-divider">
