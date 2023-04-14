@@ -1,6 +1,6 @@
 const Router = require('express').Router();
 const pool = require('../config').pool;
-let log = require('../logging').log;
+let log = require('../modules/logging').log;
 let token = require('../modules/tokenCheck');
 Router.patch('/:tablename/:field/:value', (req,res)=>{
     let update = "";

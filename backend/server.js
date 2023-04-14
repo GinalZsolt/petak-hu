@@ -8,7 +8,7 @@ const cors = require('cors');
 const server = http.createServer(app);
 const {Server} = require('socket.io');
 const multer = require('./controllers/FileActions').multer
-const log = require('./logging').log;
+const log = require('./modules/logging').log;
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
