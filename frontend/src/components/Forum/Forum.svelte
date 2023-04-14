@@ -26,7 +26,7 @@
                     <option value={topic.ID}>{topic.name}</option>
                 {/each}
         </select>
-        <button type="button" class="btn btn-add" data-bs-target="#ForumUpload" data-bs-toggle="modal"><i class="bi bi-plus"></i></button>
+        <button type="button" title="Bejegyzés feltöltése" class="btn btn-add" data-bs-target="#ForumUpload" data-bs-toggle="modal"><i class="bi bi-plus"></i></button>
         </div> 
         <div class="posts">
         {#if Data.find(e=>e.ID==topicID)}
