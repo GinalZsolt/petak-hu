@@ -11,13 +11,6 @@
 
   let auctionmodal
   let dispatcher = createEventDispatcher();
-
-
-  async function CopyLink() {
-    await navigator.clipboard.writeText(
-      "http://localhost:5173/profile/" + coin.userID
-    );
-  }
   async function CheckIfCanAuction(coinID: number): Promise<{reason:string, can:boolean}> {
     let auction = await GetAllAuctions($Token.token);
     let user = await GetUserProfile($userPerms.id, $Token.token);
@@ -165,7 +158,6 @@
             <div>
               <button type="button" class="btn" data-bs-dismiss="modal">OK</button
               >
-              <button class="btn" on:click={CopyLink}><i class="bi bi-share" /></button>
             </div>
           </div>
           {#await CheckIfCanAuction(coin.ID) then result}
