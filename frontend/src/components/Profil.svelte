@@ -99,7 +99,7 @@
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3>{ProfileData.user.name} érméi</h3>
         {#if ID===$userPerms.id}
-          <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload"><i class="bi bi-plus-lg"></i></button>
+          <button class="btn" data-bs-toggle="modal" data-bs-target="#CoinUpload" title="Érem feltöltése"><i class="bi bi-plus-lg"></i></button>
         {/if}
       </div>
       <div class="coins mb-3">
