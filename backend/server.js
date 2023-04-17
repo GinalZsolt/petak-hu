@@ -15,7 +15,6 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors());
 app.use('/img', express.static(path.join(__dirname,"/uploads")))
 app.use('/api/file',require('./controllers/FileActions').router)
-app.use('/mail', require('./controllers/mailing'));
 
 const io = new Server(server, {
   cors:{

@@ -1,18 +1,19 @@
 const Router = require('express').Router();
 const pool = require('../config').pool;
 let log = require('../modules/logging').log;
+let sqlprevention = require('../modules/antisqlinjection');
 let token = require('../modules/tokenCheck');
 Router.patch('/:tablename/:field/:value', (req,res)=>{
-    let update = "";
+    let update = [];
     let keys = Object.keys(req.body);
     let values = Object.values(req.body);
     for (let i = 0; i < keys.length; i++) {
-        update +=`${keys[i]}='${values[i]}',`;
+        update.push(`${sqlprevention(keys[i])}='${sqlprevention(values[i])}'`);
     }
-    
-    update=update.substring(0, update.length-1)
-    pool.query(`update ${req.params.tablename} set ${update} where ${req.params.field}=${req.params.value}`, (err,data)=>{
-        if (err) res.status(500).send(err.message);
+    pool.query(`update ${req.params.tablename} set ${update.join(', ')} where ${req.params.field}=?`, [req.params.value], (err,data)=>{
+        if (err){
+            res.status(500).send(err.message);
+        } 
         else {res.status(200).send(data); log(req.socket.remoteAddress, `Updated ${data.affectedRows} rows in ${req.params.tablename}`)}
     });
 })
@@ -47,7 +48,7 @@ Router.get('/:table/:field/:value', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
-    pool.query(`SELECT * FROM ${table_name} WHERE ${table_field}=${field_value}`, (err, result)=>{
+    pool.query(`SELECT * FROM ${table_name} WHERE ${sqlprevention(table_field)}='${sqlprevention(field_value)}'`, (err, result)=>{
         if(err) res.status(500).send(err);
         else{
             res.status(200).send(result);
@@ -60,11 +61,11 @@ Router.get('/:table/:field/:value', token.tokenCheck(),(req, res)=>{
 Router.post('/:table', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let records=req.body;
-    let str= null;
-    let str2= "id";
+    let str = null;
+    let str2 = "id";
     str2 = Object.keys(records).join(', ');
-    str = Object.values(records).map(e=> "'"+e+"'").join(', ');
-    pool.query(`INSERT INTO ${table_name} (${str2}) VALUES(${str})`, (err,result)=>{
+    str = Object.values(records).map(e=> "'"+sqlprevention(e)+"'").join(', ');
+    pool.query(`INSERT INTO ${sqlprevention(table_name)} (${sqlprevention(str2)}) VALUES(${str})`, (err,result)=>{
         if(err) res.status(500).send(err);
         else{
             res.status(200).send(result);
