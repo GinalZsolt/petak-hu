@@ -27,13 +27,13 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               {#if $userPerms.permission==0}
-                      <li class="nav-item"><a href="/login" class="nav-link" use:active exact>Bejelentkezés</a></li>
-                      <li class="nav-item"><a href="/register" class="nav-link" use:active exact>Regisztráció</a></li>
+                      <li data-bs-toggle="collapse" data-bs-target="#navbarNav" class="nav-item"><a href="/login" class="nav-link" use:active exact>Bejelentkezés</a></li>
+                      <li data-bs-toggle="collapse" data-bs-target="#navbarNav" class="nav-item"><a href="/register" class="nav-link" use:active exact>Regisztráció</a></li>
               {/if}
                 {#each $Routes as route}
                     {#if $userPerms.permission>=route.minPermission && route.showInNavbar == true}
-                        <li class="nav-item">
-                            <a class="nav-link" href={route.url} use:active exact>{route.name}</a>
+                        <li class="nav-item" >
+                            <a data-bs-toggle="collapse" data-bs-target="#navbarNav" class="nav-link" href={route.url} use:active exact>{route.name}</a>
                         </li>
                     {/if}
                 {/each}
@@ -44,19 +44,19 @@
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{$userPerms.username}</a>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a href={"/profile/"+$userPerms.id} class="dropdown-item">Profilom</a>
+                      <a data-bs-toggle="collapse" data-bs-target="#navbarNav" href={"/profile/"+$userPerms.id} class="dropdown-item">Profilom</a>
                     </li> 
                     <li>
-                      <a href={"/profilemod/"} class="dropdown-item">Profil módosítása</a>
+                      <a data-bs-toggle="collapse" data-bs-target="#navbarNav" href={"/profilemod/"} class="dropdown-item">Profil módosítása</a>
                     </li>
                     <li>
-                      <a href={"/catalogue/"+$userPerms.id} on:click={GoToMyProfile} class="dropdown-item">Érmekatalógusom</a>
+                      <a data-bs-toggle="collapse" data-bs-target="#navbarNav" href={"/catalogue/"+$userPerms.id} on:click={GoToMyProfile} class="dropdown-item">Érmekatalógusom</a>
                     </li> 
                     <li>
                       <hr class="dropdown-divider">
                     </li>
                     <li>
-                      <button class="dropdown-item" on:click={LogOut}>Kijelentkezés</button>
+                      <button data-bs-toggle="collapse" data-bs-target="#navbarNav" class="dropdown-item" on:click={LogOut}>Kijelentkezés</button>
                     </li>
                   </ul>
                 </li>

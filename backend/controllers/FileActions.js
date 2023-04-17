@@ -1,5 +1,5 @@
 let tCheck = require('../modules/tokenCheck');
-let log =require('../logging').log;
+let log =require('../modules/logging').log;
 const multer = require('multer')({
     storage:require('multer').diskStorage({
       destination:"./uploads",

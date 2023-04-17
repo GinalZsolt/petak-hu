@@ -43,7 +43,7 @@
     <div class="d-flex justify-content-between align-items-center">
       <h4><a  class="btn border-dark" href={"/profile/"+ID}><i class="bi bi-arrow-left" /></a> {profile.name} katalógusa</h4>
       {#if ID == $userPerms.id}
-      <button data-bs-target="#CoinUpload" data-bs-toggle="modal" class="btn"><i class="bi bi-plus-lg"></i></button>
+      <button data-bs-target="#CoinUpload" title="Érem feltöltése" data-bs-toggle="modal" class="btn"><i class="bi bi-plus-lg"></i></button>
       {/if}
     </div>
     {#if profile.coin_list}

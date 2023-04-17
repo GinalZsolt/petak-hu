@@ -41,6 +41,10 @@ module.exports = {
                         res.status(401).send(err);
                     }
                 }
+                else res.status(401).json({
+                    name:'JsonWebTokenError',
+                    message: 'You need a token for this!'
+                })
             }
         }
         else next();
