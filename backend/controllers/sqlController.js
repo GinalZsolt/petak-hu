@@ -3,14 +3,14 @@ const pool = require('../config').pool;
 let log = require('../modules/logging').log;
 let sqlprevention = require('../modules/antisqlinjection');
 let token = require('../modules/tokenCheck');
-Router.patch('/:tablename/:field/:value', (req,res)=>{
+Router.patch('/:table/:field/:value', token.tokenCheck(), (req,res)=>{
     let update = [];
     let keys = Object.keys(req.body);
     let values = Object.values(req.body);
     for (let i = 0; i < keys.length; i++) {
         update.push(`${sqlprevention(keys[i])}='${sqlprevention(values[i])}'`);
     }
-    pool.query(`update ${req.params.tablename} set ${update.join(', ')} where ${req.params.field}=?`, [req.params.value], (err,data)=>{
+    pool.query(`update ${req.params.table} set ${update.join(', ')} where ${req.params.field}=?`, [req.params.value], (err,data)=>{
         if (err){
             res.status(500).send(err.message);
         } 
@@ -79,7 +79,7 @@ Router.delete('/:table/:field/:value', token.tokenCheck(),(req, res)=>{
     let table_name=req.params.table;
     let table_field=req.params.field;
     let field_value=req.params.value;
-    pool.query(`DELETE FROM ${table_name} WHERE ${table_field}=${field_value}`, (err, result)=>{
+    pool.query(`DELETE FROM ${table_name} WHERE ${sqlprevention(table_field)}='${sqlprevention(field_value)}'`, (err, result)=>{
         if(err) res.status(500).send(err);
         else {
             res.status(200).send(result);
