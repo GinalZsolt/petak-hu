@@ -27,8 +27,8 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               {#if $userPerms.permission==0}
-                      <li class="nav-item"><a href="/login" class="nav-link" use:active exact>Bejelentkezés</a></li>
-                      <li class="nav-item"><a href="/register" class="nav-link" use:active exact>Regisztráció</a></li>
+                      <li data-bs-toggle="collapse" data-bs-target="#navbarNav" class="nav-item"><a href="/login" class="nav-link" use:active exact>Bejelentkezés</a></li>
+                      <li data-bs-toggle="collapse" data-bs-target="#navbarNav" class="nav-item"><a href="/register" class="nav-link" use:active exact>Regisztráció</a></li>
               {/if}
                 {#each $Routes as route}
                     {#if $userPerms.permission>=route.minPermission && route.showInNavbar == true}
