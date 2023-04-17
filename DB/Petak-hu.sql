@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2023. Feb 14. 09:11
+-- Létrehozás ideje: 2023. Ápr 17. 10:03
 -- Kiszolgáló verziója: 10.4.6-MariaDB
 -- PHP verzió: 7.3.8
 
@@ -27,6 +27,21 @@ USE `kozigi_petak`;
 -- --------------------------------------------------------
 
 --
+-- A nézet helyettes szerkezete `auctionbidders`
+-- (Lásd alább az aktuális nézetet)
+--
+CREATE TABLE `auctionbidders` (
+`auctionID` int(11)
+,`ID` int(11)
+,`userID` int(11)
+,`price` int(11)
+,`date` datetime
+,`username` varchar(64)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `auctions`
 --
 
@@ -38,7 +53,8 @@ CREATE TABLE `auctions` (
   `title` varchar(128) COLLATE utf8_hungarian_ci DEFAULT NULL,
   `minBid` int(11) NOT NULL,
   `description` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `expiration` date NOT NULL
+  `expiration` date NOT NULL,
+  `notified` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -58,20 +74,6 @@ CREATE TABLE `bidders` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `chats`
---
-
-CREATE TABLE `chats` (
-  `ID` int(11) NOT NULL,
-  `fromID` int(11) NOT NULL,
-  `toID` int(11) NOT NULL,
-  `message` text COLLATE utf8_hungarian_ci NOT NULL,
-  `sent` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
-
--- --------------------------------------------------------
-
---
 -- Tábla szerkezet ehhez a táblához `coins`
 --
 
@@ -82,7 +84,8 @@ CREATE TABLE `coins` (
   `description` text COLLATE utf8_hungarian_ci NOT NULL,
   `userID` int(11) NOT NULL,
   `headfile` text COLLATE utf8_hungarian_ci NOT NULL,
-  `tailfile` text COLLATE utf8_hungarian_ci NOT NULL
+  `tailfile` text COLLATE utf8_hungarian_ci NOT NULL,
+  `uploadDate` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -108,7 +111,8 @@ CREATE TABLE `comments` (
   `ID` int(11) NOT NULL,
   `postID` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
-  `message` varchar(255) COLLATE utf8_hungarian_ci NOT NULL
+  `message` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -120,8 +124,24 @@ CREATE TABLE `comments` (
 CREATE TABLE `moderations` (
   `ID` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
+  `date` date NOT NULL DEFAULT current_timestamp(),
   `banTime` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+-- --------------------------------------------------------
+
+--
+-- A nézet helyettes szerkezete `postcomments`
+-- (Lásd alább az aktuális nézetet)
+--
+CREATE TABLE `postcomments` (
+`postID` int(11)
+,`userID` int(11)
+,`ID` int(11)
+,`message` varchar(255)
+,`date` date
+,`username` varchar(64)
+);
 
 -- --------------------------------------------------------
 
@@ -136,7 +156,9 @@ CREATE TABLE `posts` (
   `imagefile` text COLLATE utf8_hungarian_ci DEFAULT NULL,
   `title` varchar(128) COLLATE utf8_hungarian_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `isClosed` tinyint(1) NOT NULL DEFAULT 0
+  `date` date NOT NULL DEFAULT current_timestamp(),
+  `isClosed` tinyint(1) NOT NULL DEFAULT 0,
+  `isDeleted` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -175,6 +197,20 @@ CREATE TABLE `tagdescriptions` (
   `ID` int(11) NOT NULL,
   `description` text COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+-- --------------------------------------------------------
+
+--
+-- A nézet helyettes szerkezete `tags`
+-- (Lásd alább az aktuális nézetet)
+--
+CREATE TABLE `tags` (
+`ID` int(11)
+,`coinID` int(11)
+,`name` varchar(128)
+,`description` text
+,`color` varchar(7)
+);
 
 -- --------------------------------------------------------
 
@@ -219,8 +255,34 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`ID`, `imagefile`, `name`, `fullname`, `email`, `phone`, `address`, `passwd`, `permission`) VALUES
-(1, NULL, 'admin', 'admin', 'admin@petak.hu', NULL, NULL, '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 1),
-(2, NULL, 'asdasdasdasda', 'adadasasd', 'asd@asd.asd', NULL, NULL, 'f09b64f480ff117331ed88334da5924682d8615e3f6d166b34d0fdfd3c6dc076', 1);
+(1, NULL, 'admin', 'Peták.hu Admin', 'admin@petak.hu', NULL, NULL, 'ec004ef0da5bde09ed611533bdd9ccaf041514be632814ba1303f6725eedff7b', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Nézet szerkezete `auctionbidders`
+--
+DROP TABLE IF EXISTS `auctionbidders`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `auctionbidders`  AS  select `auctions`.`ID` AS `auctionID`,`bidders`.`ID` AS `ID`,`bidders`.`userID` AS `userID`,`bidders`.`amount` AS `price`,`bidders`.`date` AS `date`,`users`.`name` AS `username` from ((`bidders` join `users` on(`users`.`ID` = `bidders`.`userID`)) join `auctions` on(`auctions`.`ID` = `bidders`.`auctionID`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Nézet szerkezete `postcomments`
+--
+DROP TABLE IF EXISTS `postcomments`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `postcomments`  AS  select `comments`.`postID` AS `postID`,`comments`.`userID` AS `userID`,`comments`.`ID` AS `ID`,`comments`.`message` AS `message`,`comments`.`date` AS `date`,`users`.`name` AS `username` from ((`posts` join `comments` on(`comments`.`postID` = `posts`.`ID`)) join `users` on(`users`.`ID` = `comments`.`userID`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Nézet szerkezete `tags`
+--
+DROP TABLE IF EXISTS `tags`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `tags`  AS  select `cointags`.`ID` AS `ID`,`cointags`.`coinID` AS `coinID`,`tagcategories`.`name` AS `name`,`tagdescriptions`.`description` AS `description`,`tagcategories`.`color` AS `color` from ((`cointags` join `tagdescriptions` on(`cointags`.`descID` = `tagdescriptions`.`ID`)) join `tagcategories` on(`cointags`.`nameID` = `tagcategories`.`ID`)) ;
 
 --
 -- Indexek a kiírt táblákhoz
@@ -241,14 +303,6 @@ ALTER TABLE `bidders`
   ADD PRIMARY KEY (`ID`),
   ADD KEY `userID` (`userID`),
   ADD KEY `auctionID` (`auctionID`);
-
---
--- A tábla indexei `chats`
---
-ALTER TABLE `chats`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `fromID` (`fromID`),
-  ADD KEY `toID` (`toID`);
 
 --
 -- A tábla indexei `coins`
@@ -331,12 +385,6 @@ ALTER TABLE `bidders`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `chats`
---
-ALTER TABLE `chats`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT a táblához `coins`
 --
 ALTER TABLE `coins`
@@ -382,13 +430,13 @@ ALTER TABLE `tagdescriptions`
 -- AUTO_INCREMENT a táblához `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -407,13 +455,6 @@ ALTER TABLE `auctions`
 ALTER TABLE `bidders`
   ADD CONSTRAINT `bidders_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`),
   ADD CONSTRAINT `bidders_ibfk_2` FOREIGN KEY (`auctionID`) REFERENCES `auctions` (`ID`);
-
---
--- Megkötések a táblához `chats`
---
-ALTER TABLE `chats`
-  ADD CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`fromID`) REFERENCES `users` (`ID`),
-  ADD CONSTRAINT `chats_ibfk_2` FOREIGN KEY (`toID`) REFERENCES `users` (`ID`);
 
 --
 -- Megkötések a táblához `coins`
