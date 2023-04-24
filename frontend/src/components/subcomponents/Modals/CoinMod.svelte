@@ -114,6 +114,7 @@
                     seterror("fileerror",
                     upload.code=="FILE_NOT_ACCEPTED"?"A fájlformátum nem megfelelő!":"A fájl mérete túl nagy! (>5MB)",
                     true);
+                    return;
                 }
             }
             let update = await Patch($Token.token, 'coins', 'ID', Coin.ID, {
