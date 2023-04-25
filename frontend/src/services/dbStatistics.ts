@@ -23,7 +23,7 @@ export async function getCoinWorthStats(token:string):Promise<Statistics[]>{
             return {
                 date:z,
                 value: worths.filter(g=>g.date==z).map(t=>t.worth).reduce((a,b)=>a+b),
-                title:"Zsetonok értéke"
+                title:"Érmék értéke"
             }
         })
     })
@@ -37,7 +37,7 @@ export async function getCoinAmountStats(token:string):Promise<Statistics[]>{
             return {
                 date:e,
                 value: (res.data as Coin[]).filter(z=>z.uploadDate==e).length,
-                title:"Zsetonok száma"
+                title:"Érmék száma"
             }
         })        
     });
