@@ -90,15 +90,32 @@
             let pottailfile: undefined|string = undefined;
             if (headfile && headfile.length>0){
                 let form = new FormData();
-                DeleteImage($Token.token, Coin.headfile);
                 form.append('image', headfile[0]);
-                potheadfile = await UploadImage($Token.token, form).then(res=>res.filename);
+                let upload = await UploadImage($Token.token, form);
+                if (!upload.code){
+                    DeleteImage($Token.token, Coin.headfile);
+                    potheadfile = upload.filename;
+                }
+                else{
+                    seterror("fileerror",
+                    upload.code=="FILE_NOT_ACCEPTED"?"A fájlformátum nem megfelelő!":"A fájl mérete túl nagy! (>5MB)",
+                    true);
+                }
             }
             if (tailfile && tailfile.length>0){
-                DeleteImage($Token.token, Coin.tailfile);
                 let form = new FormData();
                 form.append('image', tailfile[0]);
-                pottailfile = await UploadImage($Token.token, form).then(res=>res.filename);
+                let upload = await UploadImage($Token.token, form)
+                if (!upload.code){
+                    pottailfile = upload.filename
+                    DeleteImage($Token.token, Coin.tailfile);
+                }
+                else{
+                    seterror("fileerror",
+                    upload.code=="FILE_NOT_ACCEPTED"?"A fájlformátum nem megfelelő!":"A fájl mérete túl nagy! (>5MB)",
+                    true);
+                    return;
+                }
             }
             let update = await Patch($Token.token, 'coins', 'ID', Coin.ID, {
                 name:Coin.name,
@@ -118,7 +135,9 @@
     async function CommenceDelete(){
         await Promise.all(
             [...Coin.tags.map(e=>Delete($Token.token, 'cointags', 'ID', e.ID)),
-             ...Coin.tags.map(e=>Delete($Token.token, 'tagdescriptions', 'ID', e.descID))])
+             ...Coin.tags.map(e=>Delete($Token.token, 'tagdescriptions', 'ID', e.descID)),
+             Delete($Token.token, 'auctions','coinID', Coin.ID)],
+             )
              .then(res=>console.log(res));
         await Delete($Token.token, 'coins', 'ID', Coin.ID).then(res=>console.log(res));
         dispatcher('mod');
