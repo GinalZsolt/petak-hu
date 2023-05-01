@@ -93,5 +93,4 @@
         width: initial
     .link-primary
         cursor: pointer
-        box-shadow: 0 0 0 0.25rem (#ffcc957f)
 </style>

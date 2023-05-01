@@ -113,13 +113,13 @@
                 let coinID = await UploadCoin(Coin, $Token.token).then(
                     (res) => res
                 );
-                tags.forEach((element) => {
+                tags.forEach(async (element) => {
                     let uploadableTag = {
                         coinID: coinID,
                         nameID: element.categoryID,
                         descID: element.description,
                     };
-                    UploadTag(
+                    await UploadTag(
                         {
                             coinID: uploadableTag.coinID,
                             nameID: uploadableTag.nameID,
