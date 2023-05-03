@@ -7,9 +7,14 @@
     import sha256 from "crypto-js/sha256"
     import { DeleteImage, UploadImage } from "../services/fileService";
     import type { User } from "../interfaces/User";
+
+
+    //On page load, get the user's profile data.
     onMount(async()=>{
         user = (await GetUserData($userPerms.id, $Token.token))[0];
     })
+    
+    //Used variables
     let err;
     let errormessage = {
         text: "",
@@ -20,6 +25,10 @@
     let pass1:string=""
     let pass2:string=""
     let pfp:FileList;
+
+    //boolean function,
+    //returns true if any text is either non-existent,
+    //or empty.
     function missing(data:User){
         if (data.address){
             data.address = data.address.trim();
@@ -39,6 +48,8 @@
              ||pass2==undefined
              ||pass2==""
     }
+
+    //The alert's function.
     function setError(id:string, text:string, error:boolean){
         errormessage = {
             id: id,
@@ -47,6 +58,12 @@
         };
         err.showError();
     }
+
+    /*The function for modifying the user's data.
+    * If there are empty fields, or the requirements are not met, then throw the error for the user.
+    * Otherwise If the user has set a phone number, then throw the proper error for the user.
+    * If everything is OK, then send the data to the backend.
+    */
     function Update(data:User){
         switch (true){
             case missing(data): 
@@ -73,10 +90,31 @@
                 break;
         }
     }
+    /*
+    * The function for calling the backend.
+    * If the user has chosen a file, then try uploading the file.
+    * If it succeeds, it will try to upload the data otherwise it will upload data without the image.
+    */
+
     async function TryUpdate(data:User){
-        let upload;
+        
         if (pfp && pfp.length>0){
-            await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);
+            await uploadProfilePic(data);
+        }
+        
+        user.passwd = sha256(pass1).toString();
+
+        Patch($Token.token, 'users', 'ID', $userPerms.id, data).then(()=>{
+            setError('success','Sikeres profilmódosítás', false)
+        })
+        .catch(()=>{
+            setError('servererror','Szerverhiba történt, kérem szóljon a fejlesztőknek!', true);
+        })
+    }
+    
+    async function uploadProfilePic(data:User){
+        let upload;
+        await DeleteImage($Token.token, data.imagefile).then(res=>res).catch(err=>err);
             let formdata = new FormData();
             formdata.append('image', pfp[0]);
             upload = await UploadImage($Token.token, formdata);
@@ -84,15 +122,6 @@
             if (upload.status == 500){
                 setError('fileerror', 'A fájl nem megfelelő (mérete túl nagy [>5MiB], vagy nem kép)!',true);
             }
-        }
-        user.passwd = sha256(pass1).toString();
-        console.log(data);
-        Patch($Token.token, 'users', 'ID', $userPerms.id, data).then(()=>{
-            setError('success','Sikeres profilmódosítás', false)
-        })
-        .catch(()=>{
-            setError('servererror','Szerverhiba történt, kérem szóljon a fejlesztőknek!', true);
-        })
     }
 </script>
 <style lang="sass">

@@ -5,7 +5,7 @@
     import { GetPerms } from "../services/permissionGetter";
     import sha256 from 'crypto-js/sha256';
 
-
+    //variables
     let data:any = {}
     let error;
     let errormsg = {
@@ -20,6 +20,10 @@
         errormsg.error = _error;
         error.showError();
     }
+
+    //If login is successful, the user gets a token.
+    //This token is needed for almost every operation,
+    //so we save it in the sessionStorage.
     function setToken(response){
         sessionStorage.setItem('petakhu', JSON.stringify({token:response.data.token})); 
         Token.update(token=>token = response.data);
@@ -27,6 +31,7 @@
                 userPerms.update(()=>data);
         });
     }
+    //If the user filled every field, then try the login from the backend.
     function login(){
         if(data.email==undefined||data.passwd==undefined || data.email == "" || data.passwd == "")
         {

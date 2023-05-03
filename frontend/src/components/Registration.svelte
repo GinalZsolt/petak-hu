@@ -2,6 +2,8 @@
     import axios from 'axios';
     import sha256 from 'crypto-js/sha256';
     import ErrorAlert from './subcomponents/ErrorAlert.svelte';
+    
+    //Used variables.
     let User:any = {}
     let ErrorData = {
         id: "",
@@ -12,6 +14,8 @@
     let pass1:string=""
     let pass2:string=""
 
+
+    //If the input is empty, return true, otherwise return false.
     function badData(string:string){
         if (string)
         {
@@ -25,7 +29,10 @@
         ErrorData.error = isError;
         err.showError();
     }
-
+    /*
+    * If the user has empty fields, or doesn't meet every requirement, then notify them.
+    * Otherwise try to register the user.
+    */
     function Register(){
         switch (true){
             case (badData(User.name)||badData(User.fullname)||badData(User.email)||badData(pass1)||badData(pass2)):
@@ -46,6 +53,10 @@
             default: TryRegister();
         }
     }
+
+    /*
+    * Calls the backend for inserting the user's data, if the email is used, then throw an error for it.
+    */
     function TryRegister(){
         User.passwd = sha256(pass1).toString();
         axios.post("http://localhost:8080/api/users/register",User).then(()=>{

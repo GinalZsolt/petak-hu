@@ -24,6 +24,11 @@
   let actbtn:HTMLInputElement;
   let btn:HTMLButtonElement;
   const socket = io("ws://localhost:8080");
+  /*
+  * If the auction doesn't exist, redirect to the auctions page.
+  * Otherwise get all of the bidder's names, and necessary data for the auction.
+  * If the auction is expired and there weren't any emails sent, send it.
+  */
   onMount(async () => {
     auction = await GetAuctionData($Token.token, ID);
     if (typeof auction == "boolean"){
@@ -51,6 +56,9 @@
 
   
   socket.emit("roomJoin", "auction-" + ID);
+  /*
+  * If someone has bid a new price, update it for everyone on the auction.
+  */
   socket.on("newPrice", async (data) => {
     auction.price = data;
     originalPrice = data;
@@ -60,6 +68,9 @@
       btn.disabled = false;
     }
   });
+  /*
+  * If the latest bidder is the current user, don't allow the user to bid again.
+  */
   function isLatestOrOwn(id:number):boolean{
     if (bidders.length>0){
       return ($userPerms.id == id || bidders[0].userID == $userPerms.id) == true;
@@ -68,6 +79,9 @@
       return ($userPerms.id == id) == true;
     }
   }
+  /*
+  * If the bid is bigger than the minimum step + current price, then update the price and send it to the others.
+  */
   function Bid() {
     if (auction.price >= originalPrice + auction.minBid && $userPerms.id!=auction.userID) {
       PostNewAuctionPrice($Token.token, ID, auction.price).then(

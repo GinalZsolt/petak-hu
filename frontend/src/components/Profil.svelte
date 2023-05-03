@@ -12,12 +12,28 @@
     import { GetCoin } from "../services/dbCoin";
     import CoinModal from "./subcomponents/Modals/coinModal.svelte";
     import type { Coin } from "../interfaces/Coin";
+
+    //Variables
     let ID = Number(router.meta().params.id);
     let profile = GetUserProfile(ID, $Token.token);
     let modal:CoinModal;
     let err1
     let err2
-
+    let selectedcoin: Coin;
+    let modcoin: Coin ={
+        ID: 0,
+        name:"",
+        worth: 0,
+        description: "",
+        headfile: "",
+        tailfile: "",    
+        userID: 0,
+        uploadDate: "",
+        tags: []
+    };
+    let tags: Array<TagInterface>=[]; 
+    //If the user is admin, then he can promote other users to admin level.
+    //If the promoted user is already an admin, then throw an error.
     function Promote(userperm:number){
     if (userperm!=2) {
       Patch($Token.token,"users","ID",ID,{permission:"2"}).then((res)=>{
@@ -28,29 +44,16 @@
       err2.showError()
     }
   }
-  let selectedcoin: Coin;
-  let modcoin: Coin ={
-        ID: 0,
-        name:"",
-        worth: 0,
-        description: "",
-        headfile: "",
-        tailfile: "",    
-        userID: 0,
-        uploadDate: "",
-        tags: []
-  };
-
-  let tags: Array<TagInterface>=[]; 
+  
   async function handleMessage(event) {
     modcoin=event.detail.Coin;
     await GetTags(modcoin);
 	}
-
+  //If the user uploaded a coin, or took a coin for an auction, then update the list of coins and auctions.
   async function handleCoinModUpdate(event) {
     profile = GetUserProfile(ID, $Token.token)
 	}
-
+  //If the user selected a coin, get it's tags.
   async function GetTags(Coin:Coin) {
       tags = await Get($Token.token, "tags", "coinID", Coin.ID).then((res)=> res);
     }

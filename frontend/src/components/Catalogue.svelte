@@ -8,7 +8,8 @@
   import { router } from "tinro";
   import CoinUpload from "./subcomponents/Modals/CoinUpload.svelte";
   import { GetUserCoins } from "../services/dbCoin";
-    let ID = Number(router.meta().params.id);
+  //variables.  
+  let ID = Number(router.meta().params.id);
     let modal
     let searchtext:string=""
     let profile={
@@ -16,11 +17,14 @@
         coin_list:[] as Coin[],
     }
     let selectedcoin:Coin
-    
+  //Get the users coins from the backend.
     async function getCoinList() {
       profile.coin_list = await GetUserCoins($Token.token, ID);
       selectedcoin=profile.coin_list[0]
     }
+  //on loading get all of the user's data.
+  //if the user doesn't exist, then go back to the proper site. 
+  //(non-registered users go to login, logged-in users go back to the dashboard).
     onMount(async()=>{
       await GetUserData(ID,$Token.token).then((res)=>{
         if (res[0]){
