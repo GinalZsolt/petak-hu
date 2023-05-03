@@ -9,70 +9,70 @@ export const Routes:Readable<URL[]> =  readable([
    url:'/',
    name:'Promóciós oldal',
    minPermission: 0,
-   component:'../components/Promo.svelte',
+   component:'Promo',
    showInNavbar: false
  },
    {
     url:"/dashboard",
     name:"Főoldal",
     minPermission:1,
-    component:'../components/Dashboard.svelte',
+    component:'Dashboard',
     showInNavbar: true
  },
  {
     url:'/auctions',
     name:'Aukciók',
     minPermission:0,
-    component: '../components/Auctions.svelte',
+    component: 'Auctions',
     showInNavbar: true
  },
  {
     url:'/admin',
     name:'Admin',
     minPermission:2,
-    component: '../components/Admin.svelte',
+    component: 'Admin',
     showInNavbar: true
  },
  {
     url:'/forums',
     name:'Fórumok',
     minPermission:1,
-    component: '../components/Forum/Forum.svelte',
+    component: 'Forum/Forum',
     showInNavbar: true
  },
  {
     url:'/forums/:id',
     name: 'Fórum bejegyzés',
     minPermission: 1,
-    component: '../components/Forum/BlogPost.svelte',
+    component: 'Forum/BlogPost',
     showInNavbar: false
  },
  {
     url:"/profile/:id",
     name: 'Egyéni profil',
     minPermission: 0,
-    component: '../components/Profil.svelte',
+    component: 'Profil',
     showInNavbar: false,
  },
  {
     url:'/auctions/:id',
     name: 'Egyéni aukció',
     minPermission: 0,
-    component: '../components/AuctionPage.svelte',
+    component: 'AuctionPage',
     showInNavbar: false
  },
  {
     url: '/profilemod',
     name: 'Profilmódosítás',
     minPermission: 1,
-    component: '../components/Profilmod.svelte',
+    component: 'Profilmod',
     showInNavbar: false
  },
  {
     url: '/catalogue/:id',
     name: 'Katalógus',
     minPermission: 0,
-    component: '../components/Catalogue.svelte',
+    component: 'Catalogue',
     showInNavbar: false
  }
 ]) as Readable<URL[]>;

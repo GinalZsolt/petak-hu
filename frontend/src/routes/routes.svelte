@@ -15,13 +15,13 @@
     <!--Stores-ban található route-ok-->
     {#each $Routes as route }
         {#if $userPerms.permission>=route.minPermission}
-            <Route path={route.url}><Lazyloading component={import(route.component)}/></Route>
+            <Route path={route.url}><Lazyloading component={import(`../components/${route.component}.svelte`)}/></Route>
         {/if}
     {/each}
     <Route fallback redirect="/"/>
     {#if $userPerms.permission==0}
-        <Route path="/login"><Lazyloading component={()=>import('../components/Login.svelte')}/></Route>
-        <Route path="/register"><Lazyloading component={()=>import('../components/Registration.svelte')}/></Route>
+        <Route path="/login"><Lazyloading component={import('../components/Login.svelte')}/></Route>
+        <Route path="/register"><Lazyloading component={import('../components/Registration.svelte')}/></Route>
     {:else}
         <Route path="/login" redirect="/dashboard" />
         <Route path="/register" redirect="/dashboad" />
